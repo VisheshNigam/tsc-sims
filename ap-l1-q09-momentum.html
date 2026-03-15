@@ -1,0 +1,188 @@
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#ap_l1_q09_momentum{font-family:'Nunito',sans-serif;width:100%;background:#f0f2f5;padding:12px}
+#ap_l1_q09_momentum .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#ap_l1_q09_momentum .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#ap_l1_q09_momentum .qlbl{font:700 13px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#ap_l1_q09_momentum .topic-tag{font:700 13px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+#ap_l1_q09_momentum .level-tag{font:700 13px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#ap_l1_q09_momentum .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#ap_l1_q09_momentum .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Hint */
+#ap_l1_q09_momentum .hint-wrap{margin:10px 20px 0}
+#ap_l1_q09_momentum .hint-btn{background:none;border:1.5px dashed #c8ccd4;border-radius:8px;padding:7px 14px;font:600 14px 'Nunito',sans-serif;color:#6b8aaa;cursor:pointer;width:100%;text-align:left;transition:all .2s}
+#ap_l1_q09_momentum .hint-btn:hover{border-color:#1b2a4a;color:#1b2a4a;background:#f6f7f9}
+#ap_l1_q09_momentum .hint-text{display:none;margin-top:8px;background:#fffbe6;border:1px solid #f7e48a;border-radius:8px;padding:10px 14px;font:600 15px/1.6 'Nunito',sans-serif;color:#7a5a00}
+
+/* Options */
+#ap_l1_q09_momentum .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#ap_l1_q09_momentum .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 16px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#ap_l1_q09_momentum .opt:hover{border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#ap_l1_q09_momentum .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#ap_l1_q09_momentum .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#ap_l1_q09_momentum .opt.locked{cursor:default;transform:none}
+#ap_l1_q09_momentum .opt.locked:hover{border-color:#e0e3e8 !important;background:#f6f7f9 !important;transform:none}
+#ap_l1_q09_momentum .opt.correct.locked:hover{border-color:#1b6b3a !important;background:#e8f5ee !important}
+#ap_l1_q09_momentum .opt.wrong.locked:hover{border-color:#c85a00 !important;background:#fff8f4 !important}
+#ap_l1_q09_momentum .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Per-option explanation */
+#ap_l1_q09_momentum .opt-explain{display:none;font:600 13px/1.5 'Nunito',sans-serif;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,0.08);opacity:0;transform:translateY(4px);transition:opacity .3s ease,transform .3s ease}
+#ap_l1_q09_momentum .opt-explain.show{opacity:1;transform:translateY(0)}
+#ap_l1_q09_momentum .opt.correct .opt-explain{color:#1b5c30;display:block}
+#ap_l1_q09_momentum .opt.wrong .opt-explain{color:#8a3800;display:block}
+
+/* Feedback + DYK */
+#ap_l1_q09_momentum .fb{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden;font:600 16px/1.7 'Nunito',sans-serif}
+#ap_l1_q09_momentum .fb-main{padding:12px 16px}
+#ap_l1_q09_momentum .fb-dyk{padding:10px 16px}
+#ap_l1_q09_momentum .fb-dyk-lbl{font:800 13px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;opacity:.8}
+
+/* Correct answer reveal on wrong options */
+#ap_l1_q09_momentum .correct-reveal{display:none;margin:10px 20px 0;background:#e8f5ee;border:1px solid #a8d8b8;border-radius:8px;padding:10px 14px;font:600 14px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#ap_l1_q09_momentum .correct-reveal .cr-lbl{font:800 12px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Footer */
+#ap_l1_q09_momentum .ft{margin:12px 20px 14px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#ap_l1_q09_momentum .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#ap_l1_q09_momentum .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+@media(max-width:480px){
+  #ap_l1_q09_momentum .opts{grid-template-columns:1fr}
+  #ap_l1_q09_momentum .qtxt{font-size:16px}
+}
+</style>
+
+<div id="ap_l1_q09_momentum">
+<div class="card">
+
+  <div class="meta">
+    <span class="qlbl">Q9</span>
+    <span class="topic-tag">Momentum</span>
+    <span class="level-tag">L1 · Conceptual</span>
+  </div>
+
+  <div class="qwrap">
+    <div class="qtxt">Object A: mass <strong>2 kg</strong>, speed <strong>6 m/s</strong>. Object B: mass <strong>3 kg</strong>, speed <strong>4 m/s</strong>. Which has greater momentum?</div>
+  </div>
+
+  <div class="hint-wrap">
+    <button class="hint-btn" onclick="ap_l1_q09_momentum_toggleHint()">💡 Need a hint?</button>
+    <div class="hint-text" id="ap_l1_q09_momentum-hint">Momentum p = mv. Calculate both and compare.</div>
+  </div>
+
+  <div class="opts" id="ap_l1_q09_momentum-opts">
+    <button class="opt" onclick="ap_l1_q09_momentum_answer(this,0)">
+      <span class="opt-lbl">A</span>
+      Object A — it's faster so it has more momentum
+      <div class="opt-explain">Speed alone doesn't decide momentum — always calculate p = mv. A: 2×6 = 12. B: 3×4 = 12. They're equal!</div>
+    </button>
+    <button class="opt" onclick="ap_l1_q09_momentum_answer(this,1)">
+      <span class="opt-lbl">B</span>
+      Object B — it's heavier so it has more momentum
+      <div class="opt-explain">Mass alone doesn't decide momentum — calculate p = mv. A: 2×6 = 12. B: 3×4 = 12. They're equal!</div>
+    </button>
+    <button class="opt" onclick="ap_l1_q09_momentum_answer(this,2)">
+      <span class="opt-lbl">C</span>
+      They have equal momentum — both 12 kg·m/s
+      <div class="opt-explain">Correct! A: p = 2×6 = 12 kg·m/s. B: p = 3×4 = 12 kg·m/s. Different mass and speed, same momentum.</div>
+    </button>
+    <button class="opt" onclick="ap_l1_q09_momentum_answer(this,3)">
+      <span class="opt-lbl">D</span>
+      Cannot be determined without knowing direction
+      <div class="opt-explain">For comparing magnitudes of momentum, direction isn't needed — p = mv gives us the magnitude directly.</div>
+    </button>
+
+  </div>
+
+  <div class="correct-reveal" id="ap_l1_q09_momentum-correct-reveal">
+    <div class="cr-lbl">✓ Correct answer</div>
+    <div id="ap_l1_q09_momentum-correct-reveal-text"></div>
+  </div>
+
+  <div class="fb" id="ap_l1_q09_momentum-fb">
+    <div class="fb-main" id="ap_l1_q09_momentum-fb-main"></div>
+    <div class="fb-dyk" id="ap_l1_q09_momentum-fb-dyk">
+      <div class="fb-dyk-lbl">💡 Did you know?</div>
+      Momentum is conserved in all collisions — it's one of the most powerful conservation laws in all of physics!
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/courses" target="_blank">Explore Courses →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var CORRECT_IDX = 2;
+  var OPTS_DATA = [{"text": "Object A \u2014 it's faster so it has more momentum", "explanation": "Speed alone doesn't decide momentum \u2014 always calculate p = mv. A: 2\u00d76 = 12. B: 3\u00d74 = 12. They're equal!"}, {"text": "Object B \u2014 it's heavier so it has more momentum", "explanation": "Mass alone doesn't decide momentum \u2014 calculate p = mv. A: 2\u00d76 = 12. B: 3\u00d74 = 12. They're equal!"}, {"text": "They have equal momentum \u2014 both 12 kg\u00b7m/s", "explanation": "Correct! A: p = 2\u00d76 = 12 kg\u00b7m/s. B: p = 3\u00d74 = 12 kg\u00b7m/s. Different mass and speed, same momentum."}, {"text": "Cannot be determined without knowing direction", "explanation": "For comparing magnitudes of momentum, direction isn't needed \u2014 p = mv gives us the magnitude directly."}];
+
+  function toggleHint(){
+    var h = document.getElementById('ap_l1_q09_momentum-hint');
+    var btn = document.querySelector('#ap_l1_q09_momentum .hint-btn');
+    var showing = h.style.display === 'block';
+    h.style.display = showing ? 'none' : 'block';
+    btn.textContent = showing ? '💡 Need a hint?' : '💡 Hide hint';
+  }
+  window['ap_l1_q09_momentum_toggleHint'] = toggleHint;
+
+  window['ap_l1_q09_momentum_answer'] = function(el, idx){
+    if(el.classList.contains('locked')) return;
+    var btns = document.querySelectorAll('#ap_l1_q09_momentum-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT_IDX);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT_IDX].classList.add('correct');
+
+    // Show per-option explanations with stagger
+    btns.forEach(function(b, i){
+      setTimeout(function(){
+        var exp = b.querySelector('.opt-explain');
+        if(exp){
+          exp.style.display = 'block';
+          setTimeout(function(){ exp.classList.add('show'); }, 20);
+        }
+      }, i * 80);
+    });
+
+    // Show correct answer reveal only if wrong
+    if(!ok){
+      var reveal = document.getElementById('ap_l1_q09_momentum-correct-reveal');
+      reveal.style.display = 'block';
+      document.getElementById('ap_l1_q09_momentum-correct-reveal-text').textContent = OPTS_DATA[CORRECT_IDX].text;
+    }
+
+    // Feedback panel
+    var fb = document.getElementById('ap_l1_q09_momentum-fb');
+    var fbMain = document.getElementById('ap_l1_q09_momentum-fb-main');
+    var fbDyk = document.getElementById('ap_l1_q09_momentum-fb-dyk');
+    fb.style.display = 'block';
+    if(ok){
+      fb.style.background = '#e8f5ee'; fb.style.border = '1px solid #a8d8b8';
+      fbMain.style.color = '#1b4a2a'; fbMain.style.background = '#e8f5ee';
+      fbDyk.style.borderTop = '1px solid #a8d8b8'; fbDyk.style.color = '#1b4a2a'; fbDyk.style.background = '#d8f0e4';
+      fbMain.textContent = '✓ ' + OPTS_DATA[CORRECT_IDX].explanation;
+    } else {
+      fb.style.background = '#fff8f4'; fb.style.border = '1px solid #f0c8a8';
+      fbMain.style.color = '#7a3000'; fbMain.style.background = '#fff8f4';
+      fbDyk.style.borderTop = '1px solid #f0c8a8'; fbDyk.style.color = '#7a3000'; fbDyk.style.background = '#fdeee4';
+      fbMain.textContent = '✗ ' + OPTS_DATA[idx].explanation;
+    }
+
+    // Post message to shell
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+  };
+})();
+</script>

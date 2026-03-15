@@ -1,0 +1,188 @@
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#ap_l1_q07_free_fall{font-family:'Nunito',sans-serif;width:100%;background:#f0f2f5;padding:12px}
+#ap_l1_q07_free_fall .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#ap_l1_q07_free_fall .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#ap_l1_q07_free_fall .qlbl{font:700 13px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#ap_l1_q07_free_fall .topic-tag{font:700 13px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+#ap_l1_q07_free_fall .level-tag{font:700 13px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#ap_l1_q07_free_fall .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#ap_l1_q07_free_fall .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Hint */
+#ap_l1_q07_free_fall .hint-wrap{margin:10px 20px 0}
+#ap_l1_q07_free_fall .hint-btn{background:none;border:1.5px dashed #c8ccd4;border-radius:8px;padding:7px 14px;font:600 14px 'Nunito',sans-serif;color:#6b8aaa;cursor:pointer;width:100%;text-align:left;transition:all .2s}
+#ap_l1_q07_free_fall .hint-btn:hover{border-color:#1b2a4a;color:#1b2a4a;background:#f6f7f9}
+#ap_l1_q07_free_fall .hint-text{display:none;margin-top:8px;background:#fffbe6;border:1px solid #f7e48a;border-radius:8px;padding:10px 14px;font:600 15px/1.6 'Nunito',sans-serif;color:#7a5a00}
+
+/* Options */
+#ap_l1_q07_free_fall .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#ap_l1_q07_free_fall .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 16px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#ap_l1_q07_free_fall .opt:hover{border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#ap_l1_q07_free_fall .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#ap_l1_q07_free_fall .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#ap_l1_q07_free_fall .opt.locked{cursor:default;transform:none}
+#ap_l1_q07_free_fall .opt.locked:hover{border-color:#e0e3e8 !important;background:#f6f7f9 !important;transform:none}
+#ap_l1_q07_free_fall .opt.correct.locked:hover{border-color:#1b6b3a !important;background:#e8f5ee !important}
+#ap_l1_q07_free_fall .opt.wrong.locked:hover{border-color:#c85a00 !important;background:#fff8f4 !important}
+#ap_l1_q07_free_fall .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Per-option explanation */
+#ap_l1_q07_free_fall .opt-explain{display:none;font:600 13px/1.5 'Nunito',sans-serif;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,0.08);opacity:0;transform:translateY(4px);transition:opacity .3s ease,transform .3s ease}
+#ap_l1_q07_free_fall .opt-explain.show{opacity:1;transform:translateY(0)}
+#ap_l1_q07_free_fall .opt.correct .opt-explain{color:#1b5c30;display:block}
+#ap_l1_q07_free_fall .opt.wrong .opt-explain{color:#8a3800;display:block}
+
+/* Feedback + DYK */
+#ap_l1_q07_free_fall .fb{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden;font:600 16px/1.7 'Nunito',sans-serif}
+#ap_l1_q07_free_fall .fb-main{padding:12px 16px}
+#ap_l1_q07_free_fall .fb-dyk{padding:10px 16px}
+#ap_l1_q07_free_fall .fb-dyk-lbl{font:800 13px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;opacity:.8}
+
+/* Correct answer reveal on wrong options */
+#ap_l1_q07_free_fall .correct-reveal{display:none;margin:10px 20px 0;background:#e8f5ee;border:1px solid #a8d8b8;border-radius:8px;padding:10px 14px;font:600 14px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#ap_l1_q07_free_fall .correct-reveal .cr-lbl{font:800 12px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Footer */
+#ap_l1_q07_free_fall .ft{margin:12px 20px 14px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#ap_l1_q07_free_fall .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#ap_l1_q07_free_fall .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+@media(max-width:480px){
+  #ap_l1_q07_free_fall .opts{grid-template-columns:1fr}
+  #ap_l1_q07_free_fall .qtxt{font-size:16px}
+}
+</style>
+
+<div id="ap_l1_q07_free_fall">
+<div class="card">
+
+  <div class="meta">
+    <span class="qlbl">Q7</span>
+    <span class="topic-tag">Kinematics — Free Fall</span>
+    <span class="level-tag">L1 · Conceptual</span>
+  </div>
+
+  <div class="qwrap">
+    <div class="qtxt">A ball is dropped from rest. Ignoring air resistance, what is its speed after <strong>3 seconds</strong>? (use g = 10 m/s²)</div>
+  </div>
+
+  <div class="hint-wrap">
+    <button class="hint-btn" onclick="ap_l1_q07_free_fall_toggleHint()">💡 Need a hint?</button>
+    <div class="hint-text" id="ap_l1_q07_free_fall-hint">Use v = u + at, where initial speed u = 0 and a = g = 10 m/s².</div>
+  </div>
+
+  <div class="opts" id="ap_l1_q07_free_fall-opts">
+    <button class="opt" onclick="ap_l1_q07_free_fall_answer(this,0)">
+      <span class="opt-lbl">A</span>
+      10 m/s
+      <div class="opt-explain">This is the speed after only 1 second. Multiply by the full time: v = 10 × 3 = 30 m/s.</div>
+    </button>
+    <button class="opt" onclick="ap_l1_q07_free_fall_answer(this,1)">
+      <span class="opt-lbl">B</span>
+      45 m/s
+      <div class="opt-explain">45 m is the distance fallen (½ × 10 × 9 = 45 m) — not the speed. Don't mix up the kinematic equations.</div>
+    </button>
+    <button class="opt" onclick="ap_l1_q07_free_fall_answer(this,2)">
+      <span class="opt-lbl">C</span>
+      30 m/s
+      <div class="opt-explain">Correct! v = u + at = 0 + 10 × 3 = 30 m/s. The ball gains 10 m/s of speed every second.</div>
+    </button>
+    <button class="opt" onclick="ap_l1_q07_free_fall_answer(this,3)">
+      <span class="opt-lbl">D</span>
+      90 m/s
+      <div class="opt-explain">This is 3× too large — a common error. Apply v = gt: 10 × 3 = 30, not 90.</div>
+    </button>
+
+  </div>
+
+  <div class="correct-reveal" id="ap_l1_q07_free_fall-correct-reveal">
+    <div class="cr-lbl">✓ Correct answer</div>
+    <div id="ap_l1_q07_free_fall-correct-reveal-text"></div>
+  </div>
+
+  <div class="fb" id="ap_l1_q07_free_fall-fb">
+    <div class="fb-main" id="ap_l1_q07_free_fall-fb-main"></div>
+    <div class="fb-dyk" id="ap_l1_q07_free_fall-fb-dyk">
+      <div class="fb-dyk-lbl">💡 Did you know?</div>
+      Galileo showed all objects fall at the same rate regardless of mass. On the Moon (no air), a feather and a hammer land together!
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/courses" target="_blank">Explore Courses →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var CORRECT_IDX = 2;
+  var OPTS_DATA = [{"text": "10 m/s", "explanation": "This is the speed after only 1 second. Multiply by the full time: v = 10 \u00d7 3 = 30 m/s."}, {"text": "45 m/s", "explanation": "45 m is the distance fallen (\u00bd \u00d7 10 \u00d7 9 = 45 m) \u2014 not the speed. Don't mix up the kinematic equations."}, {"text": "30 m/s", "explanation": "Correct! v = u + at = 0 + 10 \u00d7 3 = 30 m/s. The ball gains 10 m/s of speed every second."}, {"text": "90 m/s", "explanation": "This is 3\u00d7 too large \u2014 a common error. Apply v = gt: 10 \u00d7 3 = 30, not 90."}];
+
+  function toggleHint(){
+    var h = document.getElementById('ap_l1_q07_free_fall-hint');
+    var btn = document.querySelector('#ap_l1_q07_free_fall .hint-btn');
+    var showing = h.style.display === 'block';
+    h.style.display = showing ? 'none' : 'block';
+    btn.textContent = showing ? '💡 Need a hint?' : '💡 Hide hint';
+  }
+  window['ap_l1_q07_free_fall_toggleHint'] = toggleHint;
+
+  window['ap_l1_q07_free_fall_answer'] = function(el, idx){
+    if(el.classList.contains('locked')) return;
+    var btns = document.querySelectorAll('#ap_l1_q07_free_fall-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT_IDX);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT_IDX].classList.add('correct');
+
+    // Show per-option explanations with stagger
+    btns.forEach(function(b, i){
+      setTimeout(function(){
+        var exp = b.querySelector('.opt-explain');
+        if(exp){
+          exp.style.display = 'block';
+          setTimeout(function(){ exp.classList.add('show'); }, 20);
+        }
+      }, i * 80);
+    });
+
+    // Show correct answer reveal only if wrong
+    if(!ok){
+      var reveal = document.getElementById('ap_l1_q07_free_fall-correct-reveal');
+      reveal.style.display = 'block';
+      document.getElementById('ap_l1_q07_free_fall-correct-reveal-text').textContent = OPTS_DATA[CORRECT_IDX].text;
+    }
+
+    // Feedback panel
+    var fb = document.getElementById('ap_l1_q07_free_fall-fb');
+    var fbMain = document.getElementById('ap_l1_q07_free_fall-fb-main');
+    var fbDyk = document.getElementById('ap_l1_q07_free_fall-fb-dyk');
+    fb.style.display = 'block';
+    if(ok){
+      fb.style.background = '#e8f5ee'; fb.style.border = '1px solid #a8d8b8';
+      fbMain.style.color = '#1b4a2a'; fbMain.style.background = '#e8f5ee';
+      fbDyk.style.borderTop = '1px solid #a8d8b8'; fbDyk.style.color = '#1b4a2a'; fbDyk.style.background = '#d8f0e4';
+      fbMain.textContent = '✓ ' + OPTS_DATA[CORRECT_IDX].explanation;
+    } else {
+      fb.style.background = '#fff8f4'; fb.style.border = '1px solid #f0c8a8';
+      fbMain.style.color = '#7a3000'; fbMain.style.background = '#fff8f4';
+      fbDyk.style.borderTop = '1px solid #f0c8a8'; fbDyk.style.color = '#7a3000'; fbDyk.style.background = '#fdeee4';
+      fbMain.textContent = '✗ ' + OPTS_DATA[idx].explanation;
+    }
+
+    // Post message to shell
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+  };
+})();
+</script>
