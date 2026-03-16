@@ -1,0 +1,379 @@
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-jee-q05 ── */
+#tsc-jee-q05{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-jee-q05 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-jee-q05 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+#tsc-jee-q05 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-jee-q05 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-jee-q05 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q05 .level-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q05 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-jee-q05 .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+#tsc-jee-q05 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-jee-q05 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-jee-q05 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-jee-q05 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-jee-q05 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-jee-q05 .opt.locked{cursor:default;transform:none!important}
+#tsc-jee-q05 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+#tsc-jee-q05 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-jee-q05 .answer-main{padding:12px 16px;font:600 15px/1.7 'Nunito',sans-serif}
+#tsc-jee-q05 .answer-trap{padding:11px 16px;font:600 14px/1.6 'Nunito',sans-serif}
+#tsc-jee-q05 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-jee-q05 .correct-line{display:none;margin:0 20px;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-jee-q05 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+#tsc-jee-q05 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-jee-q05 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-jee-q05 .sim-inner{position:relative}
+#tsc-jee-q05 .sim-content{background:#fff;padding:16px}
+#tsc-jee-q05 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-jee-q05 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-jee-q05 .overlay-icon{font-size:28px}
+#tsc-jee-q05 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+#tsc-jee-q05 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-jee-q05 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-jee-q05 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim layout */
+#tsc-jee-q05 .sim-top{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;align-items:start;margin-bottom:12px}
+#tsc-jee-q05 .sim-left{display:flex;flex-direction:column;gap:10px}
+#tsc-jee-q05 .s-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 12px 10px}
+#tsc-jee-q05 .s-label{font:700 10px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5a6e8a;margin-bottom:3px}
+#tsc-jee-q05 .s-value{font:700 22px 'Courier New',monospace;margin-bottom:8px}
+#tsc-jee-q05 .bar-wrap{position:relative;height:20px}
+#tsc-jee-q05 .bar-bg{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:8px;border-radius:4px;background:#d0dae8}
+#tsc-jee-q05 .bar-fill{position:absolute;top:50%;left:0;transform:translateY(-50%);height:8px;border-radius:4px;pointer-events:none;transition:width .08s}
+#tsc-jee-q05 .bar-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.18);pointer-events:none;transition:left .08s}
+#tsc-jee-q05 .range-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0}
+#tsc-jee-q05 .bar-hints{display:flex;justify-content:space-between;margin-top:4px;font:400 10px 'Courier New',monospace;color:#5a6e8a}
+#tsc-jee-q05 .r-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:10px 12px}
+#tsc-jee-q05 .r-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid #e8eaed}
+#tsc-jee-q05 .r-row:last-child{border-bottom:none}
+#tsc-jee-q05 .r-key{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#5a6e8a}
+#tsc-jee-q05 .r-val{font:700 15px 'Courier New',monospace}
+#tsc-jee-q05 .sim-scene{background:#f6f7f9;border-radius:10px;border:1px solid #d0dae8;padding:8px}
+#tsc-jee-q05 canvas#q05-scene{display:block;width:100%;height:220px}
+#tsc-jee-q05 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border:1px solid #d0dae8;border-left:3px solid #0d9488;padding:10px 14px}
+#tsc-jee-q05 .formula-line{font:400 24px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-jee-q05 .formula-line .hi-teal{color:#0d9488;font-weight:700}
+#tsc-jee-q05 .formula-line .hi-orange{color:#e07020;font-weight:700}
+#tsc-jee-q05 .formula-line .hi-red{color:#d94f3d;font-weight:700}
+#tsc-jee-q05 .formula-note{font:600 22px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px;line-height:1.5}
+
+@media(max-width:520px){
+  #tsc-jee-q05 .opts{grid-template-columns:1fr}
+  #tsc-jee-q05 .sim-top{grid-template-columns:1fr}
+  #tsc-jee-q05 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-jee-q05">
+<div class="card">
+
+  <div class="meta">
+    <span class="qlbl">Q5</span>
+    <span class="topic-tag">Electrostatics</span>
+    <span class="level-tag">L1 · Conceptual</span>
+  </div>
+
+  <div class="qwrap">
+    <div class="qtxt">Charges <strong>+4 μC</strong> and <strong>−4 μC</strong> are placed <strong>0.2 m</strong> apart. The electric field at the midpoint between them is directed:</div>
+  </div>
+
+  <div class="opts" id="q05-opts">
+    <button class="opt" data-idx="0" onclick="q05Answer(this)"><span class="opt-lbl">A</span>From negative to positive</button>
+    <button class="opt" data-idx="1" onclick="q05Answer(this)"><span class="opt-lbl">B</span>From positive to negative</button>
+    <button class="opt" data-idx="2" onclick="q05Answer(this)"><span class="opt-lbl">C</span>Zero — the fields cancel</button>
+    <button class="opt" data-idx="3" onclick="q05Answer(this)"><span class="opt-lbl">D</span>Perpendicular to the line joining the charges</button>
+  </div>
+
+  <div class="correct-line" id="q05-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — From positive to negative
+  </div>
+
+  <div class="answer-box" id="q05-answer-box">
+    <div class="answer-main" id="q05-answer-main"></div>
+    <div class="answer-trap" id="q05-answer-trap">
+      <div class="answer-trap-lbl" id="q05-trap-lbl">💡 Don't Fall For This</div>
+      <strong>The cancellation trap (→ Zero):</strong> Equal and opposite charges do NOT cancel the field at the midpoint. Both fields point in the same direction here — away from +q and toward −q. Fields cancel at the midpoint only when both charges have the <em>same sign</em>, because then the fields point in opposite directions.
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Electric Field at Midpoint</div>
+    <div class="sim-inner">
+      <div class="overlay" id="q05-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <div class="sim-top">
+          <div class="sim-left">
+
+            <div class="s-card">
+              <div class="s-label">Charge magnitude |q|</div>
+              <div class="s-value" style="color:#0d9488" id="q05-q-display">4.0 μC</div>
+              <div class="bar-wrap" id="q05-q-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q05-q-fill" style="background:#0d9488"></div>
+                <div class="bar-thumb" id="q05-q-thumb" style="border:2px solid #0d9488"></div>
+                <input class="range-input" type="range" id="q05-q-slider" min="1" max="10" value="4" step="0.5">
+              </div>
+              <div class="bar-hints"><span>1 μC</span><span>10 μC</span></div>
+            </div>
+
+            <div class="s-card">
+              <div class="s-label">Separation d</div>
+              <div class="s-value" style="color:#e07020" id="q05-d-display">0.20 m</div>
+              <div class="bar-wrap" id="q05-d-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q05-d-fill" style="background:#e07020"></div>
+                <div class="bar-thumb" id="q05-d-thumb" style="border:2px solid #e07020"></div>
+                <input class="range-input" type="range" id="q05-d-slider" min="0.1" max="0.5" value="0.2" step="0.02">
+              </div>
+              <div class="bar-hints"><span>0.10 m</span><span>0.50 m</span></div>
+            </div>
+
+            <div class="r-card">
+              <div class="r-row"><span class="r-key">E from +q</span><span class="r-val" style="color:#0d9488" id="q05-r-epos">7.2 MN/C</span></div>
+              <div class="r-row"><span class="r-key">E from −q</span><span class="r-val" style="color:#d94f3d" id="q05-r-eneg">7.2 MN/C</span></div>
+              <div class="r-row"><span class="r-key">E total</span><span class="r-val" style="color:#e07020" id="q05-r-etot">14.4 MN/C →</span></div>
+            </div>
+
+          </div>
+
+          <div class="sim-scene">
+            <canvas id="q05-scene"></canvas>
+          </div>
+        </div>
+
+        <div class="sim-formula">
+          <div class="formula-line">E = kq / r²  &nbsp;|&nbsp;  r = d/2</div>
+          <div class="formula-line">E<sub>+</sub> = E<sub>−</sub> = k × <span class="hi-teal" id="q05-fl-q">4.0×10⁻⁶</span> / <span class="hi-orange" id="q05-fl-r">0.10</span>²</div>
+          <div class="formula-note">Both point + → − &nbsp;∴&nbsp; E<sub>total</sub> = 2E = <span style="color:#e07020;font-weight:700" id="q05-fl-etot">14.4 MN/C</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/" target="_blank">Explore Course →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var CORRECT=1; // B
+  var mode='study';
+  try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam'; }catch(e){}
+
+  window.q05Answer=function(el){
+    var idx=parseInt(el.dataset.idx);
+    var btns=document.querySelectorAll('#q05-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+    var ok=(idx===CORRECT);
+    el.classList.add(ok?'correct':'wrong');
+    btns[CORRECT].classList.add('correct');
+    if(mode==='exam'){ window.parent.postMessage({type:'tsc-answer',correct:ok},'*'); setTimeout(reportHeight,80); return; }
+    if(!ok) document.getElementById('q05-correct-line').style.display='block';
+    var box=document.getElementById('q05-answer-box'),main=document.getElementById('q05-answer-main'),
+        trap=document.getElementById('q05-answer-trap'),trapLbl=document.getElementById('q05-trap-lbl');
+    box.style.display='block';
+    if(ok){
+      box.style.background='#e8f5ee'; box.style.border='1px solid #a8d8b8';
+      main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
+      trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
+      trapLbl.style.color='#1b6b3a';
+      main.innerHTML='✓ <strong>Correct!</strong> At the midpoint, the field due to +q points <em>away</em> from +q (rightward), and the field due to −q points <em>toward</em> −q (also rightward). Both contributions point in the same direction — <strong>from positive to negative</strong> — so they add constructively. E<sub>total</sub> = 2E = 2 × kq/r².';
+    } else {
+      box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
+      main.style.color='#7a3000'; main.style.background='#fff8f4';
+      trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
+      trapLbl.style.color='#c85a00';
+      main.innerHTML='✗ <strong>Not quite.</strong> At the midpoint: E from +q points away from +q (→), and E from −q points toward −q (also →). Both point in the same direction — <strong>from + to −</strong>. The correct answer is B.';
+    }
+    var ov=document.getElementById('q05-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display='none'; },520);
+    window.parent.postMessage({type:'tsc-answer',correct:ok},'*');
+    setTimeout(reportHeight,420);
+  };
+
+  function reportHeight(){ var h=document.getElementById('tsc-jee-q05').scrollHeight; window.parent.postMessage({type:'tsc-height',height:h},'*'); }
+  window.addEventListener('message',function(e){ if(e.data&&e.data.type==='tsc-get-height') reportHeight(); });
+  window.addEventListener('load',function(){ setTimeout(reportHeight,80); });
+  if(window.MutationObserver){ var mo=new MutationObserver(function(){ setTimeout(reportHeight,120); }); window.addEventListener('load',function(){ mo.observe(document.body,{childList:true,subtree:true,attributes:true}); }); }
+
+  // SIMULATION
+  var C={navy:'#1b2a4a',teal:'#0d9488',orange:'#e07020',yellow:'#f7c948',red:'#d94f3d',muted:'#5a6e8a',border:'#d0dae8'};
+  var k=8.99e9, simQ=4e-6, simD=0.2, fieldOffset=0;
+
+  var cv=document.getElementById('q05-scene'), ctx=cv.getContext('2d');
+
+  function resizeCanvas(){
+    var dpr=window.devicePixelRatio||1;
+    cv.width=cv.offsetWidth*dpr; cv.height=220*dpr; cv.style.height='220px';
+    ctx.scale(dpr,dpr);
+  }
+  new ResizeObserver(function(){ resizeCanvas(); }).observe(cv);
+
+  function getW(){ return cv.offsetWidth||300; }
+  function getH(){ return 220; }
+
+  function compute(){
+    var r=simD/2, E=k*simQ/(r*r);
+    return {E:E, Etot:2*E, r:r};
+  }
+
+  function fmt(E){
+    if(E>=1e6) return (E/1e6).toFixed(1)+' MN/C';
+    if(E>=1e3) return (E/1e3).toFixed(1)+' kN/C';
+    return E.toFixed(0)+' N/C';
+  }
+
+  function drawArrow(x1,y1,x2,y2,color,lw){
+    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy); if(len<4) return;
+    var ux=dx/len,uy=dy/len,hL=10;
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-ux*hL-uy*hL*.45,y2-uy*hL+ux*hL*.45);
+    ctx.lineTo(x2-ux*hL+uy*hL*.45,y2-uy*hL-ux*hL*.45);
+    ctx.closePath(); ctx.fill();
+  }
+
+  function draw(){
+    var W=getW(), H=getH();
+    ctx.clearRect(0,0,W,H);
+    var cy=H*0.5, chargeR=22;
+    var minSep=W*0.55, maxSep=W*0.88;
+    var sep=minSep+((simD-0.1)/0.4)*(maxSep-minSep);
+    var posX=W/2-sep/2, negX=W/2+sep/2, midX=W/2;
+
+    // animated field lines
+    var nLines=5, spread=H*0.28;
+    for(var i=0;i<nLines;i++){
+      var t=(i/(nLines-1))-0.5;
+      var yOff=t*spread;
+      var startX=posX+chargeR, endX=negX-chargeR;
+      var cpY=cy+yOff+(t*Math.abs(t)*H*0.35);
+      ctx.strokeStyle=i===Math.floor(nLines/2)?C.orange:'rgba(224,112,32,0.35)';
+      ctx.lineWidth=i===Math.floor(nLines/2)?2:1;
+      ctx.setLineDash([8,6]); ctx.lineDashOffset=-fieldOffset;
+      ctx.beginPath(); ctx.moveTo(startX,cy+yOff); ctx.quadraticCurveTo(midX,cpY,endX,cy+yOff); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // midpoint guide
+    ctx.strokeStyle=C.border; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(midX,cy-H*0.38); ctx.lineTo(midX,cy+H*0.38); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // E vectors at midpoint
+    var r=compute();
+    var maxE=k*10e-6/(0.05*0.05), scale=72/maxE;
+    var arrowLen=Math.min(r.E*scale,68);
+
+    drawArrow(midX-10,cy-18,midX-10+arrowLen,cy-18,C.teal,3);
+    ctx.fillStyle=C.teal; ctx.font='bold 13px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('E₊',midX-10+arrowLen/2,cy-22);
+
+    drawArrow(midX+10,cy+18,midX+10+arrowLen,cy+18,C.red,3);
+    ctx.fillStyle=C.red; ctx.font='bold 13px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText('E₋',midX+10+arrowLen/2,cy+22);
+
+    var netLen=Math.min(r.Etot*scale,96);
+    drawArrow(midX,cy,midX+netLen,cy,C.orange,4);
+    ctx.fillStyle=C.orange; ctx.font='bold 13px "Nunito",sans-serif';
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText('E_net',midX+netLen+5,cy);
+
+    // midpoint dot
+    ctx.fillStyle=C.navy; ctx.beginPath(); ctx.arc(midX,cy,4,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=C.muted; ctx.font='11px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillText('midpoint',midX,cy-H*0.38);
+
+    // +q circle
+    ctx.fillStyle=C.teal; ctx.beginPath(); ctx.arc(posX,cy,chargeR,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#0a7a70'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(posX,cy,chargeR,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.font='bold 15px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('+',posX,cy+1);
+
+    // -q circle
+    ctx.fillStyle=C.red; ctx.beginPath(); ctx.arc(negX,cy,chargeR,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#a03020'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(negX,cy,chargeR,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.font='bold 18px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('−',negX,cy+1);
+
+    // labels below charges
+    ctx.font='bold 12px "Courier New",monospace'; ctx.textBaseline='top';
+    ctx.fillStyle=C.teal; ctx.textAlign='center';
+    ctx.fillText('+'+(simQ/1e-6).toFixed(1)+' μC',posX,cy+chargeR+6);
+    ctx.fillStyle=C.red;
+    ctx.fillText('−'+(simQ/1e-6).toFixed(1)+' μC',negX,cy+chargeR+6);
+
+    // separation brace
+    var braceY=cy-H*0.3;
+    ctx.strokeStyle=C.navy; ctx.lineWidth=1; ctx.globalAlpha=0.3;
+    ctx.beginPath(); ctx.moveTo(posX,braceY-4); ctx.lineTo(posX,braceY); ctx.lineTo(negX,braceY); ctx.lineTo(negX,braceY-4); ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.fillStyle=C.navy; ctx.font='11px "Courier New",monospace';
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('d = '+simD.toFixed(2)+' m',midX,braceY-2);
+    ctx.textBaseline='alphabetic';
+  }
+
+  function updateUI(){
+    var r=compute();
+    document.getElementById('q05-r-epos').textContent=fmt(r.E);
+    document.getElementById('q05-r-eneg').textContent=fmt(r.E);
+    document.getElementById('q05-r-etot').textContent=fmt(r.Etot)+' →';
+    document.getElementById('q05-fl-q').textContent=(simQ/1e-6).toFixed(1)+'×10⁻⁶';
+    document.getElementById('q05-fl-r').textContent=(simD/2).toFixed(2);
+    document.getElementById('q05-fl-etot').textContent=fmt(r.Etot);
+  }
+
+  function updateBar(wId,fId,tId,val,min,max){
+    var w=document.getElementById(wId),f=document.getElementById(fId),t=document.getElementById(tId);
+    var W=w.offsetWidth,R=10,px=R+((val-min)/(max-min))*(W-2*R);
+    f.style.width=px+'px'; t.style.left=px+'px';
+  }
+
+  document.getElementById('q05-q-slider').addEventListener('input',function(){
+    simQ=parseFloat(this.value)*1e-6;
+    document.getElementById('q05-q-display').textContent=(simQ/1e-6).toFixed(1)+' μC';
+    updateBar('q05-q-wrap','q05-q-fill','q05-q-thumb',parseFloat(this.value),1,10);
+    updateUI();
+  });
+  document.getElementById('q05-d-slider').addEventListener('input',function(){
+    simD=parseFloat(this.value);
+    document.getElementById('q05-d-display').textContent=simD.toFixed(2)+' m';
+    updateBar('q05-d-wrap','q05-d-fill','q05-d-thumb',simD,0.1,0.5);
+    updateUI();
+  });
+
+  var prev=null;
+  function loop(ts){
+    var dt=prev?Math.min((ts-prev)/1000,0.05):0.016; prev=ts;
+    fieldOffset=(fieldOffset+dt*28)%28;
+    draw(); updateUI();
+    requestAnimationFrame(loop);
+  }
+
+  updateBar('q05-q-wrap','q05-q-fill','q05-q-thumb',4,1,10);
+  updateBar('q05-d-wrap','q05-d-fill','q05-d-thumb',0.2,0.1,0.5);
+  updateUI();
+  setTimeout(function(){ resizeCanvas(); requestAnimationFrame(loop); },150);
+})();
+</script>
