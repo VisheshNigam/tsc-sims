@@ -666,12 +666,44 @@ var BASE = 'https://visheshnigam.github.io/tsc-sims/';
 
 var QUESTIONS = {
   jee: [
-    { id:'jee-l1-q01', file:'jee-l1-q01-constant-velocity.html', topic:'Kinematics — Velocity & Acceleration' },
-    { id:'jee-l2-q02', file:'jee-l2-q02-friction-block.html',    topic:'Laws of Motion — Friction' },
-    // Add more questions here as you build them
+    { id:'jee-l1-q01', file:'jee-l1-q01-constant-velocity.html' },
+    { id:'jee-l2-q02', file:'jee-l2-q02-friction-block.html'    },
+    { id:'jee-l3-q03', file:'jee-l3-q03-vertical-circle.html'   },
+    { id:'jee-q04',    file:'jee-q04.html' },
+    { id:'jee-q05',    file:'jee-q05.html' },
+    { id:'jee-q06',    file:'jee-q06.html' },
+    { id:'jee-q07',    file:'jee-q07.html' },
+    { id:'jee-q08',    file:'jee-q08.html' },
+    { id:'jee-q09',    file:'jee-q09.html' },
+    { id:'jee-q10',    file:'jee-q10.html' },
+    { id:'jee-q11',    file:'jee-q11.html' },
+    { id:'jee-q12',    file:'jee-q12.html' },
+    { id:'jee-q13',    file:'jee-q13.html' },
+    { id:'jee-q14',    file:'jee-q14.html' },
+    { id:'jee-q15',    file:'jee-q15.html' },
+    { id:'jee-q16',    file:'jee-q16.html' },
+    { id:'jee-q17',    file:'jee-q17.html' },
+    { id:'jee-q18',    file:'jee-q18.html' },
+    { id:'jee-q19',    file:'jee-q19.html' },
+    { id:'jee-q20',    file:'jee-q20.html' },
   ],
   ap: []
 };
+
+// ── Random picker: select 10 from available bank, preserve original order ──
+function buildActiveBank(stream){
+  var pool = QUESTIONS[stream];
+  var indices = [];
+  for(var i = 0; i < pool.length; i++) indices.push(i);
+  // Fisher-Yates shuffle
+  for(var i = indices.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
+  }
+  // Pick first 10, sort back to restore topic order
+  var picked = indices.slice(0, 10).sort(function(a, b){ return a - b; });
+  return picked.map(function(i){ return pool[i]; });
+}
 
 var activeBank = [];
 
@@ -742,8 +774,8 @@ window.startTest = function(){
   state.name = nameInput.value.trim();
   if(!state.name || !state.mode) return;
 
-  // Build bank — use however many questions are available (up to 10)
-  activeBank = QUESTIONS[state.stream].slice(0, 10);
+  // Build bank — randomly pick 10 from full pool, preserve topic order
+  activeBank = buildActiveBank(state.stream);
   state.answers   = new Array(activeBank.length).fill(null);
   state.qIndex    = 0;
   state.score     = 0;
