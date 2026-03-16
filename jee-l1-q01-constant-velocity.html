@@ -286,15 +286,14 @@
 
   var car   = document.getElementById('q01-car');
   var track = document.getElementById('q01-track');
-  var carPos = 0, carDir = 1;
+  var carPos = 0;
 
   function stepCar(dt){
     if(!running) return;
     var speed = vel / 10;
-    carPos += carDir * speed * dt * 90;
-    var maxX = track.offsetWidth - 55;
-    if(carPos > maxX){ carPos = maxX; carDir = -1; car.style.transform = 'translateY(-62%)'; }
-    if(carPos < 0)   { carPos = 0;    carDir =  1; car.style.transform = 'translateY(-62%) scaleX(-1)'; }
+    carPos += speed * dt * 110; // always moves right
+    var maxX = track.offsetWidth - 52;
+    if(carPos > maxX){ carPos = 0; } // wrap back to left edge
     car.style.left = carPos + 'px';
   }
 
@@ -338,7 +337,7 @@
 
   function drawGraph(ctx, W, H, data, lineColor, yMin, yMax, yTicks, yLabel){
     ctx.clearRect(0, 0, W, H);
-    var PL=38, PR=8, PT=10, PB=20;
+    var PL=50, PR=10, PT=14, PB=28;
     var gW=W-PL-PR, gH=H-PT-PB;
     var toX = function(t){ return PL + (t/20)*gW; };
     var toY = function(yv){ return PT + gH - (yv-yMin)/(yMax-yMin)*gH; };
@@ -350,27 +349,27 @@
       ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(W-PR,y); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = C.muted;
-      ctx.font = '10px "Courier New",monospace';
+      ctx.font = '13px "Courier New",monospace';
       ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-      ctx.fillText(tick, PL-4, y);
+      ctx.fillText(tick, PL-5, y);
     });
 
-    ctx.strokeStyle = C.navy; ctx.lineWidth = 1;
-    ctx.globalAlpha = 0.2;
+    ctx.strokeStyle = C.navy; ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.25;
     ctx.beginPath(); ctx.moveTo(PL,PT); ctx.lineTo(PL,PT+gH+2); ctx.stroke();
     var zY = toY(0);
-    ctx.beginPath(); ctx.moveTo(PL-3,zY); ctx.lineTo(W-PR,zY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PL-4,zY); ctx.lineTo(W-PR,zY); ctx.stroke();
     ctx.globalAlpha = 1;
 
     ctx.save();
-    ctx.translate(10, PT+gH/2); ctx.rotate(-Math.PI/2);
-    ctx.fillStyle = C.muted; ctx.font = '10px "Nunito",sans-serif';
+    ctx.translate(11, PT+gH/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = C.muted; ctx.font = '13px "Nunito",sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.fillText(yLabel, 0, 0); ctx.restore();
 
-    ctx.fillStyle = C.muted; ctx.font = '10px "Nunito",sans-serif';
+    ctx.fillStyle = C.muted; ctx.font = '13px "Nunito",sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-    ctx.fillText('t (s)', PL+gW/2, PT+gH+5);
+    ctx.fillText('t (s)', PL+gW/2, PT+gH+6);
 
     if(data.length > 1){
       ctx.strokeStyle = lineColor; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
