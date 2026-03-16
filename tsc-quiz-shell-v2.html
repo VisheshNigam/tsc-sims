@@ -74,7 +74,7 @@ body{
 .brand-name{font:800 14px 'Nunito',sans-serif;color:#fff;letter-spacing:.01em}
 .brand-tag{font:600 10px 'Nunito',sans-serif;color:rgba(255,255,255,0.55);letter-spacing:.06em;text-transform:uppercase}
 .hd-center{position:absolute;left:50%;transform:translateX(-50%);z-index:1}
-.hd-title{font:800 14px 'Nunito',sans-serif;color:#fff;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.hd-title{font:800 17.5px 'Nunito',sans-serif;color:#fff;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .hd-right{display:flex;align-items:center;gap:8px;position:relative;z-index:1;flex-shrink:0}
 .timer-display{
   font:800 18px 'Courier New',monospace;
@@ -107,8 +107,8 @@ body{
    SCREEN 1 — STREAM SELECTOR
 ════════════════════════════════ */
 .selector-body{padding:32px 28px 28px}
-.selector-title{font:900 24px 'Nunito',sans-serif;color:var(--navy);margin-bottom:6px}
-.selector-sub{font:600 14px 'Nunito',sans-serif;color:var(--text-soft);margin-bottom:28px}
+.selector-title{font:700 26px 'Nunito',sans-serif;color:var(--navy);margin-bottom:8px;line-height:1.2}
+.selector-sub{font:400 16px 'Nunito',sans-serif;color:var(--text-soft);margin-bottom:28px}
 .selector-section-label{font:700 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--text-soft);margin-bottom:10px}
 .stream-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
 .sel-card{
@@ -118,13 +118,13 @@ body{
 .sel-card:hover:not(.disabled){border-color:var(--navy);background:#eef0f5;transform:translateY(-2px)}
 .sel-card.selected{border-color:var(--teal);background:rgba(13,148,136,0.06)}
 .sel-card.disabled{opacity:.45;cursor:not-allowed}
-.sel-card-icon{font-size:26px;margin-bottom:10px}
-.sel-card-title{font:800 16px 'Nunito',sans-serif;color:var(--navy);margin-bottom:3px}
-.sel-card-desc{font:600 12px 'Nunito',sans-serif;color:var(--text-soft);line-height:1.4}
+.sel-card-region{font:500 14px 'Nunito',sans-serif;color:#8090a8;margin-bottom:6px;letter-spacing:.01em}
+.sel-card-title{font:800 19px 'Nunito',sans-serif;color:var(--navy);margin-bottom:4px}
+.sel-card-desc{font:400 14px 'Nunito',sans-serif;color:var(--text-soft);line-height:1.4}
 .coming-soon-tag{
-  display:inline-block;margin-top:6px;
-  font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;
-  color:#b0b8c8;background:#e8eaed;border-radius:20px;padding:2px 8px;
+  display:inline-block;margin-top:8px;
+  font:700 12px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;
+  color:#b0b8c8;background:#e8eaed;border-radius:20px;padding:3px 10px;
 }
 .btn-primary{
   width:100%;padding:14px;
@@ -136,6 +136,17 @@ body{
 }
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(27,42,74,0.25)}
 .btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+/* Selector screen start button — teal accent */
+.btn-selector-start{
+  width:100%;padding:16px;
+  background:#0d9488;
+  color:#fff;border:none;border-radius:10px;
+  font:800 17px 'Nunito',sans-serif;
+  text-transform:uppercase;letter-spacing:.08em;
+  cursor:pointer;transition:all .2s;margin-top:4px;
+}
+.btn-selector-start:hover{background:#0a7a70;transform:translateY(-1px);box-shadow:0 4px 16px rgba(13,148,136,0.35)}
+.btn-selector-start:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
 
 /* ════════════════════════════════
    SCREEN 2 — JEE START
@@ -402,6 +413,8 @@ body{
   .score-stats-grid{grid-template-columns:repeat(2,1fr)}
   .exam-info-row{gap:7px}
   .q-nav-bar{flex-wrap:wrap}
+  .selector-title{font-size:22px}
+  .btn-selector-start{font-size:16px;padding:14px}
 }
 </style>
 </head>
@@ -415,10 +428,8 @@ body{
   <!-- HEADER -->
   <div class="tsc-header">
     <div class="hd-left">
-      <div class="sc-logo">SC</div>
       <div class="brand-wrap">
-        <div class="brand-name">The Science Cube</div>
-        <div class="brand-tag">Think. Visualize. Solve.</div>
+        <img src="https://visheshnigam.github.io/tsc-sims/mascot.png" style="height:38px;width:38px;border-radius:8px;object-fit:cover;flex-shrink:0" alt="mascot">
       </div>
     </div>
     <div class="hd-center">
@@ -435,23 +446,22 @@ body{
   ══════════════════════════════ -->
   <div class="screen active" id="screen-selector">
     <div class="selector-body">
-      <div class="selector-title">Choose Your Exam</div>
-      <div class="selector-sub">Select a stream to begin your MCQ Challenge</div>
-      <div class="selector-section-label">📚 Exam Stream</div>
+      <div class="selector-title">Ready for the 10-Question Challenge?</div>
+      <div class="selector-sub">Select an exam to start your sprint.</div>
       <div class="stream-grid">
         <div class="sel-card" onclick="selectStream('jee')" id="card-jee">
-          <div class="sel-card-icon">🇮🇳</div>
+          <div class="sel-card-region">🇮🇳 IN</div>
           <div class="sel-card-title">IIT JEE Physics</div>
           <div class="sel-card-desc">Calculus-based · Grade 11–12 · JEE Main style</div>
         </div>
         <div class="sel-card disabled" id="card-ap">
-          <div class="sel-card-icon">🇺🇸</div>
+          <div class="sel-card-region">🇺🇸 US</div>
           <div class="sel-card-title">AP Physics 1</div>
           <div class="sel-card-desc">Algebra-based · College Board</div>
-          <div class="coming-soon-tag">Coming Soon</div>
+          <div class="coming-soon-tag">In the Works</div>
         </div>
       </div>
-      <button class="btn-primary" id="btn-to-start" onclick="goToStart()" disabled>Continue →</button>
+      <button class="btn-selector-start" id="btn-to-start" onclick="goToStart()" disabled>Start Challenge →</button>
     </div>
   </div>
 
