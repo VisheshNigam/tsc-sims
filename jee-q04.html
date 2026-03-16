@@ -5,18 +5,12 @@
 #tsc-jee-q04{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
 #tsc-jee-q04 *{box-sizing:border-box;margin:0;padding:0}
 #tsc-jee-q04 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
-
-/* Meta */
 #tsc-jee-q04 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
 #tsc-jee-q04 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
 #tsc-jee-q04 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
 #tsc-jee-q04 .level-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
-
-/* Question */
 #tsc-jee-q04 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
 #tsc-jee-q04 .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
-
-/* Options */
 #tsc-jee-q04 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #tsc-jee-q04 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
 #tsc-jee-q04 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
@@ -24,16 +18,12 @@
 #tsc-jee-q04 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
 #tsc-jee-q04 .opt.locked{cursor:default;transform:none!important}
 #tsc-jee-q04 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
-
-/* Answer feedback */
 #tsc-jee-q04 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
 #tsc-jee-q04 .answer-main{padding:12px 16px;font:600 15px/1.7 'Nunito',sans-serif}
 #tsc-jee-q04 .answer-trap{padding:11px 16px;font:600 14px/1.6 'Nunito',sans-serif}
 #tsc-jee-q04 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 #tsc-jee-q04 .correct-line{display:none;margin:0 20px;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
 #tsc-jee-q04 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
-
-/* Simulation wrapper */
 #tsc-jee-q04 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
 #tsc-jee-q04 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
 #tsc-jee-q04 .sim-inner{position:relative}
@@ -42,14 +32,12 @@
 #tsc-jee-q04 .overlay.hidden{opacity:0;pointer-events:none}
 #tsc-jee-q04 .overlay-icon{font-size:28px}
 #tsc-jee-q04 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
-
-/* Footer */
 #tsc-jee-q04 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 #tsc-jee-q04 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
 #tsc-jee-q04 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
 
-/* ── Sim-specific styles ── */
-#tsc-jee-q04 .sim-layout{display:grid;grid-template-columns:1fr 1.5fr;gap:12px;align-items:start}
+/* Sim layout */
+#tsc-jee-q04 .sim-top{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;align-items:start;margin-bottom:12px}
 #tsc-jee-q04 .sim-left{display:flex;flex-direction:column;gap:10px}
 #tsc-jee-q04 .s-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 12px 10px}
 #tsc-jee-q04 .s-label{font:700 10px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5a6e8a;margin-bottom:3px}
@@ -65,19 +53,19 @@
 #tsc-jee-q04 .r-row:last-child{border-bottom:none}
 #tsc-jee-q04 .r-key{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#5a6e8a}
 #tsc-jee-q04 .r-val{font:700 16px 'Courier New',monospace}
+#tsc-jee-q04 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:7px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;margin-top:8px;width:100%;letter-spacing:.04em;transition:background .15s}
+#tsc-jee-q04 .sim-btn:hover{background:#253d6a}
+#tsc-jee-q04 .sim-scene{background:#f6f7f9;border-radius:10px;border:1px solid #d0dae8;padding:8px}
+#tsc-jee-q04 canvas#q04-scene{display:block;width:100%;height:200px}
 #tsc-jee-q04 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border:1px solid #d0dae8;border-left:3px solid #0d9488;padding:10px 14px}
 #tsc-jee-q04 .formula-line{font:400 24px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
 #tsc-jee-q04 .formula-line .hi-teal{color:#0d9488;font-weight:700}
 #tsc-jee-q04 .formula-line .hi-orange{color:#e07020;font-weight:700}
 #tsc-jee-q04 .formula-note{font:600 22px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px;line-height:1.5}
-#tsc-jee-q04 .sim-scene{background:#f6f7f9;border-radius:10px;border:1px solid #d0dae8;padding:8px}
-#tsc-jee-q04 canvas#q04-scene{display:block;width:100%;height:200px}
-#tsc-jee-q04 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:7px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;margin-top:8px;width:100%;letter-spacing:.04em;transition:background .15s}
-#tsc-jee-q04 .sim-btn:hover{background:#253d6a}
 
 @media(max-width:520px){
   #tsc-jee-q04 .opts{grid-template-columns:1fr}
-  #tsc-jee-q04 .sim-layout{grid-template-columns:1fr}
+  #tsc-jee-q04 .sim-top{grid-template-columns:1fr}
   #tsc-jee-q04 .qtxt{font-size:16px}
 }
 </style>
@@ -85,19 +73,16 @@
 <div id="tsc-jee-q04">
 <div class="card">
 
-  <!-- Meta -->
   <div class="meta">
     <span class="qlbl">Q4</span>
     <span class="topic-tag">Momentum &amp; Collisions</span>
     <span class="level-tag">L1 · Numerical</span>
   </div>
 
-  <!-- Question -->
   <div class="qwrap">
     <div class="qtxt">Two bodies of <strong>3 kg</strong> each collide <strong>perfectly inelastically</strong>. One moves at <strong>6 m/s</strong>, the other is at rest. The final velocity is:</div>
   </div>
 
-  <!-- Options -->
   <div class="opts" id="q04-opts">
     <button class="opt" data-idx="0" onclick="q04Answer(this)"><span class="opt-lbl">A</span>6 m/s</button>
     <button class="opt" data-idx="1" onclick="q04Answer(this)"><span class="opt-lbl">B</span>3 m/s</button>
@@ -105,13 +90,11 @@
     <button class="opt" data-idx="3" onclick="q04Answer(this)"><span class="opt-lbl">D</span>1.5 m/s</button>
   </div>
 
-  <!-- Correct answer reveal (wrong only) -->
   <div class="correct-line" id="q04-correct-line">
     <div class="correct-line-lbl">✓ Correct Answer</div>
     B — 3 m/s
   </div>
 
-  <!-- Answer feedback box -->
   <div class="answer-box" id="q04-answer-box">
     <div class="answer-main" id="q04-answer-main"></div>
     <div class="answer-trap" id="q04-answer-trap">
@@ -120,7 +103,6 @@
     </div>
   </div>
 
-  <!-- Simulation -->
   <div class="sim-wrap">
     <div class="sim-label">▶ See the Physics — Perfectly Inelastic Collision</div>
     <div class="sim-inner">
@@ -130,11 +112,9 @@
       </div>
       <div class="sim-content">
 
-        <div class="sim-layout">
-
-          <!-- Left: slider + results + formula -->
+        <!-- Top: left controls | right canvas -->
+        <div class="sim-top">
           <div class="sim-left">
-
             <div class="s-card">
               <div class="s-label">Velocity of m₁ (v₁)</div>
               <div class="s-value" id="q04-v1-display">6.0 m/s</div>
@@ -146,330 +126,208 @@
               </div>
               <div class="bar-hints"><span>1 m/s</span><span>12 m/s</span></div>
             </div>
-
             <div class="r-card">
               <div class="r-row"><span class="r-key">p initial</span><span class="r-val" style="color:#0d9488" id="q04-r-pi">18.0 kg·m/s</span></div>
               <div class="r-row"><span class="r-key">p final</span><span class="r-val" style="color:#0d9488" id="q04-r-pf">18.0 kg·m/s</span></div>
               <div class="r-row"><span class="r-key">v final</span><span class="r-val" style="color:#e07020" id="q04-r-vf">3.0 m/s</span></div>
             </div>
-
-            <div class="sim-formula">
-              <div class="formula-line">m₁v₁ = (m₁+m₂)v<sub>f</sub></div>
-              <div class="formula-line"><span class="hi-teal" id="q04-fl-lhs">18.0</span> = 6 × v<sub>f</sub></div>
-              <div class="formula-note">v<sub>f</sub> = <span id="q04-fl-lhs2">18.0</span>/6 = <span class="hi-orange" id="q04-fl-vf">3.0</span> m/s</div>
-            </div>
-
             <button class="sim-btn" id="q04-go-btn" onclick="q04Launch()">▶ Launch Collision</button>
-
           </div>
 
-          <!-- Right: canvas -->
           <div class="sim-scene">
             <canvas id="q04-scene"></canvas>
           </div>
-
         </div>
 
-      </div><!-- /.sim-content -->
-    </div><!-- /.sim-inner -->
-  </div><!-- /.sim-wrap -->
+        <!-- Formula full-width below -->
+        <div class="sim-formula">
+          <div class="formula-line">m₁v₁ + m₂v₂ = (m₁+m₂)v<sub>f</sub></div>
+          <div class="formula-line"><span class="hi-teal" id="q04-fl-lhs">18.0</span> = 6 × v<sub>f</sub></div>
+          <div class="formula-note">v<sub>f</sub> = <span id="q04-fl-lhs2">18.0</span> / 6 = <span class="hi-orange" id="q04-fl-vf">3.0</span> m/s</div>
+        </div>
 
-  <!-- Footer -->
+      </div>
+    </div>
+  </div>
+
   <div class="ft">
     <div class="ft-url">thesciencecube.com</div>
     <a class="cta" href="https://www.thesciencecube.com/" target="_blank">Explore Course →</a>
   </div>
 
-</div><!-- /.card -->
-</div><!-- /#tsc-jee-q04 -->
+</div>
+</div>
 
 <script>
 (function(){
-  var CORRECT = 1; // B — 3 m/s
+  var CORRECT=1;
+  var mode='study';
+  try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam'; }catch(e){}
 
-  // ── Mode detection ──
-  var mode = 'study';
-  try {
-    var p = new URLSearchParams(window.location.search);
-    if(p.get('mode') === 'exam') mode = 'exam';
-  } catch(e){}
-
-  // ── Answer handler ──
-  window.q04Answer = function(el){
-    var idx = parseInt(el.dataset.idx);
-    var btns = document.querySelectorAll('#q04-opts .opt');
+  window.q04Answer=function(el){
+    var idx=parseInt(el.dataset.idx);
+    var btns=document.querySelectorAll('#q04-opts .opt');
     btns.forEach(function(b){ b.classList.add('locked'); });
-
-    var ok = (idx === CORRECT);
-    el.classList.add(ok ? 'correct' : 'wrong');
+    var ok=(idx===CORRECT);
+    el.classList.add(ok?'correct':'wrong');
     btns[CORRECT].classList.add('correct');
-
-    if(mode === 'exam'){
-      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
-      setTimeout(function(){ reportHeight(); }, 80);
-      return;
-    }
-
-    if(!ok) document.getElementById('q04-correct-line').style.display = 'block';
-
-    var box     = document.getElementById('q04-answer-box');
-    var main    = document.getElementById('q04-answer-main');
-    var trap    = document.getElementById('q04-answer-trap');
-    var trapLbl = document.getElementById('q04-trap-lbl');
-    box.style.display = 'block';
-
+    if(mode==='exam'){ window.parent.postMessage({type:'tsc-answer',correct:ok},'*'); setTimeout(reportHeight,80); return; }
+    if(!ok) document.getElementById('q04-correct-line').style.display='block';
+    var box=document.getElementById('q04-answer-box'),main=document.getElementById('q04-answer-main'),
+        trap=document.getElementById('q04-answer-trap'),trapLbl=document.getElementById('q04-trap-lbl');
+    box.style.display='block';
     if(ok){
-      box.style.background  = '#e8f5ee'; box.style.border = '1px solid #a8d8b8';
-      main.style.color = '#1b4a2a'; main.style.background = '#e8f5ee';
-      trap.style.borderTop = '1px solid #a8d8b8'; trap.style.color = '#1b4a2a'; trap.style.background = '#d8f0e4';
-      trapLbl.style.color = '#1b6b3a';
-      main.innerHTML = '✓ <strong>Correct!</strong> Momentum is conserved: m₁v₁ + m₂v₂ = (m₁+m₂)v<sub>f</sub>. Initial momentum = 3 × 6 + 3 × 0 = <strong>18 kg·m/s</strong>. Combined mass = 6 kg. So v<sub>f</sub> = 18 ÷ 6 = <strong>3 m/s</strong>. In a perfectly inelastic collision the bodies stick together — kinetic energy is not conserved, but momentum always is.';
+      box.style.background='#e8f5ee'; box.style.border='1px solid #a8d8b8';
+      main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
+      trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
+      trapLbl.style.color='#1b6b3a';
+      main.innerHTML='✓ <strong>Correct!</strong> Momentum is conserved: m₁v₁ + m₂v₂ = (m₁+m₂)v<sub>f</sub>. Initial momentum = 3×6 + 3×0 = <strong>18 kg·m/s</strong>. Combined mass = 6 kg. So v<sub>f</sub> = 18 ÷ 6 = <strong>3 m/s</strong>. In a perfectly inelastic collision the bodies stick together — kinetic energy is not conserved, but momentum always is.';
     } else {
-      box.style.background  = '#fff8f4'; box.style.border = '1px solid #f0c8a8';
-      main.style.color = '#7a3000'; main.style.background = '#fff8f4';
-      trap.style.borderTop = '1px solid #f0c8a8'; trap.style.color = '#7a3000'; trap.style.background = '#fdeee4';
-      trapLbl.style.color = '#c85a00';
-      main.innerHTML = '✗ <strong>Not quite.</strong> Use conservation of momentum: (m₁+m₂)v<sub>f</sub> = m₁v₁ → 6 × v<sub>f</sub> = 18 → <strong>v<sub>f</sub> = 3 m/s</strong>. The correct answer is B.';
+      box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
+      main.style.color='#7a3000'; main.style.background='#fff8f4';
+      trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
+      trapLbl.style.color='#c85a00';
+      main.innerHTML='✗ <strong>Not quite.</strong> Use conservation of momentum: (m₁+m₂)v<sub>f</sub> = m₁v₁ → 6 × v<sub>f</sub> = 18 → <strong>v<sub>f</sub> = 3 m/s</strong>. The correct answer is B.';
     }
-
-    var ov = document.getElementById('q04-overlay');
+    var ov=document.getElementById('q04-overlay');
     ov.classList.add('hidden');
-    setTimeout(function(){ ov.style.display = 'none'; }, 520);
-
-    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
-    setTimeout(function(){ reportHeight(); }, 420);
+    setTimeout(function(){ ov.style.display='none'; },520);
+    window.parent.postMessage({type:'tsc-answer',correct:ok},'*');
+    setTimeout(reportHeight,420);
   };
 
-  // ── Height reporter ──
-  function reportHeight(){
-    var h = document.getElementById('tsc-jee-q04').scrollHeight;
-    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
-  }
-  window.addEventListener('message', function(e){
-    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
-  });
-  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
-  if(window.MutationObserver){
-    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
-    window.addEventListener('load', function(){
-      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
-    });
-  }
+  function reportHeight(){ var h=document.getElementById('tsc-jee-q04').scrollHeight; window.parent.postMessage({type:'tsc-height',height:h},'*'); }
+  window.addEventListener('message',function(e){ if(e.data&&e.data.type==='tsc-get-height') reportHeight(); });
+  window.addEventListener('load',function(){ setTimeout(reportHeight,80); });
+  if(window.MutationObserver){ var mo=new MutationObserver(function(){ setTimeout(reportHeight,120); }); window.addEventListener('load',function(){ mo.observe(document.body,{childList:true,subtree:true,attributes:true}); }); }
 
-  // ══════════════════════════════
   // SIMULATION
-  // ══════════════════════════════
-  var C = { navy:'#1b2a4a', teal:'#0d9488', orange:'#e07020', yellow:'#f7c948', muted:'#5a6e8a', border:'#d0dae8' };
-  var M = 3;
-  var simV1 = 6;
-  var phase = 'pre'; // 'pre' | 'collide' | 'post'
-  var x1 = 0, x2 = 0;
-  var vel1 = 0;
-  var flashTimer = 0;
-  var collidedX = 0;
-  var simRunning = false;
-  var BW = 44, BH = 44;
-
-  var cv  = document.getElementById('q04-scene');
-  var ctx = cv.getContext('2d');
+  var C={navy:'#1b2a4a',teal:'#0d9488',orange:'#e07020',yellow:'#f7c948',muted:'#5a6e8a',border:'#d0dae8'};
+  var M=3,simV1=6,phase='pre',x1=0,x2=0,vel1=0,flashTimer=0,collidedX=0,simRunning=false;
+  var BW=44,BH=44,H=200;
+  var cv=document.getElementById('q04-scene'),ctx=cv.getContext('2d'),groundY=H*0.68;
 
   function resizeCanvas(){
-    var dpr = window.devicePixelRatio || 1;
-    cv.width  = cv.offsetWidth * dpr;
-    cv.height = 200 * dpr;
-    cv.style.height = '200px';
-    ctx.scale(dpr, dpr);
-    resetPositions();
+    var dpr=window.devicePixelRatio||1;
+    cv.width=cv.offsetWidth*dpr; cv.height=H*dpr; cv.style.height=H+'px';
+    ctx.scale(dpr,dpr); resetPositions();
   }
-  var ro = new ResizeObserver(function(){ resizeCanvas(); });
-  ro.observe(cv);
-  resizeCanvas();
-
-  function getW(){ return cv.offsetWidth || 300; }
-  var H = 200;
-  var groundY = H * 0.68;
-
-  function compute(){ return { pi: M * simV1, vf: simV1 / 2 }; }
+  new ResizeObserver(function(){ resizeCanvas(); }).observe(cv);
+  function getW(){ return cv.offsetWidth||300; }
+  function compute(){ return {pi:M*simV1,vf:simV1/2}; }
 
   function resetPositions(){
-    var W = getW();
-    x1 = W * 0.12;
-    x2 = W * 0.72;
-    vel1 = simV1 * (W * 0.018);
-    phase = 'pre';
-    flashTimer = 0;
-    simRunning = false;
-    var btn = document.getElementById('q04-go-btn');
-    if(btn){ btn.textContent = '▶ Launch Collision'; btn.onclick = q04Launch; }
+    var W=getW(); x1=W*0.12; x2=W*0.72; vel1=simV1*(W*0.018);
+    phase='pre'; flashTimer=0; simRunning=false;
+    var btn=document.getElementById('q04-go-btn');
+    if(btn){ btn.textContent='▶ Launch Collision'; btn.onclick=q04Launch; }
   }
 
-  function shadeColor(hex, pct){
-    var n = parseInt(hex.slice(1), 16);
-    var r = Math.min(255, Math.max(0, ((n>>16)&0xff) + pct));
-    var g = Math.min(255, Math.max(0, ((n>>8)&0xff)  + pct));
-    var b = Math.min(255, Math.max(0, (n&0xff)        + pct));
-    return '#' + [r,g,b].map(function(v){ return v.toString(16).padStart(2,'0'); }).join('');
+  function shadeColor(hex,pct){
+    var n=parseInt(hex.slice(1),16);
+    return '#'+[((n>>16)&0xff),((n>>8)&0xff),(n&0xff)].map(function(v){ return Math.min(255,Math.max(0,v+pct)).toString(16).padStart(2,'0'); }).join('');
   }
 
-  function drawArrow(x1a, y1a, x2a, y2a, color, lw){
-    var dx = x2a-x1a, dy = y2a-y1a;
-    var len = Math.sqrt(dx*dx+dy*dy);
-    if(len < 4) return;
-    var ux = dx/len, uy = dy/len, hL = 9;
-    ctx.strokeStyle = color; ctx.fillStyle = color;
-    ctx.lineWidth = lw || 2; ctx.lineCap = 'round';
+  function drawArrow(x1a,y1a,x2a,y2a,color,lw){
+    var dx=x2a-x1a,dy=y2a-y1a,len=Math.sqrt(dx*dx+dy*dy); if(len<4) return;
+    var ux=dx/len,uy=dy/len,hL=9;
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw||2; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(x1a,y1a); ctx.lineTo(x2a,y2a); ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x2a, y2a);
-    ctx.lineTo(x2a - ux*hL - uy*hL*.45, y2a - uy*hL + ux*hL*.45);
-    ctx.lineTo(x2a - ux*hL + uy*hL*.45, y2a - uy*hL - ux*hL*.45);
+    ctx.beginPath(); ctx.moveTo(x2a,y2a);
+    ctx.lineTo(x2a-ux*hL-uy*hL*.45,y2a-uy*hL+ux*hL*.45);
+    ctx.lineTo(x2a-ux*hL+uy*hL*.45,y2a-uy*hL-ux*hL*.45);
     ctx.closePath(); ctx.fill();
   }
 
-  function drawBlock(x, color, label, vel, showV){
-    var W = getW();
-    // shadow
-    ctx.fillStyle = 'rgba(27,42,74,0.1)';
-    ctx.beginPath(); ctx.ellipse(x, groundY+3, BW*.45, 4, 0, 0, Math.PI*2); ctx.fill();
-    // block
-    ctx.fillStyle = color;
-    ctx.beginPath(); ctx.roundRect(x-BW/2, groundY-BH, BW, BH, 6); ctx.fill();
-    ctx.strokeStyle = shadeColor(color, -20); ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.roundRect(x-BW/2, groundY-BH, BW, BH, 6); ctx.stroke();
-    // shine
-    ctx.fillStyle = 'rgba(255,255,255,0.2)';
-    ctx.beginPath(); ctx.roundRect(x-BW/2+4, groundY-BH+4, BW-8, 10, 3); ctx.fill();
-    // label
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 13px "Nunito",sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(label, x, groundY - BH/2); ctx.textBaseline = 'alphabetic';
-    // velocity arrow
-    if(showV && Math.abs(vel) > 0.5){
-      var arrowLen = Math.min(Math.abs(vel) * 1.4, 55);
-      var ay = groundY - BH - 10;
-      drawArrow(x, ay, x + arrowLen, ay, C.teal, 2);
-      ctx.fillStyle = C.teal; ctx.font = 'bold 12px "Courier New",monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText((vel / (W * 0.018)).toFixed(1) + ' m/s', x + arrowLen/2, ay - 10);
+  function drawBlock(x,color,label,vel,showV){
+    var W=getW();
+    ctx.fillStyle='rgba(27,42,74,0.1)'; ctx.beginPath(); ctx.ellipse(x,groundY+3,BW*.45,4,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=color; ctx.beginPath(); ctx.roundRect(x-BW/2,groundY-BH,BW,BH,6); ctx.fill();
+    ctx.strokeStyle=shadeColor(color,-20); ctx.lineWidth=1.5; ctx.beginPath(); ctx.roundRect(x-BW/2,groundY-BH,BW,BH,6); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.beginPath(); ctx.roundRect(x-BW/2+4,groundY-BH+4,BW-8,10,3); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font='bold 13px "Nunito",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(label,x,groundY-BH/2); ctx.textBaseline='alphabetic';
+    if(showV&&Math.abs(vel)>0.5){
+      var aLen=Math.min(Math.abs(vel)*1.4,55),ay=groundY-BH-10;
+      drawArrow(x,ay,x+aLen,ay,C.teal,2);
+      ctx.fillStyle=C.teal; ctx.font='bold 12px "Courier New",monospace'; ctx.textAlign='center';
+      ctx.fillText((vel/(W*0.018)).toFixed(1)+' m/s',x+aLen/2,ay-10);
     }
   }
 
   function draw(){
-    var W = getW();
-    ctx.clearRect(0, 0, W, H);
-    // ground
-    ctx.fillStyle = C.navy; ctx.fillRect(0, groundY, W, H - groundY);
-    ctx.fillStyle = 'rgba(255,255,255,0.05)';
-    for(var gx = 8; gx < W; gx += 20){
-      ctx.beginPath(); ctx.arc(gx, groundY+6, 2, 0, Math.PI*2); ctx.fill();
-    }
-    ctx.strokeStyle = C.yellow; ctx.lineWidth = 2; ctx.globalAlpha = 0.3;
-    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(W, groundY); ctx.stroke();
-    ctx.globalAlpha = 1;
-
-    // momentum bar
-    var r = compute();
-    var barX = 8, barY = 12, barH2 = 8, barW = W - 16;
-    var fillW = Math.min((r.pi / (M*12)) * barW, barW);
-    ctx.fillStyle = C.border; ctx.beginPath(); ctx.roundRect(barX,barY,barW,barH2,4); ctx.fill();
-    ctx.fillStyle = C.teal;   ctx.beginPath(); ctx.roundRect(barX,barY,fillW,barH2,4); ctx.fill();
-    ctx.fillStyle = C.navy; ctx.font = 'bold 11px "Courier New",monospace'; ctx.textAlign = 'right';
-    ctx.fillText('p = ' + r.pi.toFixed(1) + ' kg·m/s', W - 8, barY + barH2 + 12);
-
-    if(phase === 'pre'){
-      drawBlock(x1, C.teal,   '3 kg', vel1, true);
-      drawBlock(x2, C.orange, '3 kg', 0,    false);
-      ctx.fillStyle = C.muted; ctx.font = 'bold 12px "Courier New",monospace'; ctx.textAlign = 'center';
-      ctx.fillText('v = 0', x2, groundY - BH - 18);
-
-    } else if(phase === 'collide'){
-      var alpha = flashTimer / 12;
-      ctx.fillStyle = 'rgba(247,201,72,' + (alpha * 0.55) + ')';
-      ctx.beginPath(); ctx.arc(collidedX, groundY - BH/2, BW*1.2, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = C.yellow; ctx.font = 'bold ' + (14 + alpha*6) + 'px "Nunito",sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('COLLISION!', collidedX, groundY - BH - 22);
-      drawBlock(collidedX, C.teal, '6 kg', 0, false);
-
+    var W=getW(),r=compute();
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=C.navy; ctx.fillRect(0,groundY,W,H-groundY);
+    ctx.fillStyle='rgba(255,255,255,0.05)';
+    for(var gx=8;gx<W;gx+=20){ ctx.beginPath(); ctx.arc(gx,groundY+6,2,0,Math.PI*2); ctx.fill(); }
+    ctx.strokeStyle=C.yellow; ctx.lineWidth=2; ctx.globalAlpha=0.3;
+    ctx.beginPath(); ctx.moveTo(0,groundY); ctx.lineTo(W,groundY); ctx.stroke(); ctx.globalAlpha=1;
+    ctx.fillStyle=C.muted; ctx.font='11px "Nunito",sans-serif'; ctx.textAlign='left';
+    ctx.fillText('conservation of momentum →',8,H-6);
+    var barW=W-16,fillW=Math.min((r.pi/(M*12))*barW,barW);
+    ctx.fillStyle=C.border; ctx.beginPath(); ctx.roundRect(8,12,barW,8,4); ctx.fill();
+    ctx.fillStyle=C.teal;   ctx.beginPath(); ctx.roundRect(8,12,fillW,8,4); ctx.fill();
+    ctx.fillStyle=C.navy; ctx.font='bold 11px "Courier New",monospace'; ctx.textAlign='right';
+    ctx.fillText('p = '+r.pi.toFixed(1)+' kg·m/s',W-8,32);
+    if(phase==='pre'){
+      drawBlock(x1,C.teal,'3 kg',vel1,true); drawBlock(x2,C.orange,'3 kg',0,false);
+      ctx.fillStyle=C.muted; ctx.font='bold 12px "Courier New",monospace'; ctx.textAlign='center';
+      ctx.fillText('v = 0',x2,groundY-BH-18);
+    } else if(phase==='collide'){
+      var alpha=flashTimer/12;
+      ctx.fillStyle='rgba(247,201,72,'+(alpha*0.55)+')'; ctx.beginPath(); ctx.arc(collidedX,groundY-BH/2,BW*1.2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=C.yellow; ctx.font='bold '+(14+alpha*6)+'px "Nunito",sans-serif'; ctx.textAlign='center';
+      ctx.fillText('COLLISION!',collidedX,groundY-BH-22);
+      drawBlock(collidedX,C.teal,'6 kg',0,false);
     } else {
-      var vfCanvas = r.vf * (W * 0.018);
-      drawBlock(x1, C.teal, '6 kg', vfCanvas, true);
-      ctx.fillStyle = C.teal; ctx.font = 'bold 12px "Courier New",monospace'; ctx.textAlign = 'center';
-      ctx.fillText('p = ' + r.pi.toFixed(1) + ' kg·m/s', x1, groundY - BH - 34);
+      drawBlock(x1,C.teal,'6 kg',r.vf*(W*0.018),true);
+      ctx.fillStyle=C.teal; ctx.font='bold 12px "Courier New",monospace'; ctx.textAlign='center';
+      ctx.fillText('p = '+r.pi.toFixed(1)+' kg·m/s',x1,groundY-BH-34);
     }
-  }
-
-  var prev = null;
-  function loop(ts){
-    var dt = prev ? Math.min((ts-prev)/1000, 0.05) : 0.016;
-    prev = ts;
-    var W = getW();
-
-    if(phase === 'pre' && simRunning){
-      x1 += vel1 * dt;
-      if(x1 + BW/2 >= x2 - BW/2){
-        collidedX = (x1 + x2) / 2;
-        phase = 'collide'; flashTimer = 12;
-      }
-    } else if(phase === 'collide'){
-      flashTimer -= dt * 18;
-      if(flashTimer <= 0){ phase = 'post'; x1 = collidedX; }
-    } else if(phase === 'post'){
-      var vfC = compute().vf * (W * 0.018);
-      x1 += vfC * dt;
-      if(x1 > W + BW){ resetPositions(); }
-    }
-
-    draw();
-    requestAnimationFrame(loop);
-  }
-
-  window.q04Launch = function(){
-    resetPositions();
-    simRunning = true;
-    var btn = document.getElementById('q04-go-btn');
-    btn.textContent = '↺ Reset';
-    btn.onclick = function(){
-      resetPositions();
-      btn.textContent = '▶ Launch Collision';
-      btn.onclick = q04Launch;
-    };
-  };
-
-  function updateBar(wrapId, fillId, thumbId, val, min, max){
-    var wrap = document.getElementById(wrapId);
-    var fill = document.getElementById(fillId);
-    var thumb = document.getElementById(thumbId);
-    var W = wrap.offsetWidth, R = 10;
-    var pct = (val - min) / (max - min);
-    var px  = R + pct * (W - 2*R);
-    fill.style.width = px + 'px'; thumb.style.left = px + 'px';
   }
 
   function updateFormula(){
-    var r = compute();
-    document.getElementById('q04-r-pi').textContent  = r.pi.toFixed(1) + ' kg·m/s';
-    document.getElementById('q04-r-pf').textContent  = r.pi.toFixed(1) + ' kg·m/s';
-    document.getElementById('q04-r-vf').textContent  = r.vf.toFixed(1) + ' m/s';
-    document.getElementById('q04-fl-lhs').textContent  = r.pi.toFixed(1);
-    document.getElementById('q04-fl-lhs2').textContent = r.pi.toFixed(1);
-    document.getElementById('q04-fl-vf').textContent   = r.vf.toFixed(1);
+    var r=compute();
+    document.getElementById('q04-r-pi').textContent=r.pi.toFixed(1)+' kg·m/s';
+    document.getElementById('q04-r-pf').textContent=r.pi.toFixed(1)+' kg·m/s';
+    document.getElementById('q04-r-vf').textContent=r.vf.toFixed(1)+' m/s';
+    document.getElementById('q04-fl-lhs').textContent=r.pi.toFixed(1);
+    document.getElementById('q04-fl-lhs2').textContent=r.pi.toFixed(1);
+    document.getElementById('q04-fl-vf').textContent=r.vf.toFixed(1);
   }
 
-  document.getElementById('q04-v1-slider').addEventListener('input', function(){
-    simV1 = parseFloat(this.value);
-    document.getElementById('q04-v1-display').textContent = simV1.toFixed(1) + ' m/s';
-    updateBar('q04-v1-wrap','q04-v1-fill','q04-v1-thumb', simV1, 1, 12);
-    resetPositions();
-    updateFormula();
+  function updateBar(wId,fId,tId,val,min,max){
+    var w=document.getElementById(wId),f=document.getElementById(fId),t=document.getElementById(tId);
+    var W=w.offsetWidth,R=10,px=R+((val-min)/(max-min))*(W-2*R);
+    f.style.width=px+'px'; t.style.left=px+'px';
+  }
+
+  document.getElementById('q04-v1-slider').addEventListener('input',function(){
+    simV1=parseFloat(this.value);
+    document.getElementById('q04-v1-display').textContent=simV1.toFixed(1)+' m/s';
+    updateBar('q04-v1-wrap','q04-v1-fill','q04-v1-thumb',simV1,1,12);
+    resetPositions(); updateFormula();
   });
 
-  updateBar('q04-v1-wrap','q04-v1-fill','q04-v1-thumb', simV1, 1, 12);
-  updateFormula();
-  setTimeout(function(){
-    resizeCanvas();
-    requestAnimationFrame(loop);
-  }, 150);
+  var prev=null;
+  function loop(ts){
+    var dt=prev?Math.min((ts-prev)/1000,0.05):0.016; prev=ts; var W=getW();
+    if(phase==='pre'&&simRunning){ x1+=vel1*dt; if(x1+BW/2>=x2-BW/2){ collidedX=(x1+x2)/2; phase='collide'; flashTimer=12; } }
+    else if(phase==='collide'){ flashTimer-=dt*18; if(flashTimer<=0){ phase='post'; x1=collidedX; } }
+    else if(phase==='post'){ x1+=compute().vf*(W*0.018)*dt; if(x1>W+BW) resetPositions(); }
+    draw(); requestAnimationFrame(loop);
+  }
 
+  window.q04Launch=function(){
+    resetPositions(); simRunning=true;
+    var btn=document.getElementById('q04-go-btn');
+    btn.textContent='↺ Reset';
+    btn.onclick=function(){ resetPositions(); btn.textContent='▶ Launch Collision'; btn.onclick=q04Launch; };
+  };
+
+  updateBar('q04-v1-wrap','q04-v1-fill','q04-v1-thumb',simV1,1,12);
+  updateFormula();
+  setTimeout(function(){ resizeCanvas(); requestAnimationFrame(loop); },150);
 })();
 </script>
