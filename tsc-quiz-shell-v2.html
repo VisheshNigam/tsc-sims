@@ -716,7 +716,7 @@ window.goToSelector = function(){
   document.getElementById('btn-to-start').disabled = true;
   document.getElementById('timer-display').style.display = 'none';
   document.getElementById('mode-badge').style.display = 'none';
-  document.getElementById('hd-title').textContent = 'MCQ Challenge';
+  
   document.querySelector('.tsc-header-bar').classList.remove('active');
   showScreen('screen-selector');
 };
@@ -724,7 +724,7 @@ window.goToSelector = function(){
 window.goToStart = function(){
   if(!selectedStream) return;
   state.stream = selectedStream;
-  document.getElementById('hd-title').textContent = 'JEE Main Mock';
+  
   showScreen('screen-start');
 };
 
