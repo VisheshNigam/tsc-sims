@@ -45,37 +45,30 @@ body{
 
 /* ── HEADER ── */
 .tsc-header{
-  padding:14px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:linear-gradient(135deg,#101828 0%,#1a365d 50%,#0d9488 100%);
   position:relative;
   overflow:hidden;
-  min-height:62px;
+  line-height:0;
 }
-.tsc-header::before{
-  content:'';position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60'%3E%3Cpath d='M0 30 Q25 10 50 30 Q75 50 100 30 Q125 10 150 30 Q175 50 200 30' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.5'/%3E%3C/svg%3E");
-  background-size:200px 60px;pointer-events:none;
+.tsc-header-banner{
+  width:100%;
+  display:block;
+  height:auto;
+  max-height:120px;
+  object-fit:cover;
+  object-position:top;
 }
-.hd-left{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
-.sc-logo{
-  width:34px;height:34px;background:var(--yellow);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font:900 11px 'Courier New',monospace;color:var(--navy);letter-spacing:-1px;
-  animation:logoPulse 2.8s ease-in-out infinite;flex-shrink:0;
+.tsc-header-bar{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  padding:6px 14px;
+  background:linear-gradient(135deg,#101828 0%,#1a365d 50%,#0d9488 100%);
 }
-@keyframes logoPulse{
-  0%,100%{box-shadow:0 0 8px rgba(247,201,72,0.3)}
-  50%{box-shadow:0 0 20px rgba(247,201,72,0.65),0 0 35px rgba(247,201,72,0.2)}
-}
-.brand-wrap{display:flex;flex-direction:column;gap:1px}
-.brand-name{font:800 14px 'Nunito',sans-serif;color:#fff;letter-spacing:.01em}
-.brand-tag{font:600 10px 'Nunito',sans-serif;color:rgba(255,255,255,0.55);letter-spacing:.06em;text-transform:uppercase}
-.hd-center{position:absolute;left:50%;transform:translateX(-50%);z-index:1}
-.hd-title{font:800 17.5px 'Nunito',sans-serif;color:#fff;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
-.hd-right{display:flex;align-items:center;gap:8px;position:relative;z-index:1;flex-shrink:0}
+.hd-left{display:none}
+.hd-center{display:none}
+.hd-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.hd-title{display:none}
 .timer-display{
   font:800 18px 'Courier New',monospace;
   color:#fff;
@@ -406,8 +399,7 @@ body{
   body{padding:10px 8px 30px}
   .palette-sidebar{display:none}
   .palette-mobile-row{display:flex}
-  .hd-center{display:none}
-  .brand-tag{display:none}
+  .tsc-header-banner{max-height:72px}
   .start-body,.selector-body,.score-body,.feedback-body{padding:24px 18px 20px}
   .stream-grid,.mode-toggle-grid{grid-template-columns:1fr}
   .score-stats-grid{grid-template-columns:repeat(2,1fr)}
@@ -427,15 +419,10 @@ body{
 
   <!-- HEADER -->
   <div class="tsc-header">
-    <div class="hd-left">
-      <div class="brand-wrap">
-        <img src="https://visheshnigam.github.io/tsc-sims/mascot.png" style="height:38px;width:38px;border-radius:8px;object-fit:cover;flex-shrink:0" alt="mascot">
-      </div>
-    </div>
-    <div class="hd-center">
-      <div class="hd-title" id="hd-title">MCQ Challenge</div>
-    </div>
-    <div class="hd-right">
+    <img class="tsc-header-banner"
+         src="https://visheshnigam.github.io/tsc-sims/Physics_Quiz_JEE.png"
+         alt="MCQ Challenge — The Science Cube">
+    <div class="tsc-header-bar">
       <div class="mode-badge" id="mode-badge" style="display:none"></div>
       <div class="timer-display" id="timer-display" style="display:none">25:00</div>
     </div>
