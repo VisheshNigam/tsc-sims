@@ -110,7 +110,7 @@
     <div class="sim-inner">
       <div class="overlay" id="q09-overlay">
         <div class="overlay-icon">🔒</div>
-        <div class="overlay-txt">Answer to unlock</div>
+        <div class="overlay-txt" id="q09-overlay-txt">Answer to unlock</div>
       </div>
       <div class="sim-content">
 
@@ -177,6 +177,12 @@
   var CORRECT=1; // B
   var mode='study';
   try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam'; }catch(e){}
+
+  // ── Set overlay text based on mode ──
+  window.addEventListener('load',function(){
+    var txt=document.getElementById('q09-overlay-txt');
+    if(txt) txt.textContent=mode==='exam'?'Complete the quiz to unlock':'Answer to unlock';
+  });
 
   window.q09Answer=function(el){
     var idx=parseInt(el.dataset.idx);

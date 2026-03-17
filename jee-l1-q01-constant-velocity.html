@@ -133,7 +133,7 @@
     <div class="sim-inner">
       <div class="overlay" id="q01-overlay">
         <div class="overlay-icon">🔒</div>
-        <div class="overlay-txt">Answer to unlock</div>
+        <div class="overlay-txt" id="q01-overlay-txt">Answer to unlock</div>
       </div>
       <div class="sim-content">
 
@@ -210,6 +210,19 @@
 (function(){
   var CORRECT = 1; // index of correct option (B)
 
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+  } catch(e){}
+
+  // ── Set overlay text based on mode ──
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('q01-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : 'Answer to unlock';
+  });
+
   // ── Answer handler ──
   window.q01Answer = function(el){
     var idx = parseInt(el.dataset.idx);
@@ -220,12 +233,17 @@
     el.classList.add(ok ? 'correct' : 'wrong');
     btns[CORRECT].classList.add('correct');
 
-    // Show correct-answer line only on wrong
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    // Study mode: show full feedback
     if(!ok){
       document.getElementById('q01-correct-line').style.display = 'block';
     }
 
-    // Answer box
     var box   = document.getElementById('q01-answer-box');
     var main  = document.getElementById('q01-answer-main');
     var trap  = document.getElementById('q01-answer-trap');
@@ -258,9 +276,10 @@
     var ov = document.getElementById('q01-overlay');
     ov.classList.add('hidden');
     setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ if(typeof resizeCanvas === 'function') resizeCanvas(); }, 550);
 
-    // postMessage to shell
     window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
   };
 
   // ── Height reporter ──
