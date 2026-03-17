@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Harmonic Motion – The Science Cube</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { background: #111827; margin: 0; padding: 0; }
+
+#shm-wrap {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #f3f4f6;
+  line-height: 1.5;
+  background-color: #111827;
+  background-image:
+    linear-gradient(rgba(17,24,39,0.85), rgba(17,24,39,0.95)),
+    repeating-linear-gradient(45deg, #1f2937 0px, #1f2937 10px, #111827 10px, #111827 20px),
+    repeating-linear-gradient(-45deg, #1f2937 0px, #1f2937 10px, #111827 10px, #111827 20px);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.s-panel {
+  background: rgba(31,41,55,0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid #374151;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 10px 30px rgba(0,0,0,0.5);
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 1000px;
+  overflow: hidden;
+}
+
+/* Header */
+.s-header {
+  background: #0f172a;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #b45309;
+}
+.s-header h1 { font-size: 1.25rem; font-weight: 700; color: #f59e0b; letter-spacing: -0.02em; }
+.s-header p  { color: #94a3b8; font-size: 0.75rem; margin-top: 0.25rem; }
+.s-header a  { color: #fff; font-size: 0.875rem; font-weight: 700; text-decoration: none; }
+.s-header a:hover { color: #f59e0b; }
+
+/* Inner padding */
+.s-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+/* Canvas cards */
+.canvas-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background: #020617;
+  width: 100%;
+}
+.canvas-card.osc   { height: 280px; }
+.canvas-card.graph { height: 240px; }
+
+.canvas-label {
+  position: absolute; top: 8px; left: 12px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; z-index: 10;
+}
+.canvas-label.amber { color: #f59e0b; }
+.canvas-label.slate { color: #94a3b8; }
+
+.time-label {
+  position: absolute; top: 8px; right: 12px;
+  font-size: 0.75rem; font-family: monospace; color: #94a3b8; z-index: 10;
+}
+.time-label span { color: #f59e0b; }
+
+.btn-row {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 20; display: flex; gap: 8px;
+}
+
+.toggles {
+  position: absolute; bottom: 8px; right: 12px; z-index: 20;
+  display: flex; gap: 12px;
+  background: rgba(15,23,42,0.8); padding: 4px 8px;
+  border-radius: 6px; border: 1px solid #334155;
+}
+.toggles label { display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.65rem; font-weight: 700; }
+.toggles label.amber { color: #f59e0b; }
+.toggles label.red   { color: #ef4444; }
+.toggles label.green { color: #22c55e; }
+
+canvas { display: block; width: 100%; height: 100%; }
+
+/* Buttons */
+.mbtn {
+  background: linear-gradient(to bottom, #4b5563, #1f2937);
+  border: 1px solid #374151;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 6px rgba(0,0,0,0.4);
+  color: #f3f4f6;
+  font-weight: 700; text-transform: uppercase; font-size: 0.7rem;
+  letter-spacing: 0.05em; padding: 6px 14px; border-radius: 4px;
+  cursor: pointer; transition: all 0.1s;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.mbtn:hover { background: linear-gradient(to bottom, #6b7280, #374151); color: #f59e0b; }
+.mbtn:active { transform: scale(0.98); }
+.mbtn.wide { min-width: 88px; }
+
+/* Controls rack */
+.rack {
+  background: rgba(30,41,59,0.5); padding: 1rem;
+  border-radius: 0.75rem; border: 1px solid #334155;
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;
+  justify-content: center;
+}
+.param { display: flex; flex-direction: column; gap: 3px; min-width: 80px; }
+.param label { font-size: 0.6rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; }
+.param input {
+  background: #0f172a; border: 1px solid #4b5563; color: #f59e0b;
+  font-family: 'Courier New', monospace; text-align: center; font-weight: 700;
+  padding: 4px; border-radius: 4px; font-size: 0.875rem; width: 100%;
+  transition: border-color 0.2s;
+}
+.param input:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+
+/* Telemetry */
+.telemetry-box {
+  background: rgba(30,41,59,0.3); padding: 1rem;
+  border-radius: 0.75rem; border-top: 1px solid #334155;
+}
+.section-title {
+  font-size: 0.65rem; font-weight: 800; color: #f59e0b;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #334155;
+}
+#telemetry { color: #94a3b8; font-size: 0.75rem; font-family: monospace; line-height: 1.6; }
+.dv { color: #f59e0b; font-weight: 700; }
+
+/* Insights */
+.insights-box {
+  background: rgba(30,41,59,0.3); padding: 1.25rem;
+  border-radius: 0.75rem; border-top: 1px solid #334155;
+}
+.insights-box p { color: #cbd5e1; font-size: 0.875rem; font-family: monospace; line-height: 1.7; margin-bottom: 1rem; }
+.insights-box p:last-child { margin-bottom: 0; }
+.insights-box strong { color: #f59e0b; }
+
+/* Footer */
+.s-footer {
+  background: #0f172a; border-top: 1px solid #1e293b;
+  padding: 6px 1rem; display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.625rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.s-footer span { font-weight: 700; color: #94a3b8; }
+
+@media(max-width: 600px) {
+  .rack { justify-content: flex-start; }
+  .s-header h1 { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="shm-wrap">
+  <div class="s-panel">
+
+    <!-- Header -->
+    <div class="s-header">
+      <div>
+        <h1>Simple Harmonic Motion</h1>
+        <p>Ideally Undamped System Visualization</p>
+      </div>
+      <a href="https://www.thesciencecube.com/" target="_blank">The Science Cube</a>
+    </div>
+
+    <div class="s-body">
+
+      <!-- System View -->
+      <div class="canvas-card osc">
+        <div class="canvas-label amber">System View</div>
+        <div class="time-label">t = <span id="timeDisplay">0.00</span>s</div>
+        <div class="btn-row">
+          <button class="mbtn wide" id="btnStart"><span id="btnStartText">Start</span></button>
+          <button class="mbtn" id="btnStep">Step</button>
+          <button class="mbtn wide" id="btnReset" style="color:#f59e0b">Reset</button>
+        </div>
+        <canvas id="oscCanvas"></canvas>
+      </div>
+
+      <!-- Graph View -->
+      <div class="canvas-card graph">
+        <div class="canvas-label slate">Kinematics Data Plot</div>
+        <div class="toggles">
+          <label class="amber"><input type="checkbox" id="checkX" checked> X</label>
+          <label class="red"><input type="checkbox" id="checkV" checked> V</label>
+          <label class="green"><input type="checkbox" id="checkA" checked> A</label>
+        </div>
+        <canvas id="graphCanvas"></canvas>
+      </div>
+
+      <!-- Controls -->
+      <div class="rack">
+        <div class="param"><label>Amplitude (A)</label><input type="number" id="inputA" min="10" max="150" step="10" value="100"></div>
+        <div class="param"><label>Period (T) s</label><input type="number" id="inputT" min="0.5" max="10" step="0.5" value="4.0"></div>
+        <div class="param"><label>Start Pos (x₀)</label><input type="number" id="inputX0" min="-150" max="150" step="10" value="100"></div>
+        <div class="param"><label>History (s)</label><input type="number" id="inputDuration" min="5" max="60" value="15"></div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="telemetry-box">
+        <div class="section-title">Real-Time Telemetry</div>
+        <div id="telemetry"></div>
+      </div>
+
+      <!-- Insights -->
+      <div class="insights-box">
+        <div class="section-title">Physics Insights</div>
+        <p><strong>Restoring Force:</strong> In this ideal system, the mass is subject to a restoring force F = -kx. This linear relationship ensures the acceleration is always directed towards the equilibrium (x = 0).</p>
+        <p><strong>Phase Relationship:</strong> Observe the graph peaks. Velocity (v) leads displacement (x) by 90° (π/2 rad). Acceleration (a) is 180° out of phase with displacement, reaching its maximum positive value when the mass is at its maximum negative displacement.</p>
+        <p><strong>Conservation of Energy:</strong> Notice how velocity is zero at the extremes (±A) where potential energy is maximum, and velocity is at its peak (vₘₐₓ = Aω) at the center (x = 0) where kinetic energy is maximum.</p>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="s-footer">
+      <p>Calculation: ω = 2π/T | Engine: 60Hz Fixed Step</p>
+      <span>© The Science Cube</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var FIXED_DT = 0.016;
+  var oscCanvas   = document.getElementById('oscCanvas');
+  var graphCanvas = document.getElementById('graphCanvas');
+  var oscCtx      = oscCanvas.getContext('2d');
+  var graphCtx    = graphCanvas.getContext('2d');
+
+  var inputs = {
+    A: document.getElementById('inputA'), T: document.getElementById('inputT'),
+    x0: document.getElementById('inputX0'), dur: document.getElementById('inputDuration'),
+    checkX: document.getElementById('checkX'), checkV: document.getElementById('checkV'),
+    checkA: document.getElementById('checkA')
+  };
+  var btns = {
+    start: document.getElementById('btnStart'), startText: document.getElementById('btnStartText'),
+    step:  document.getElementById('btnStep'),  reset: document.getElementById('btnReset')
+  };
+  var timeDisplay = document.getElementById('timeDisplay');
+  var telemetry   = document.getElementById('telemetry');
+
+  var state = { A:100, T:4.0, x0:100, duration:15, t:0, phi:0, running:false, rafId:null, history:[] };
+
+  function drawMass(ctx, x, y){
+    var size=44;
+    ctx.save(); ctx.translate(x-size/2, y-size/2);
+    var g=ctx.createLinearGradient(0,0,size,size);
+    g.addColorStop(0,'#94a3b8'); g.addColorStop(0.4,'#475569'); g.addColorStop(1,'#0f172a');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(0,0,size,size,6); else ctx.rect(0,0,size,size);
+    ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle='#f59e0b'; ctx.font='bold 10px monospace'; ctx.textAlign='center';
+    ctx.fillText('MASS',size/2,size/2+4);
+    ctx.restore();
+  }
+
+  function drawSpring(ctx, x1, x2, y){
+    var w=x2-x1; if(w<=0) return;
+    var coils=14, r=10, pts=coils*15;
+    ctx.save(); ctx.beginPath(); ctx.lineWidth=3;
+    var g=ctx.createLinearGradient(x1,y-r,x1,y+r);
+    g.addColorStop(0,'#64748b'); g.addColorStop(0.5,'#f1f5f9'); g.addColorStop(1,'#334155');
+    ctx.strokeStyle=g;
+    for(var i=0;i<=pts;i++){
+      var t=i/pts, cx=x1+t*w, cy=y+Math.sin(t*Math.PI*2*coils)*r;
+      i===0 ? ctx.moveTo(cx,cy) : ctx.lineTo(cx,cy);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  function drawSystem(){
+    var w=oscCanvas.width, h=oscCanvas.height, cx=w/2, cy=h/2+20;
+    oscCtx.clearRect(0,0,w,h);
+    oscCtx.setLineDash([5,5]); oscCtx.strokeStyle='#1e293b';
+    oscCtx.beginPath(); oscCtx.moveTo(40,cy); oscCtx.lineTo(w-40,cy); oscCtx.stroke();
+    oscCtx.setLineDash([]);
+    var mark=function(val,lbl){
+      var x=cx+val;
+      oscCtx.fillStyle='#334155'; oscCtx.fillRect(x-1,cy-15,2,30);
+      oscCtx.fillStyle='#94a3b8'; oscCtx.font='10px monospace'; oscCtx.textAlign='center';
+      oscCtx.fillText(lbl,x,cy+30);
+    };
+    mark(0,'EQUILIBRIUM'); mark(-state.A,'-'+state.A); mark(state.A,'+'+state.A);
+    oscCtx.fillStyle='#475569'; oscCtx.fillRect(40,cy-30,8,60);
+    var xv=getPos(state.t), dx=cx+xv;
+    drawSpring(oscCtx,48,dx-22,cy);
+    drawMass(oscCtx,dx,cy);
+  }
+
+  function drawPlot(){
+    var w=graphCanvas.width, h=graphCanvas.height;
+    graphCtx.clearRect(0,0,w,h);
+    var pL=60,pR=20,pT=30,pB=40, gW=w-pL-pR, gH=h-pT-pB, mY=pT+gH/2;
+    graphCtx.strokeStyle='#334155';
+    graphCtx.beginPath();
+    graphCtx.moveTo(pL,pT); graphCtx.lineTo(pL,pT+gH);
+    graphCtx.moveTo(pL,mY); graphCtx.lineTo(pL+gW,mY);
+    graphCtx.stroke();
+    if(state.history.length<2) return;
+    var omega=(2*Math.PI)/state.T, vMax=state.A*omega, aMax=state.A*omega*omega;
+    var curve=function(key,color,maxV){
+      graphCtx.beginPath(); graphCtx.strokeStyle=color; graphCtx.lineWidth=2;
+      for(var i=0;i<state.history.length;i++){
+        var pt=state.history[i];
+        var x=pL+(pt.t/state.duration)*gW;
+        var y=mY-(pt[key]/maxV)*(gH/2*0.85);
+        i===0 ? graphCtx.moveTo(x,y) : graphCtx.lineTo(x,y);
+      }
+      graphCtx.stroke();
+    };
+    if(inputs.checkX.checked) curve('x','#f59e0b',state.A);
+    if(inputs.checkV.checked) curve('v','#ef4444',vMax);
+    if(inputs.checkA.checked) curve('a','#22c55e',aMax);
+    graphCtx.fillStyle='#64748b'; graphCtx.font='9px monospace'; graphCtx.textAlign='right';
+    graphCtx.fillText('+'+state.A,pL-10,mY-(gH/2*0.85));
+    graphCtx.fillText('-'+state.A,pL-10,mY+(gH/2*0.85));
+  }
+
+  function calcPhi(){ var r=Math.max(-1,Math.min(1,state.x0/state.A)); state.phi=Math.acos(r); }
+  function getPos(t){ return state.A*Math.cos((2*Math.PI/state.T)*t+state.phi); }
+  function getK(t){
+    var w=(2*Math.PI)/state.T;
+    return {t:t, x:state.A*Math.cos(w*t+state.phi), v:-state.A*w*Math.sin(w*t+state.phi), a:-state.A*w*w*Math.cos(w*t+state.phi)};
+  }
+
+  function loop(){
+    if(!state.running) return;
+    state.t+=FIXED_DT;
+    if(state.t>=state.duration){ state.t=state.duration; stopSim(); }
+    state.history.push(getK(state.t));
+    refresh();
+    state.rafId=requestAnimationFrame(loop);
+  }
+
+  function refresh(){
+    timeDisplay.textContent=state.t.toFixed(2);
+    var k=getK(state.t), omega=(2*Math.PI)/state.T;
+    telemetry.innerHTML='<span class="dv">POS</span>: '+k.x.toFixed(1)+' u | <span class="dv">VEL</span>: '+k.v.toFixed(1)+' u/s | <span class="dv">ACC</span>: '+k.a.toFixed(1)+' u/s² | <span class="dv">ω</span>: '+omega.toFixed(2)+' rad/s';
+    drawSystem(); drawPlot();
+  }
+
+  function startSim(){ if(state.running){ stopSim(); return; } if(state.t>=state.duration) resetSim(); state.running=true; btns.startText.textContent='Pause'; loop(); }
+  function stopSim(){ state.running=false; cancelAnimationFrame(state.rafId); btns.startText.textContent='Start'; }
+  function resetSim(){
+    stopSim(); state.t=0; state.history=[];
+    state.A=parseInt(inputs.A.value); state.T=parseFloat(inputs.T.value);
+    state.x0=parseInt(inputs.x0.value); state.duration=parseInt(inputs.dur.value);
+    calcPhi(); state.history.push(getK(0)); refresh();
+  }
+
+  function resize(){
+    oscCanvas.width  =oscCanvas.parentElement.clientWidth;
+    oscCanvas.height =oscCanvas.parentElement.clientHeight;
+    graphCanvas.width =graphCanvas.parentElement.clientWidth;
+    graphCanvas.height=graphCanvas.parentElement.clientHeight;
+    refresh();
+  }
+
+  btns.start.onclick=startSim; btns.reset.onclick=resetSim;
+  btns.step.onclick=function(){ stopSim(); state.t=Math.min(state.t+0.1,state.duration); state.history.push(getK(state.t)); refresh(); };
+  [inputs.A,inputs.T,inputs.x0,inputs.dur].forEach(function(el){ el.onchange=resetSim; });
+  [inputs.checkX,inputs.checkV,inputs.checkA].forEach(function(el){ el.onclick=refresh; });
+  window.addEventListener('resize',resize);
+  resize(); resetSim();
+})();
+</script>
+</body>
+</html>
