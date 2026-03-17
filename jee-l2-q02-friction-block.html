@@ -273,6 +273,7 @@
     var ov = document.getElementById('q02-overlay');
     ov.classList.add('hidden');
     setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ if(typeof resizeCanvas==='function') resizeCanvas(); }, 550);
 
     window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
     setTimeout(function(){ reportHeight(); }, 420);
@@ -467,7 +468,10 @@
   // init bars
   updateBar('q02-f-wrap','q02-f-fill','q02-f-thumb', simF, 0, 20);
   updateBar('q02-mu-wrap','q02-mu-fill','q02-mu-thumb', simMu, 0, 0.8);
-  requestAnimationFrame(loop);
+  setTimeout(function(){
+    resizeCanvas();
+    requestAnimationFrame(loop);
+  }, 150);
 
 })();
 </script>

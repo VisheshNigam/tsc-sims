@@ -205,6 +205,7 @@
     var ov=document.getElementById('q08-overlay');
     ov.classList.add('hidden');
     setTimeout(function(){ ov.style.display='none'; },520);
+    setTimeout(function(){ if(typeof resizeCanvas==='function') resizeCanvas(); }, 550);
     window.parent.postMessage({type:'tsc-answer',correct:ok},'*');
     setTimeout(reportHeight,420);
   };
