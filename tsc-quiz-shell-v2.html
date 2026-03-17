@@ -53,17 +53,20 @@ body{
   width:100%;
   display:block;
   height:auto;
-  max-height:120px;
+  max-height:160px;
   object-fit:cover;
   object-position:top;
 }
 .tsc-header-bar{
-  display:flex;
+  display:none;
   align-items:center;
   justify-content:flex-end;
   gap:8px;
   padding:6px 14px;
   background:linear-gradient(135deg,#101828 0%,#1a365d 50%,#0d9488 100%);
+}
+.tsc-header-bar.active{
+  display:flex;
 }
 .hd-left{display:none}
 .hd-center{display:none}
@@ -714,6 +717,7 @@ window.goToSelector = function(){
   document.getElementById('timer-display').style.display = 'none';
   document.getElementById('mode-badge').style.display = 'none';
   document.getElementById('hd-title').textContent = 'MCQ Challenge';
+  document.querySelector('.tsc-header-bar').classList.remove('active');
   showScreen('screen-selector');
 };
 
@@ -765,8 +769,9 @@ window.startTest = function(){
   badge.className   = 'mode-badge ' + state.mode;
   badge.style.display = 'block';
 
-  // Show timer
+  // Show timer bar
   document.getElementById('timer-display').style.display = 'block';
+  document.querySelector('.tsc-header-bar').classList.add('active');
   updateTimerDisplay();
   startTimer();
 
@@ -1023,6 +1028,7 @@ function finishTest(){
   if(marks >= 36) launchConfetti();
   showScreen('screen-score');
   document.getElementById('timer-display').style.display = 'none';
+  document.querySelector('.tsc-header-bar').classList.remove('active');
 }
 
 // ════════════════════════════════
