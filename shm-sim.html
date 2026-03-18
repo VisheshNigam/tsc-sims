@@ -215,7 +215,6 @@ canvas { display: block; width: 100%; height: 100%; }
 
 <script>
 (function(){
-  var FIXED_DT = 0.016;
   var C = { navy:'#1b2a4a', teal:'#0d9488', orange:'#e07020', yellow:'#f7c948', muted:'#5a6e8a', border:'#d0dae8', bg:'#f8f9fb' };
 
   var oscCanvas   = document.getElementById('oscCanvas');
@@ -236,7 +235,7 @@ canvas { display: block; width: 100%; height: 100%; }
   var timeDisplay = document.getElementById('timeDisplay');
   var telemetry   = document.getElementById('telemetry');
 
-  var state = { A:100, T:4.0, x0:100, duration:15, t:0, phi:0, running:false, rafId:null, history:[] };
+  var state = { A:100, T:4.0, x0:100, duration:15, t:0, phi:0, running:false, rafId:null, history:[], wallStart:null, wallOffset:0 };
 
   function drawMass(ctx, x, y){
     var size=44;
@@ -367,13 +366,21 @@ canvas { display: block; width: 100%; height: 100%; }
     return {t:t, x:state.A*Math.cos(w*t+state.phi), v:-state.A*w*Math.sin(w*t+state.phi), a:-state.A*w*w*Math.cos(w*t+state.phi)};
   }
 
-  function loop(){
+  function loop(timestamp){
     if(!state.running) return;
-    state.t+=FIXED_DT;
-    if(state.t>=state.duration){ state.t=state.duration; stopSim(); }
+    if(state.wallStart === null) state.wallStart = timestamp;
+    // Real elapsed time in seconds since start/resume
+    state.t = state.wallOffset + (timestamp - state.wallStart) / 1000;
+    if(state.t >= state.duration){
+      state.t = state.duration;
+      state.history.push(getK(state.t));
+      refresh();
+      stopSim();
+      return;
+    }
     state.history.push(getK(state.t));
     refresh();
-    state.rafId=requestAnimationFrame(loop);
+    state.rafId = requestAnimationFrame(loop);
   }
 
   function refresh(){
@@ -383,13 +390,27 @@ canvas { display: block; width: 100%; height: 100%; }
     drawSystem(); drawPlot();
   }
 
-  function startSim(){ if(state.running){ stopSim(); return; } if(state.t>=state.duration) resetSim(); state.running=true; btns.startText.textContent='⏸ Pause'; loop(); }
-  function stopSim(){ state.running=false; cancelAnimationFrame(state.rafId); btns.startText.textContent='▶ Start'; }
+  function startSim(){
+    if(state.running){ stopSim(); return; }
+    if(state.t >= state.duration) resetSim();
+    state.running = true;
+    state.wallStart = null;          // reset so next rAF sets the anchor
+    state.wallOffset = state.t;      // resume from where we paused
+    btns.startText.textContent = '⏸ Pause';
+    requestAnimationFrame(loop);
+  }
+  function stopSim(){
+    state.running = false;
+    cancelAnimationFrame(state.rafId);
+    state.wallOffset = state.t;   // save position for resume
+    state.wallStart  = null;
+    btns.startText.textContent = '▶ Start';
+  }
   function resetSim(){
     stopSim(); state.t=0; state.history=[];
     state.A=parseInt(inputs.A.value)||100; state.T=parseFloat(inputs.T.value)||4;
     state.x0=parseInt(inputs.x0.value)||100; state.duration=parseInt(inputs.dur.value)||15;
-    calcPhi(); state.history.push(getK(0)); refresh();
+    calcPhi(); state.wallStart=null; state.wallOffset=0; state.history.push(getK(0)); refresh();
   }
 
   function resize(){
