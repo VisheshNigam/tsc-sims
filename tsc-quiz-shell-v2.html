@@ -646,7 +646,8 @@ body{
       </div>
       <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
         <button class="btn-primary" onclick="retakeQuiz()" style="background:linear-gradient(135deg,var(--teal),#06b6d4);flex:1;min-width:140px">Retake Test 🔄</button>
-        <button class="btn-primary" onclick="goToSelector()" style="flex:1;min-width:140px">Change Stream →</button>
+        <button class="btn-primary" id="btn-show-solutions" onclick="showSolutions()" style="flex:1;min-width:140px;display:none">Show Solutions 👁</button>
+        <button class="btn-primary" id="btn-change-stream" onclick="goToSelector()" style="flex:1;min-width:140px">Change Stream →</button>
       </div>
     </div>
     <div class="tsc-footer">
@@ -684,9 +685,9 @@ var BASE = 'https://visheshnigam.github.io/tsc-sims/';
 
 var QUESTIONS = {
   jee: [
-    { id:'jee-l1-q01', file:'jee-l1-q01-constant-velocity.html' },
-    { id:'jee-l2-q02', file:'jee-l2-q02-friction-block.html'    },
-    { id:'jee-l3-q03', file:'jee-l3-q03-vertical-circle.html'   },
+    { id:'jee-q01', file:'jee-q01.html' },
+    { id:'jee-q02', file:'jee-q02.html' },
+    { id:'jee-q03', file:'jee-q03.html' },
     { id:'jee-q04',    file:'jee-q04.html' },
     { id:'jee-q05',    file:'jee-q05.html' },
     { id:'jee-q06',    file:'jee-q06.html' },
@@ -918,11 +919,18 @@ function loadQuestion(idx){
   // Nav buttons
   var isLast = idx === total - 1;
   var answered = state.answers[idx] !== null;
+  var isReview = state.mode === 'review';
 
-  document.getElementById('btn-skip').style.display   = (answered ? 'none' : 'block');
-  document.getElementById('btn-next-q').style.display = (!isLast   ? 'block' : 'none');
-  document.getElementById('btn-submit').style.display = (isLast    ? 'block' : 'none');
-  document.getElementById('btn-next-q').disabled      = (state.mode === 'exam' && !answered);
+  document.getElementById('btn-skip').style.display   = (answered || isReview ? 'none' : 'block');
+  document.getElementById('btn-next-q').style.display = (!isLast ? 'block' : 'none');
+  document.getElementById('btn-submit').style.display = (isLast  ? 'block' : 'none');
+  document.getElementById('btn-next-q').disabled      = (!isReview && state.mode === 'exam' && !answered);
+
+  // In review mode, submit button becomes "Done"
+  if(isReview && isLast){
+    document.getElementById('btn-submit').textContent = 'Done ✓';
+    document.getElementById('btn-submit').onclick = function(){ goToSelector(); };
+  }
 
   updatePalette();
 
@@ -1057,6 +1065,11 @@ function finishTest(){
   showScreen('screen-score');
   document.getElementById('timer-display').style.display = 'none';
   document.querySelector('.tsc-header-bar').classList.remove('active');
+
+  // Show "Show Solutions" only after exam mode; hide Change Stream in that case
+  var isExam = state.mode === 'exam';
+  document.getElementById('btn-show-solutions').style.display = isExam ? 'block' : 'none';
+  document.getElementById('btn-change-stream').style.display  = isExam ? 'none'  : 'block';
 }
 
 // ════════════════════════════════
@@ -1139,6 +1152,34 @@ window.retakeQuiz = function(){
   document.getElementById('mode-badge').style.display = 'none';
   document.getElementById('palette-score-box').style.display = 'none';
   showScreen('screen-start');
+};
+
+window.showSolutions = function(){
+  stopTimer();
+  state.qIndex  = 0;
+  state.answers = new Array(activeBank.length).fill(null);
+  state.mode    = 'review';
+  state.elapsed = 0;
+
+  // Reset palette
+  updatePalette();
+  document.getElementById('palette-score-box').style.display = 'none';
+
+  // Set mode badge
+  var badge = document.getElementById('mode-badge');
+  badge.textContent = '👁 Review';
+  badge.className   = 'mode-badge study';
+  badge.style.display = 'inline-block';
+  document.querySelector('.tsc-header-bar').classList.add('active');
+
+  // Hide skip, show next
+  document.getElementById('btn-skip').style.display   = 'none';
+  document.getElementById('btn-next-q').style.display = 'block';
+  document.getElementById('btn-next-q').disabled      = false;
+  document.getElementById('btn-submit').style.display = 'none';
+
+  showScreen('screen-quiz');
+  loadQuestion(0);
 };
 
 // ════════════════════════════════
