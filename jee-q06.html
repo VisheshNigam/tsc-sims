@@ -1,0 +1,413 @@
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-jee-q06 ── */
+#tsc-jee-q06{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-jee-q06 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-jee-q06 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+#tsc-jee-q06 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-jee-q06 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-jee-q06 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q06 .level-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q06 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-jee-q06 .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+#tsc-jee-q06 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-jee-q06 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-jee-q06 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-jee-q06 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-jee-q06 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-jee-q06 .opt.locked{cursor:default;transform:none!important}
+#tsc-jee-q06 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+#tsc-jee-q06 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-jee-q06 .answer-main{padding:12px 16px;font:600 15px/1.7 'Nunito',sans-serif}
+#tsc-jee-q06 .answer-trap{padding:11px 16px;font:600 14px/1.6 'Nunito',sans-serif}
+#tsc-jee-q06 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-jee-q06 .correct-line{display:none;margin:0 20px;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-jee-q06 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+#tsc-jee-q06 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-jee-q06 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-jee-q06 .sim-inner{position:relative}
+#tsc-jee-q06 .sim-content{background:#fff;padding:16px}
+#tsc-jee-q06 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-jee-q06 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-jee-q06 .overlay-icon{font-size:28px}
+#tsc-jee-q06 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+#tsc-jee-q06 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-jee-q06 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-jee-q06 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim layout */
+#tsc-jee-q06 .sim-top{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;align-items:start;margin-bottom:12px}
+#tsc-jee-q06 .sim-left{display:flex;flex-direction:column;gap:10px}
+#tsc-jee-q06 .s-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:11px 12px 9px}
+#tsc-jee-q06 .s-label{font:700 10px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5a6e8a;margin-bottom:3px}
+#tsc-jee-q06 .s-value{font:700 22px 'Courier New',monospace;margin-bottom:7px}
+#tsc-jee-q06 .bar-wrap{position:relative;height:20px}
+#tsc-jee-q06 .bar-bg{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:8px;border-radius:4px;background:#d0dae8}
+#tsc-jee-q06 .bar-fill{position:absolute;top:50%;left:0;transform:translateY(-50%);height:8px;border-radius:4px;pointer-events:none;transition:width .08s}
+#tsc-jee-q06 .bar-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.18);pointer-events:none;transition:left .08s}
+#tsc-jee-q06 .range-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0}
+#tsc-jee-q06 .bar-hints{display:flex;justify-content:space-between;margin-top:3px;font:400 10px 'Courier New',monospace;color:#5a6e8a}
+#tsc-jee-q06 .r-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:10px 12px}
+#tsc-jee-q06 .r-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid #e8eaed}
+#tsc-jee-q06 .r-row:last-child{border-bottom:none}
+#tsc-jee-q06 .r-key{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#5a6e8a}
+#tsc-jee-q06 .r-val{font:700 16px 'Courier New',monospace}
+#tsc-jee-q06 .sim-scene{background:#f6f7f9;border-radius:10px;border:1px solid #d0dae8;padding:8px}
+#tsc-jee-q06 canvas#q06-scene{display:block;width:100%;height:240px}
+#tsc-jee-q06 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border:1px solid #d0dae8;border-left:3px solid #0d9488;padding:10px 14px}
+#tsc-jee-q06 .formula-line{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.9}
+#tsc-jee-q06 .formula-line .hi-teal{color:#0d9488;font-weight:700}
+#tsc-jee-q06 .formula-line .hi-orange{color:#e07020;font-weight:700}
+#tsc-jee-q06 .formula-line .hi-yellow{color:#b89010;font-weight:700}
+#tsc-jee-q06 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px;line-height:1.5}
+
+@media(max-width:520px){
+  #tsc-jee-q06 .opts{grid-template-columns:1fr}
+  #tsc-jee-q06 .sim-top{grid-template-columns:1fr}
+  #tsc-jee-q06 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-jee-q06">
+<div class="card">
+
+  <div class="meta">
+    <span class="qlbl">Q6</span>
+    <span class="topic-tag">Current Electricity</span>
+    <span class="level-tag">L2 · Numerical</span>
+  </div>
+
+  <div class="qwrap">
+    <div class="qtxt">Three resistors of <strong>12 Ω</strong>, <strong>6 Ω</strong>, and <strong>4 Ω</strong> are connected in <strong>parallel</strong>. The equivalent resistance is:</div>
+  </div>
+
+  <div class="opts" id="q06-opts">
+    <button class="opt" data-idx="0" onclick="q06Answer(this)"><span class="opt-lbl">A</span>0.5 Ω</button>
+    <button class="opt" data-idx="1" onclick="q06Answer(this)"><span class="opt-lbl">B</span>2 Ω</button>
+    <button class="opt" data-idx="2" onclick="q06Answer(this)"><span class="opt-lbl">C</span>12 Ω</button>
+    <button class="opt" data-idx="3" onclick="q06Answer(this)"><span class="opt-lbl">D</span>22 Ω</button>
+  </div>
+
+  <div class="correct-line" id="q06-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — 2 Ω
+  </div>
+
+  <div class="answer-box" id="q06-answer-box">
+    <div class="answer-main" id="q06-answer-main"></div>
+    <div class="answer-trap" id="q06-answer-trap">
+      <div class="answer-trap-lbl" id="q06-trap-lbl">💡 Don't Fall For This</div>
+      <strong>Forgetting the final flip (→ 0.5 Ω):</strong> Getting 1/R<sub>eq</sub> = 0.5 is correct — but stopping there gives you the reciprocal, not R<sub>eq</sub>. Always invert: R<sub>eq</sub> = 1/0.5 = <strong>2 Ω</strong>.<br><br>
+      <strong>Direct addition (→ 22 Ω):</strong> Adding 12 + 6 + 4 = 22 Ω is the series formula — not parallel. Parallel always gives a result <em>smaller</em> than the smallest individual resistor.
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Resistors in Parallel</div>
+    <div class="sim-inner">
+      <div class="overlay" id="q06-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="q06-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <div class="sim-top">
+          <div class="sim-left">
+
+            <div class="s-card">
+              <div class="s-label">R₁</div>
+              <div class="s-value" style="color:#0d9488" id="q06-r1-display">12 Ω</div>
+              <div class="bar-wrap" id="q06-r1-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q06-r1-fill" style="background:#0d9488"></div>
+                <div class="bar-thumb" id="q06-r1-thumb" style="border:2px solid #0d9488"></div>
+                <input class="range-input" type="range" id="q06-r1-slider" min="1" max="20" value="12" step="1">
+              </div>
+              <div class="bar-hints"><span>1 Ω</span><span>20 Ω</span></div>
+            </div>
+
+            <div class="s-card">
+              <div class="s-label">R₂</div>
+              <div class="s-value" style="color:#e07020" id="q06-r2-display">6 Ω</div>
+              <div class="bar-wrap" id="q06-r2-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q06-r2-fill" style="background:#e07020"></div>
+                <div class="bar-thumb" id="q06-r2-thumb" style="border:2px solid #e07020"></div>
+                <input class="range-input" type="range" id="q06-r2-slider" min="1" max="20" value="6" step="1">
+              </div>
+              <div class="bar-hints"><span>1 Ω</span><span>20 Ω</span></div>
+            </div>
+
+            <div class="s-card">
+              <div class="s-label">R₃</div>
+              <div class="s-value" style="color:#b89010" id="q06-r3-display">4 Ω</div>
+              <div class="bar-wrap" id="q06-r3-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q06-r3-fill" style="background:#f7c948"></div>
+                <div class="bar-thumb" id="q06-r3-thumb" style="border:2px solid #f7c948"></div>
+                <input class="range-input" type="range" id="q06-r3-slider" min="1" max="20" value="4" step="1">
+              </div>
+              <div class="bar-hints"><span>1 Ω</span><span>20 Ω</span></div>
+            </div>
+
+            <div class="r-card">
+              <div class="r-row"><span class="r-key">1/R_eq</span><span class="r-val" style="color:#5a6e8a" id="q06-r-recip">0.500</span></div>
+              <div class="r-row"><span class="r-key">R_eq</span><span class="r-val" style="color:#e07020" id="q06-r-eq">2.00 Ω</span></div>
+            </div>
+
+          </div>
+
+          <div class="sim-scene">
+            <canvas id="q06-scene"></canvas>
+          </div>
+        </div>
+
+        <div class="sim-formula">
+          <div class="formula-line">1/R<sub>eq</sub> = <span class="hi-teal">1/R₁</span> + <span class="hi-orange">1/R₂</span> + <span class="hi-yellow">1/R₃</span></div>
+          <div class="formula-line" id="q06-fl-sub"></div>
+          <div class="formula-line" id="q06-fl-common"></div>
+          <div class="formula-note" id="q06-fl-result"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/" target="_blank">Explore Course →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var CORRECT=1; // B — 2 Ω
+  var mode='study';
+  try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam';
+    if(p.get('mode') === 'review') mode = 'review'; }catch(e){}
+
+  // ── Set overlay text based on mode ──
+  window.addEventListener('load',function(){
+    var txt=document.getElementById('q06-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  window.q06Answer=function(el){
+    var idx=parseInt(el.dataset.idx);
+    var btns=document.querySelectorAll('#q06-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+    var ok=(idx===CORRECT);
+    el.classList.add(ok?'correct':'wrong');
+    btns[CORRECT].classList.add('correct');
+    if(mode==='exam'){ window.parent.postMessage({type:'tsc-answer',correct:ok},'*'); setTimeout(reportHeight,80); return; }
+    if(!ok) document.getElementById('q06-correct-line').style.display='block';
+    var box=document.getElementById('q06-answer-box'),main=document.getElementById('q06-answer-main'),
+        trap=document.getElementById('q06-answer-trap'),trapLbl=document.getElementById('q06-trap-lbl');
+    box.style.display='block';
+    if(ok){
+      box.style.background='#e8f5ee'; box.style.border='1px solid #a8d8b8';
+      main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
+      trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
+      trapLbl.style.color='#1b6b3a';
+      main.innerHTML='✓ <strong>Correct!</strong> 1/R<sub>eq</sub> = 1/12 + 1/6 + 1/4 = 1/12 + 2/12 + 3/12 = 6/12 = <strong>0.5</strong>. Then R<sub>eq</sub> = 1/0.5 = <strong>2 Ω</strong>. In parallel, R<sub>eq</sub> is always smaller than the smallest resistor — here smaller than 4 Ω.';
+    } else {
+      box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
+      main.style.color='#7a3000'; main.style.background='#fff8f4';
+      trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
+      trapLbl.style.color='#c85a00';
+      main.innerHTML='✗ <strong>Not quite.</strong> Use the parallel formula: 1/R<sub>eq</sub> = 1/12 + 1/6 + 1/4 = 6/12 = 0.5. Invert to get R<sub>eq</sub> = <strong>2 Ω</strong>. The correct answer is B.';
+    }
+    var ov=document.getElementById('q06-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display='none'; },520);
+    setTimeout(function(){ if(typeof resizeCanvas==='function') resizeCanvas(); }, 550);
+    window.parent.postMessage({type:'tsc-answer',correct:ok},'*');
+    setTimeout(reportHeight,420);
+  };
+
+  
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('q06-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('q06-answer-box');
+      if(box) box.style.display = 'block';
+      // Highlight correct option using CORRECT index
+      var opts = document.querySelectorAll('#q06-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      // Disable all options
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+function reportHeight(){ var h=document.getElementById('tsc-jee-q06').scrollHeight; window.parent.postMessage({type:'tsc-height',height:h},'*'); }
+  window.addEventListener('message',function(e){ if(e.data&&e.data.type==='tsc-get-height') reportHeight(); });
+  window.addEventListener('load',function(){ setTimeout(reportHeight,80); });
+  if(window.MutationObserver){ var mo=new MutationObserver(function(){ setTimeout(reportHeight,120); }); window.addEventListener('load',function(){ mo.observe(document.body,{childList:true,subtree:true,attributes:true}); }); }
+
+  // SIMULATION
+  var C={navy:'#1b2a4a',teal:'#0d9488',orange:'#e07020',yellow:'#f7c948',red:'#d94f3d',muted:'#5a6e8a',border:'#d0dae8'};
+  var COLORS=[C.teal,C.orange,C.yellow];
+  var R=[12,6,4];
+  var electrons=[], animT=0;
+
+  var cv=document.getElementById('q06-scene'), ctx=cv.getContext('2d');
+
+  function resizeCanvas(){
+    var dpr=window.devicePixelRatio||1;
+    cv.width=cv.offsetWidth*dpr; cv.height=240*dpr; cv.style.height='240px';
+    ctx.scale(dpr,dpr); initElectrons();
+  }
+  new ResizeObserver(function(){ resizeCanvas(); }).observe(cv);
+  function getW(){ return cv.offsetWidth||300; }
+  function getH(){ return 240; }
+
+  function compute(){
+    var recip=R.reduce(function(s,r){ return s+1/r; },0);
+    return {recip:recip, Req:1/recip};
+  }
+
+  function getGeom(W,H){
+    var pad=18, lx=pad+12, rx=W-pad-12, cx=(lx+rx)/2;
+    var rowH=H/4;
+    var ys=[rowH,rowH*2,rowH*3];
+    var resW=Math.min((rx-lx)*0.38,90), resH=22;
+    return {lx:lx,rx:rx,cx:cx,ys:ys,resW:resW,resH:resH};
+  }
+
+  function initElectrons(){
+    electrons=[];
+    var W=getW(),H=getH(),g=getGeom(W,H);
+    R.forEach(function(r,i){
+      var count=Math.max(2,Math.round(8/r*6));
+      for(var j=0;j<count;j++){
+        electrons.push({branch:i, t:j/count, speed:1/r});
+      }
+    });
+  }
+
+  function draw(){
+    var W=getW(),H=getH();
+    ctx.clearRect(0,0,W,H);
+    var g=getGeom(W,H);
+    var lx=g.lx,rx=g.rx,cx=g.cx,ys=g.ys,resW=g.resW,resH=g.resH;
+    var Req=compute().Req;
+
+    // wires
+    ctx.strokeStyle=C.navy; ctx.lineWidth=2.5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(lx,ys[0]); ctx.lineTo(lx,ys[2]); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rx,ys[0]); ctx.lineTo(rx,ys[2]); ctx.stroke();
+    R.forEach(function(_,i){
+      var y=ys[i], rx0=cx-resW/2, rx1=cx+resW/2;
+      ctx.beginPath(); ctx.moveTo(lx,y); ctx.lineTo(rx0,y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(rx1,y); ctx.lineTo(rx,y); ctx.stroke();
+    });
+
+    // terminals
+    var midY=(ys[0]+ys[2])/2, termLen=20;
+    ctx.beginPath(); ctx.moveTo(lx-termLen,midY); ctx.lineTo(lx,midY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rx,midY); ctx.lineTo(rx+termLen,midY); ctx.stroke();
+    ctx.fillStyle=C.teal; ctx.font='bold 14px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('+',lx-termLen-8,midY);
+    ctx.fillStyle=C.red; ctx.fillText('−',rx+termLen+8,midY);
+
+    // resistor boxes
+    R.forEach(function(r,i){
+      var y=ys[i], bx=cx-resW/2, by=y-resH/2, col=COLORS[i];
+      ctx.fillStyle=col+'22'; ctx.beginPath(); ctx.roundRect(bx,by,resW,resH,5); ctx.fill();
+      ctx.strokeStyle=col; ctx.lineWidth=2; ctx.beginPath(); ctx.roundRect(bx,by,resW,resH,5); ctx.stroke();
+      // zigzag
+      var nZig=7, zigAmp=resH*0.28, zigStep=resW/nZig;
+      ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.lineCap='round'; ctx.lineJoin='round';
+      ctx.beginPath();
+      for(var z=0;z<=nZig;z++){
+        var zx=bx+z*zigStep, zy=y+(z%2===0?-zigAmp:zigAmp);
+        z===0?ctx.moveTo(zx,zy):ctx.lineTo(zx,zy);
+      }
+      ctx.stroke();
+      // label
+      ctx.fillStyle=col; ctx.font='bold 12px "Courier New",monospace';
+      ctx.textAlign='center'; ctx.textBaseline='bottom';
+      ctx.fillText('R'+(i+1)+' = '+r+' Ω',cx,by-4);
+      // fraction bar
+      var recip=compute().recip, frac=(1/r)/recip, barMaxW=resW*0.7;
+      ctx.fillStyle=col+'33'; ctx.beginPath(); ctx.roundRect(bx+4,by+resH+4,barMaxW,5,2); ctx.fill();
+      ctx.fillStyle=col; ctx.beginPath(); ctx.roundRect(bx+4,by+resH+4,barMaxW*frac,5,2); ctx.fill();
+    });
+
+    // electrons
+    electrons.forEach(function(e){
+      var i=e.branch, y=ys[i], col=COLORS[i];
+      var rx0=cx-resW/2-4, rx1=cx+resW/2+4;
+      var totalLen=(rx0-lx)+(rx1-rx0)+(rx-rx1);
+      var segA=(rx0-lx)/totalLen, segB=(rx1-rx0)/totalLen;
+      var t=(e.t+animT*e.speed*0.18)%1;
+      var ex;
+      if(t<segA){ ex=lx+(t/segA)*(rx0-lx); }
+      else if(t<segA+segB){ ex=rx0+((t-segA)/segB)*(rx1-rx0); }
+      else { ex=rx1+((t-segA-segB)/(1-segA-segB))*(rx-rx1); }
+      ctx.fillStyle=col; ctx.globalAlpha=0.85;
+      ctx.beginPath(); ctx.arc(ex,y,3.5,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1;
+    });
+
+    // R_eq badge
+    ctx.fillStyle=C.orange+'22'; ctx.beginPath(); ctx.roundRect(cx-54,H-30,108,22,6); ctx.fill();
+    ctx.strokeStyle=C.orange; ctx.lineWidth=1.2; ctx.beginPath(); ctx.roundRect(cx-54,H-30,108,22,6); ctx.stroke();
+    ctx.fillStyle=C.orange; ctx.font='bold 13px "Courier New",monospace';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('R_eq = '+Req.toFixed(2)+' Ω',cx,H-19);
+    ctx.textBaseline='alphabetic';
+  }
+
+  function gcd(a,b){ return b===0?a:gcd(b,a%b); }
+  function lcm(a,b){ return a*b/gcd(a,b); }
+  function lcm3(a,b,c){ return lcm(lcm(a,b),c); }
+
+  function updateUI(){
+    var r=compute();
+    document.getElementById('q06-r-recip').textContent=r.recip.toFixed(3);
+    document.getElementById('q06-r-eq').textContent=r.Req.toFixed(2)+' Ω';
+    var lcd=lcm3(R[0],R[1],R[2]);
+    var n0=lcd/R[0],n1=lcd/R[1],n2=lcd/R[2],nSum=n0+n1+n2;
+    document.getElementById('q06-fl-sub').innerHTML=
+      '1/R<sub>eq</sub> = <span class="hi-teal">1/'+R[0]+'</span> + <span class="hi-orange">1/'+R[1]+'</span> + <span class="hi-yellow">1/'+R[2]+'</span>';
+    document.getElementById('q06-fl-common').innerHTML=
+      '= <span class="hi-teal">'+n0+'/'+lcd+'</span> + <span class="hi-orange">'+n1+'/'+lcd+'</span> + <span class="hi-yellow">'+n2+'/'+lcd+'</span> = '+nSum+'/'+lcd;
+    document.getElementById('q06-fl-result').innerHTML=
+      'R<sub>eq</sub> = '+lcd+'/'+nSum+' = <span style="color:#e07020;font-weight:700">'+r.Req.toFixed(2)+' Ω</span>';
+  }
+
+  function updateBar(wId,fId,tId,val,min,max){
+    var w=document.getElementById(wId),f=document.getElementById(fId),t=document.getElementById(tId);
+    var W=w.offsetWidth,Rr=10,px=Rr+((val-min)/(max-min))*(W-2*Rr);
+    f.style.width=px+'px'; t.style.left=px+'px';
+  }
+
+  [1,2,3].forEach(function(n){
+    document.getElementById('q06-r'+n+'-slider').addEventListener('input',function(){
+      R[n-1]=parseInt(this.value);
+      document.getElementById('q06-r'+n+'-display').textContent=R[n-1]+' Ω';
+      updateBar('q06-r'+n+'-wrap','q06-r'+n+'-fill','q06-r'+n+'-thumb',R[n-1],1,20);
+      initElectrons(); updateUI();
+    });
+  });
+
+  var prev=null;
+  function loop(ts){
+    var dt=prev?Math.min((ts-prev)/1000,0.05):0.016; prev=ts;
+    animT+=dt; draw(); requestAnimationFrame(loop);
+  }
+
+  updateBar('q06-r1-wrap','q06-r1-fill','q06-r1-thumb',12,1,20);
+  updateBar('q06-r2-wrap','q06-r2-fill','q06-r2-thumb',6,1,20);
+  updateBar('q06-r3-wrap','q06-r3-fill','q06-r3-thumb',4,1,20);
+  updateUI();
+  setTimeout(function(){ resizeCanvas(); requestAnimationFrame(loop); },150);
+})();
+</script>

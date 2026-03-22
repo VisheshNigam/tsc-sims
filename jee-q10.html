@@ -1,0 +1,422 @@
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-jee-q10 ── */
+#tsc-jee-q10{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-jee-q10 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-jee-q10 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+#tsc-jee-q10 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-jee-q10 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-jee-q10 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q10 .level-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q10 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-jee-q10 .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+#tsc-jee-q10 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-jee-q10 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-jee-q10 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-jee-q10 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-jee-q10 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-jee-q10 .opt.locked{cursor:default;transform:none!important}
+#tsc-jee-q10 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+#tsc-jee-q10 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-jee-q10 .answer-main{padding:12px 16px;font:600 15px/1.7 'Nunito',sans-serif}
+#tsc-jee-q10 .answer-trap{padding:11px 16px;font:600 14px/1.6 'Nunito',sans-serif}
+#tsc-jee-q10 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-jee-q10 .correct-line{display:none;margin:0 20px;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-jee-q10 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+#tsc-jee-q10 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-jee-q10 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-jee-q10 .sim-inner{position:relative}
+#tsc-jee-q10 .sim-content{background:#fff;padding:16px}
+#tsc-jee-q10 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-jee-q10 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-jee-q10 .overlay-icon{font-size:28px}
+#tsc-jee-q10 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+#tsc-jee-q10 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-jee-q10 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-jee-q10 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim layout */
+#tsc-jee-q10 .sim-top{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;align-items:start;margin-bottom:12px}
+#tsc-jee-q10 .sim-left{display:flex;flex-direction:column;gap:10px}
+#tsc-jee-q10 .s-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 12px 10px}
+#tsc-jee-q10 .s-label{font:700 10px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5a6e8a;margin-bottom:3px}
+#tsc-jee-q10 .s-value{font:700 22px 'Courier New',monospace;margin-bottom:8px}
+#tsc-jee-q10 .bar-wrap{position:relative;height:20px}
+#tsc-jee-q10 .bar-bg{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:8px;border-radius:4px;background:#d0dae8}
+#tsc-jee-q10 .bar-fill{position:absolute;top:50%;left:0;transform:translateY(-50%);height:8px;border-radius:4px;pointer-events:none;transition:width .08s}
+#tsc-jee-q10 .bar-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.18);pointer-events:none;transition:left .08s}
+#tsc-jee-q10 .range-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0}
+#tsc-jee-q10 .bar-hints{display:flex;justify-content:space-between;margin-top:4px;font:400 10px 'Courier New',monospace;color:#5a6e8a}
+#tsc-jee-q10 .r-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:10px 12px}
+#tsc-jee-q10 .r-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid #e8eaed}
+#tsc-jee-q10 .r-row:last-child{border-bottom:none}
+#tsc-jee-q10 .r-key{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#5a6e8a}
+#tsc-jee-q10 .r-val{font:700 15px 'Courier New',monospace}
+#tsc-jee-q10 .sim-scene{background:#f6f7f9;border-radius:10px;border:1px solid #d0dae8;padding:8px}
+#tsc-jee-q10 canvas#q10-scene{display:block;width:100%;height:260px}
+#tsc-jee-q10 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border:1px solid #d0dae8;border-left:3px solid #0d9488;padding:10px 14px}
+#tsc-jee-q10 .formula-line{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.9}
+#tsc-jee-q10 .formula-line .hi-teal{color:#0d9488;font-weight:700}
+#tsc-jee-q10 .formula-line .hi-orange{color:#e07020;font-weight:700}
+#tsc-jee-q10 .formula-line .hi-red{color:#d94f3d;font-weight:700}
+#tsc-jee-q10 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px;line-height:1.5}
+
+@media(max-width:520px){
+  #tsc-jee-q10 .opts{grid-template-columns:1fr}
+  #tsc-jee-q10 .sim-top{grid-template-columns:1fr}
+  #tsc-jee-q10 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-jee-q10">
+<div class="card">
+
+  <div class="meta">
+    <span class="qlbl">Q10</span>
+    <span class="topic-tag">Waves &amp; Superposition</span>
+    <span class="level-tag">L2 · Conceptual</span>
+  </div>
+
+  <div class="qwrap">
+    <div class="qtxt">Two waves y₁ = A sin(ωt) and y₂ = A sin(ωt + π) are superimposed. The resultant amplitude is:</div>
+  </div>
+
+  <div class="opts" id="q10-opts">
+    <button class="opt" data-idx="0" onclick="q10Answer(this)"><span class="opt-lbl">A</span>2A</button>
+    <button class="opt" data-idx="1" onclick="q10Answer(this)"><span class="opt-lbl">B</span>A</button>
+    <button class="opt" data-idx="2" onclick="q10Answer(this)"><span class="opt-lbl">C</span>A√2</button>
+    <button class="opt" data-idx="3" onclick="q10Answer(this)"><span class="opt-lbl">D</span>Zero</button>
+  </div>
+
+  <div class="correct-line" id="q10-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    D — Zero
+  </div>
+
+  <div class="answer-box" id="q10-answer-box">
+    <div class="answer-main" id="q10-answer-main"></div>
+    <div class="answer-trap" id="q10-answer-trap">
+      <div class="answer-trap-lbl" id="q10-trap-lbl">💡 Don't Fall For This</div>
+      <strong>Assuming superposition always doubles amplitude (→ 2A):</strong> Two identical waves only produce 2A when they are perfectly in phase (Δφ = 0). When Δφ = π (180°), every crest of one wave aligns with a trough of the other — they cancel perfectly. Phase difference, not just amplitude, determines the result.
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Wave Superposition &amp; Interference</div>
+    <div class="sim-inner">
+      <div class="overlay" id="q10-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="q10-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <div class="sim-top">
+          <div class="sim-left">
+
+            <div class="s-card">
+              <div class="s-label">Phase difference Δφ</div>
+              <div class="s-value" style="color:#e07020" id="q10-phi-display">π rad (180°)</div>
+              <div class="bar-wrap" id="q10-phi-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q10-phi-fill" style="background:#e07020"></div>
+                <div class="bar-thumb" id="q10-phi-thumb" style="border:2px solid #e07020"></div>
+                <input class="range-input" type="range" id="q10-phi-slider" min="0" max="360" value="180" step="1">
+              </div>
+              <div class="bar-hints"><span>0°</span><span>360°</span></div>
+            </div>
+
+            <div class="s-card">
+              <div class="s-label">Amplitude A</div>
+              <div class="s-value" style="color:#0d9488" id="q10-A-display">1.0 A</div>
+              <div class="bar-wrap" id="q10-A-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q10-A-fill" style="background:#0d9488"></div>
+                <div class="bar-thumb" id="q10-A-thumb" style="border:2px solid #0d9488"></div>
+                <input class="range-input" type="range" id="q10-A-slider" min="0.5" max="2" value="1" step="0.1">
+              </div>
+              <div class="bar-hints"><span>0.5</span><span>2.0</span></div>
+            </div>
+
+            <div class="r-card">
+              <div class="r-row"><span class="r-key">Δφ</span><span class="r-val" style="color:#e07020" id="q10-r-phi">180°</span></div>
+              <div class="r-row"><span class="r-key">A_res</span><span class="r-val" id="q10-r-Ares">0.00 A</span></div>
+              <div class="r-row"><span class="r-key">Type</span><span class="r-val" id="q10-r-type" style="color:#d94f3d">Destructive</span></div>
+            </div>
+
+          </div>
+
+          <div class="sim-scene">
+            <canvas id="q10-scene"></canvas>
+          </div>
+        </div>
+
+        <div class="sim-formula">
+          <div class="formula-line">A_res = 2A cos(Δφ / 2)</div>
+          <div class="formula-line" id="q10-fl-sub"></div>
+          <div class="formula-note" id="q10-fl-note"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/" target="_blank">Explore Course →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var CORRECT=3; // D — Zero
+  var mode='study';
+  try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam';
+    if(p.get('mode') === 'review') mode = 'review'; }catch(e){}
+
+  // ── Set overlay text based on mode ──
+  window.addEventListener('load',function(){
+    var txt=document.getElementById('q10-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  window.q10Answer=function(el){
+    var idx=parseInt(el.dataset.idx);
+    var btns=document.querySelectorAll('#q10-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+    var ok=(idx===CORRECT);
+    el.classList.add(ok?'correct':'wrong');
+    btns[CORRECT].classList.add('correct');
+    if(mode==='exam'){ window.parent.postMessage({type:'tsc-answer',correct:ok},'*'); setTimeout(reportHeight,80); return; }
+    if(!ok) document.getElementById('q10-correct-line').style.display='block';
+    var box=document.getElementById('q10-answer-box'),main=document.getElementById('q10-answer-main'),
+        trap=document.getElementById('q10-answer-trap'),trapLbl=document.getElementById('q10-trap-lbl');
+    box.style.display='block';
+    if(ok){
+      box.style.background='#e8f5ee'; box.style.border='1px solid #a8d8b8';
+      main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
+      trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
+      trapLbl.style.color='#1b6b3a';
+      main.innerHTML='✓ <strong>Correct!</strong> Use A_res = 2A cos(Δφ/2). With Δφ = π: A_res = 2A × cos(π/2) = 2A × 0 = <strong>Zero</strong>. This is perfectly destructive interference — every crest of y₁ aligns exactly with a trough of y₂. Drag the Δφ slider to 0° to see constructive interference give 2A.';
+    } else {
+      box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
+      main.style.color='#7a3000'; main.style.background='#fff8f4';
+      trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
+      trapLbl.style.color='#c85a00';
+      main.innerHTML='✗ <strong>Not quite.</strong> A_res = 2A cos(Δφ/2) = 2A cos(90°) = 2A × 0 = <strong>Zero</strong>. The phase difference π means the waves are perfectly out of phase — they cancel completely. The correct answer is D.';
+    }
+    var ov=document.getElementById('q10-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display='none'; },520);
+    setTimeout(function(){ if(typeof resizeCanvas==='function') resizeCanvas(); }, 550);
+    window.parent.postMessage({type:'tsc-answer',correct:ok},'*');
+    setTimeout(reportHeight,420);
+  };
+
+  
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('q10-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('q10-answer-box');
+      if(box) box.style.display = 'block';
+      // Highlight correct option using CORRECT index
+      var opts = document.querySelectorAll('#q10-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      // Disable all options
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+function reportHeight(){ var h=document.getElementById('tsc-jee-q10').scrollHeight; window.parent.postMessage({type:'tsc-height',height:h},'*'); }
+  window.addEventListener('message',function(e){ if(e.data&&e.data.type==='tsc-get-height') reportHeight(); });
+  window.addEventListener('load',function(){ setTimeout(reportHeight,80); });
+  if(window.MutationObserver){ var mo=new MutationObserver(function(){ setTimeout(reportHeight,120); }); window.addEventListener('load',function(){ mo.observe(document.body,{childList:true,subtree:true,attributes:true}); }); }
+
+  // SIMULATION
+  var C={navy:'#1b2a4a',teal:'#0d9488',orange:'#e07020',yellow:'#f7c948',red:'#d94f3d',muted:'#5a6e8a',border:'#d0dae8'};
+  var deltaPhi_deg=180, simA=1.0, animT=0;
+
+  var cv=document.getElementById('q10-scene'), ctx=cv.getContext('2d');
+
+  function resizeCanvas(){
+    var dpr=window.devicePixelRatio||1;
+    cv.width=cv.offsetWidth*dpr; cv.height=260*dpr; cv.style.height='260px';
+    ctx.scale(dpr,dpr);
+  }
+  new ResizeObserver(function(){ resizeCanvas(); }).observe(cv);
+  function getW(){ return cv.offsetWidth||300; }
+  function getH(){ return 260; }
+
+  function compute(){
+    var dpRad=deltaPhi_deg*Math.PI/180;
+    var Ares=Math.abs(2*simA*Math.cos(dpRad/2));
+    return {dpRad:dpRad, Ares:Ares};
+  }
+
+  function draw(){
+    var W=getW(),H=getH();
+    ctx.clearRect(0,0,W,H);
+    var r=compute(), dpRad=r.dpRad, Ares=r.Ares;
+    var padL=38,padR=16,padT=28,padB=44;
+    var gW=W-padL-padR, gH=H-padT-padB;
+    var cy=padT+gH/2, amp=gH*0.35;
+
+    // background
+    ctx.fillStyle='rgba(27,42,74,0.02)'; ctx.beginPath(); ctx.roundRect(padL,padT,gW,gH,6); ctx.fill();
+
+    // Y axis
+    ctx.strokeStyle=C.border; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(padL,padT); ctx.lineTo(padL,padT+gH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(padL-4,cy-amp); ctx.lineTo(padL,cy-amp); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(padL-4,cy+amp); ctx.lineTo(padL,cy+amp); ctx.stroke();
+    ctx.fillStyle=C.muted; ctx.font='11px "Courier New",monospace';
+    ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText('+A',padL-6,cy-amp); ctx.fillText('-A',padL-6,cy+amp); ctx.fillText('0',padL-6,cy);
+    ctx.save(); ctx.translate(10,cy); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle=C.muted; ctx.font='11px "Nunito",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText('Displacement',0,0); ctx.restore();
+
+    // X axis
+    ctx.strokeStyle=C.border; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(padL,cy); ctx.lineTo(padL+gW,cy); ctx.stroke();
+    ctx.fillStyle=C.muted; ctx.font='11px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText('t  →',padL+gW/2,cy+gH/2+4);
+
+    // 2A reference
+    ctx.strokeStyle=C.navy; ctx.lineWidth=0.6; ctx.globalAlpha=0.12; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(padL,cy-amp*2); ctx.lineTo(padL+gW,cy-amp*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(padL,cy+amp*2); ctx.lineTo(padL+gW,cy+amp*2); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha=1;
+    ctx.fillStyle='rgba(27,42,74,0.25)'; ctx.font='10px "Courier New",monospace';
+    ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText('+2A',padL-6,cy-amp*2); ctx.fillText('-2A',padL-6,cy+amp*2);
+
+    // wave 1 (teal)
+    ctx.strokeStyle=C.teal; ctx.lineWidth=2.2; ctx.globalAlpha=0.75; ctx.lineCap='round';
+    ctx.beginPath();
+    for(var x=0;x<=gW;x+=2){
+      var kx=(x/gW)*4*Math.PI;
+      var yv=cy-(amp/simA)*simA*Math.sin(kx-animT);
+      x===0?ctx.moveTo(padL+x,yv):ctx.lineTo(padL+x,yv);
+    }
+    ctx.stroke(); ctx.globalAlpha=1;
+
+    // wave 2 (orange)
+    ctx.strokeStyle=C.orange; ctx.lineWidth=2.2; ctx.globalAlpha=0.75;
+    ctx.beginPath();
+    for(var x=0;x<=gW;x+=2){
+      var kx=(x/gW)*4*Math.PI;
+      var yv=cy-(amp/simA)*simA*Math.sin(kx-animT+dpRad);
+      x===0?ctx.moveTo(padL+x,yv):ctx.lineTo(padL+x,yv);
+    }
+    ctx.stroke(); ctx.globalAlpha=1;
+
+    // resultant (navy bold)
+    ctx.strokeStyle=C.navy; ctx.lineWidth=3.2; ctx.globalAlpha=1; ctx.lineCap='round';
+    ctx.beginPath();
+    for(var x=0;x<=gW;x+=2){
+      var kx=(x/gW)*4*Math.PI;
+      var sum=simA*Math.sin(kx-animT)+simA*Math.sin(kx-animT+dpRad);
+      var yv=cy-(amp/simA)*sum;
+      x===0?ctx.moveTo(padL+x,yv):ctx.lineTo(padL+x,yv);
+    }
+    ctx.stroke();
+
+    // legend
+    var lgX=padL+10, lgY=padT+8;
+    var items=[
+      {color:C.teal,  label:'y\u2081 = A sin(\u03C9t)',               lw:2.2, alpha:0.85},
+      {color:C.orange,label:'y\u2082 = A sin(\u03C9t + \u0394\u03C6)', lw:2.2, alpha:0.85},
+      {color:C.navy,  label:'y\u2081 + y\u2082 (resultant)',           lw:3.2, alpha:1}
+    ];
+    ctx.fillStyle='rgba(255,255,255,0.82)';
+    ctx.beginPath(); ctx.roundRect(lgX-4,lgY-4,178,items.length*18+6,5); ctx.fill();
+    items.forEach(function(it,i){
+      var iy=lgY+i*18;
+      ctx.strokeStyle=it.color; ctx.lineWidth=it.lw; ctx.globalAlpha=it.alpha;
+      ctx.beginPath(); ctx.moveTo(lgX,iy+5); ctx.lineTo(lgX+20,iy+5); ctx.stroke();
+      ctx.globalAlpha=1;
+      ctx.fillStyle=it.color; ctx.font='bold 12px "Nunito",sans-serif';
+      ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(it.label,lgX+24,iy);
+    });
+
+    // interference badge
+    var isDestructive=Ares<0.05*simA, isConstructive=Ares>1.95*simA;
+    var badgeColor=isDestructive?C.red:(isConstructive?C.teal:C.orange);
+    var badgeText=isDestructive
+      ? '✗ Destructive  —  A_res = 0'
+      : isConstructive
+        ? '✓ Constructive  —  A_res = 2A'
+        : '⚡ Partial  —  A_res = '+(Ares/simA).toFixed(2)+'A';
+    var badgeY=padT+gH+10, badgeW=Math.min(gW,300), badgeCX=padL+gW/2;
+    ctx.fillStyle=badgeColor+'22'; ctx.beginPath(); ctx.roundRect(badgeCX-badgeW/2,badgeY,badgeW,24,6); ctx.fill();
+    ctx.strokeStyle=badgeColor; ctx.lineWidth=1.2; ctx.beginPath(); ctx.roundRect(badgeCX-badgeW/2,badgeY,badgeW,24,6); ctx.stroke();
+    ctx.fillStyle=badgeColor; ctx.font='bold 13px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(badgeText,badgeCX,badgeY+12);
+    ctx.textBaseline='alphabetic';
+  }
+
+  function phiLabel(deg){
+    if(deg===0)   return '0 rad (0°)';
+    if(deg===90)  return 'π/2 rad (90°)';
+    if(deg===180) return 'π rad (180°)';
+    if(deg===270) return '3π/2 rad (270°)';
+    if(deg===360) return '2π rad (360°)';
+    return (deg*Math.PI/180).toFixed(2)+' rad ('+deg+'°)';
+  }
+
+  function updateUI(){
+    var r=compute(), Ares=r.Ares, dpRad=r.dpRad;
+    var isDestructive=Ares<0.05*simA, isConstructive=Ares>1.95*simA;
+    var typeText=isDestructive?'Destructive':(isConstructive?'Constructive':'Partial');
+    var typeColor=isDestructive?C.red:(isConstructive?C.teal:C.orange);
+    document.getElementById('q10-r-phi').textContent=deltaPhi_deg+'°';
+    document.getElementById('q10-r-Ares').textContent=(Ares/simA).toFixed(2)+' A';
+    document.getElementById('q10-r-Ares').style.color=typeColor;
+    document.getElementById('q10-r-type').textContent=typeText;
+    document.getElementById('q10-r-type').style.color=typeColor;
+    var cosVal=Math.cos(dpRad/2).toFixed(3);
+    document.getElementById('q10-fl-sub').innerHTML=
+      'A_res = 2 × <span class="hi-teal">'+simA.toFixed(1)+'A</span> × cos(<span class="hi-orange">'+deltaPhi_deg+'°</span>/2) = <span style="color:'+typeColor+';font-weight:700">'+(Ares/simA).toFixed(3)+'A</span>';
+    var note=document.getElementById('q10-fl-note');
+    if(isDestructive){ note.innerHTML='cos(90°) = 0 → <span style="color:#d94f3d;font-weight:700">Perfectly destructive: crests cancel troughs</span>'; note.style.color=C.red; }
+    else if(isConstructive){ note.innerHTML='cos(0°) = 1 → <span style="color:#0d9488;font-weight:700">Perfectly constructive: crests add to give 2A</span>'; note.style.color=C.teal; }
+    else { note.textContent='Partial interference: resultant amplitude between 0 and 2A'; note.style.color=C.muted; }
+  }
+
+  function updateBar(wId,fId,tId,val,min,max){
+    var w=document.getElementById(wId),f=document.getElementById(fId),t=document.getElementById(tId);
+    var W=w.offsetWidth,R=10,px=R+((val-min)/(max-min))*(W-2*R);
+    f.style.width=px+'px'; t.style.left=px+'px';
+  }
+
+  document.getElementById('q10-phi-slider').addEventListener('input',function(){
+    deltaPhi_deg=parseInt(this.value);
+    document.getElementById('q10-phi-display').innerHTML=phiLabel(deltaPhi_deg);
+    updateBar('q10-phi-wrap','q10-phi-fill','q10-phi-thumb',deltaPhi_deg,0,360);
+    updateUI();
+  });
+  document.getElementById('q10-A-slider').addEventListener('input',function(){
+    simA=parseFloat(this.value);
+    document.getElementById('q10-A-display').textContent=simA.toFixed(1)+' A';
+    updateBar('q10-A-wrap','q10-A-fill','q10-A-thumb',simA,0.5,2);
+    updateUI();
+  });
+
+  var prev=null;
+  function loop(ts){
+    var dt=prev?Math.min((ts-prev)/1000,0.05):0.016; prev=ts;
+    animT+=dt*1.8; draw(); updateUI();
+    requestAnimationFrame(loop);
+  }
+
+  updateBar('q10-phi-wrap','q10-phi-fill','q10-phi-thumb',180,0,360);
+  updateBar('q10-A-wrap','q10-A-fill','q10-A-thumb',1,0.5,2);
+  updateUI();
+  setTimeout(function(){ resizeCanvas(); requestAnimationFrame(loop); },150);
+})();
+</script>

@@ -1,0 +1,414 @@
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-jee-q08 ── */
+#tsc-jee-q08{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-jee-q08 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-jee-q08 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+#tsc-jee-q08 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-jee-q08 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-jee-q08 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q08 .level-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#6b4a1b;background:#fff4e0;border:1px solid #f0d0a0;border-radius:20px;padding:3px 10px}
+#tsc-jee-q08 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-jee-q08 .qtxt{font:600 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+#tsc-jee-q08 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-jee-q08 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:600 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-jee-q08 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-jee-q08 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-jee-q08 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-jee-q08 .opt.locked{cursor:default;transform:none!important}
+#tsc-jee-q08 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+#tsc-jee-q08 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-jee-q08 .answer-main{padding:12px 16px;font:600 15px/1.7 'Nunito',sans-serif}
+#tsc-jee-q08 .answer-trap{padding:11px 16px;font:600 14px/1.6 'Nunito',sans-serif}
+#tsc-jee-q08 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-jee-q08 .correct-line{display:none;margin:0 20px;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-jee-q08 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+#tsc-jee-q08 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-jee-q08 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-jee-q08 .sim-inner{position:relative}
+#tsc-jee-q08 .sim-content{background:#fff;padding:16px}
+#tsc-jee-q08 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-jee-q08 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-jee-q08 .overlay-icon{font-size:28px}
+#tsc-jee-q08 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+#tsc-jee-q08 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-jee-q08 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-jee-q08 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim layout */
+#tsc-jee-q08 .sim-top{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;align-items:start;margin-bottom:12px}
+#tsc-jee-q08 .sim-left{display:flex;flex-direction:column;gap:10px}
+#tsc-jee-q08 .s-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 12px 10px}
+#tsc-jee-q08 .s-label{font:700 10px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5a6e8a;margin-bottom:3px}
+#tsc-jee-q08 .s-value{font:700 22px 'Courier New',monospace;margin-bottom:8px}
+#tsc-jee-q08 .bar-wrap{position:relative;height:20px}
+#tsc-jee-q08 .bar-bg{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:8px;border-radius:4px;background:#d0dae8}
+#tsc-jee-q08 .bar-fill{position:absolute;top:50%;left:0;transform:translateY(-50%);height:8px;border-radius:4px;pointer-events:none;transition:width .08s}
+#tsc-jee-q08 .bar-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.18);pointer-events:none;transition:left .08s}
+#tsc-jee-q08 .range-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0}
+#tsc-jee-q08 .bar-hints{display:flex;justify-content:space-between;margin-top:4px;font:400 10px 'Courier New',monospace;color:#5a6e8a}
+#tsc-jee-q08 .r-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:10px 12px}
+#tsc-jee-q08 .r-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid #e8eaed}
+#tsc-jee-q08 .r-row:last-child{border-bottom:none}
+#tsc-jee-q08 .r-key{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#5a6e8a}
+#tsc-jee-q08 .r-val{font:700 14px 'Courier New',monospace}
+#tsc-jee-q08 .sim-scene{background:#f6f7f9;border-radius:10px;border:1px solid #d0dae8;padding:8px}
+#tsc-jee-q08 canvas#q08-scene{display:block;width:100%;height:240px}
+#tsc-jee-q08 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border:1px solid #d0dae8;border-left:3px solid #0d9488;padding:10px 14px}
+#tsc-jee-q08 .formula-line{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.9}
+#tsc-jee-q08 .formula-line .hi-teal{color:#0d9488;font-weight:700}
+#tsc-jee-q08 .formula-line .hi-orange{color:#e07020;font-weight:700}
+#tsc-jee-q08 .formula-line .hi-red{color:#d94f3d;font-weight:700}
+#tsc-jee-q08 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px;line-height:1.5}
+
+@media(max-width:520px){
+  #tsc-jee-q08 .opts{grid-template-columns:1fr}
+  #tsc-jee-q08 .sim-top{grid-template-columns:1fr}
+  #tsc-jee-q08 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-jee-q08">
+<div class="card">
+
+  <div class="meta">
+    <span class="qlbl">Q8</span>
+    <span class="topic-tag">Ray Optics</span>
+    <span class="level-tag">L1 · Numerical</span>
+  </div>
+
+  <div class="qwrap">
+    <div class="qtxt">A convex lens of focal length <strong>20 cm</strong> has an object <strong>60 cm</strong> in front of it. The image distance is:</div>
+  </div>
+
+  <div class="opts" id="q08-opts">
+    <button class="opt" data-idx="0" onclick="q08Answer(this)"><span class="opt-lbl">A</span>20 cm</button>
+    <button class="opt" data-idx="1" onclick="q08Answer(this)"><span class="opt-lbl">B</span>30 cm</button>
+    <button class="opt" data-idx="2" onclick="q08Answer(this)"><span class="opt-lbl">C</span>40 cm</button>
+    <button class="opt" data-idx="3" onclick="q08Answer(this)"><span class="opt-lbl">D</span>60 cm</button>
+  </div>
+
+  <div class="correct-line" id="q08-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — 30 cm
+  </div>
+
+  <div class="answer-box" id="q08-answer-box">
+    <div class="answer-main" id="q08-answer-main"></div>
+    <div class="answer-trap" id="q08-answer-trap">
+      <div class="answer-trap-lbl" id="q08-trap-lbl">💡 Don't Fall For This</div>
+      <strong>Sign convention error:</strong> The most common mistake is using u = +60 instead of u = −60. With u = +60, the formula gives 1/v = 1/20 − 1/60 = 2/60, leading to the wrong answer. Always assign a <em>negative</em> sign to real object distances in the New Cartesian convention.
+    </div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Convex Lens Ray Diagram</div>
+    <div class="sim-inner">
+      <div class="overlay" id="q08-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="q08-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <div class="sim-top">
+          <div class="sim-left">
+
+            <div class="s-card">
+              <div class="s-label">Object distance |u|</div>
+              <div class="s-value" style="color:#0d9488" id="q08-u-display">60 cm</div>
+              <div class="bar-wrap" id="q08-u-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q08-u-fill" style="background:#0d9488"></div>
+                <div class="bar-thumb" id="q08-u-thumb" style="border:2px solid #0d9488"></div>
+                <input class="range-input" type="range" id="q08-u-slider" min="25" max="120" value="60" step="5">
+              </div>
+              <div class="bar-hints"><span>25 cm</span><span>120 cm</span></div>
+            </div>
+
+            <div class="s-card">
+              <div class="s-label">Focal length f</div>
+              <div class="s-value" style="color:#e07020" id="q08-f-display">+20 cm</div>
+              <div class="bar-wrap" id="q08-f-wrap">
+                <div class="bar-bg"></div>
+                <div class="bar-fill" id="q08-f-fill" style="background:#e07020"></div>
+                <div class="bar-thumb" id="q08-f-thumb" style="border:2px solid #e07020"></div>
+                <input class="range-input" type="range" id="q08-f-slider" min="10" max="50" value="20" step="5">
+              </div>
+              <div class="bar-hints"><span>10 cm</span><span>50 cm</span></div>
+            </div>
+
+            <div class="r-card">
+              <div class="r-row"><span class="r-key">u (signed)</span><span class="r-val" style="color:#0d9488" id="q08-r-u">−60 cm</span></div>
+              <div class="r-row"><span class="r-key">v (image)</span><span class="r-val" style="color:#e07020" id="q08-r-v">+30.0 cm</span></div>
+              <div class="r-row"><span class="r-key">Magnification</span><span class="r-val" id="q08-r-m">−0.50×</span></div>
+              <div class="r-row"><span class="r-key">Image type</span><span class="r-val" id="q08-r-type">Real, Inverted</span></div>
+            </div>
+
+          </div>
+
+          <div class="sim-scene">
+            <canvas id="q08-scene"></canvas>
+          </div>
+        </div>
+
+        <div class="sim-formula">
+          <div class="formula-line">1/v − 1/u = 1/f</div>
+          <div class="formula-line" id="q08-fl-sub"></div>
+          <div class="formula-line" id="q08-fl-solve"></div>
+          <div class="formula-note" id="q08-fl-result"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/" target="_blank">Explore Course →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var CORRECT=1; // B — 30 cm
+  var mode='study';
+  try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam';
+    if(p.get('mode') === 'review') mode = 'review'; }catch(e){}
+
+  // ── Set overlay text based on mode ──
+  window.addEventListener('load',function(){
+    var txt=document.getElementById('q08-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  window.q08Answer=function(el){
+    var idx=parseInt(el.dataset.idx);
+    var btns=document.querySelectorAll('#q08-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+    var ok=(idx===CORRECT);
+    el.classList.add(ok?'correct':'wrong');
+    btns[CORRECT].classList.add('correct');
+    if(mode==='exam'){ window.parent.postMessage({type:'tsc-answer',correct:ok},'*'); setTimeout(reportHeight,80); return; }
+    if(!ok) document.getElementById('q08-correct-line').style.display='block';
+    var box=document.getElementById('q08-answer-box'),main=document.getElementById('q08-answer-main'),
+        trap=document.getElementById('q08-answer-trap'),trapLbl=document.getElementById('q08-trap-lbl');
+    box.style.display='block';
+    if(ok){
+      box.style.background='#e8f5ee'; box.style.border='1px solid #a8d8b8';
+      main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
+      trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
+      trapLbl.style.color='#1b6b3a';
+      main.innerHTML='✓ <strong>Correct!</strong> Using 1/v − 1/u = 1/f with u = −60 cm, f = +20 cm: 1/v = 1/20 + 1/(−60) = 3/60 − 1/60 = 2/60 = 1/30. So <strong>v = +30 cm</strong>. The positive sign confirms the image is real and on the opposite side of the lens.';
+    } else {
+      box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
+      main.style.color='#7a3000'; main.style.background='#fff8f4';
+      trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
+      trapLbl.style.color='#c85a00';
+      main.innerHTML='✗ <strong>Not quite.</strong> With u = −60, f = +20: 1/v = 1/f + 1/u = 1/20 − 1/60 = 2/60 → <strong>v = 30 cm</strong>. The correct answer is B. Check your sign convention — u must be negative for a real object.';
+    }
+    var ov=document.getElementById('q08-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display='none'; },520);
+    setTimeout(function(){ if(typeof resizeCanvas==='function') resizeCanvas(); }, 550);
+    window.parent.postMessage({type:'tsc-answer',correct:ok},'*');
+    setTimeout(reportHeight,420);
+  };
+
+  
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('q08-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('q08-answer-box');
+      if(box) box.style.display = 'block';
+      // Highlight correct option using CORRECT index
+      var opts = document.querySelectorAll('#q08-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      // Disable all options
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+function reportHeight(){ var h=document.getElementById('tsc-jee-q08').scrollHeight; window.parent.postMessage({type:'tsc-height',height:h},'*'); }
+  window.addEventListener('message',function(e){ if(e.data&&e.data.type==='tsc-get-height') reportHeight(); });
+  window.addEventListener('load',function(){ setTimeout(reportHeight,80); });
+  if(window.MutationObserver){ var mo=new MutationObserver(function(){ setTimeout(reportHeight,120); }); window.addEventListener('load',function(){ mo.observe(document.body,{childList:true,subtree:true,attributes:true}); }); }
+
+  // SIMULATION
+  var C={navy:'#1b2a4a',teal:'#0d9488',orange:'#e07020',yellow:'#f7c948',red:'#d94f3d',muted:'#5a6e8a',border:'#d0dae8'};
+  var u_abs=60, f=20;
+
+  var cv=document.getElementById('q08-scene'), ctx=cv.getContext('2d');
+
+  function resizeCanvas(){
+    var dpr=window.devicePixelRatio||1;
+    cv.width=cv.offsetWidth*dpr; cv.height=240*dpr; cv.style.height='240px';
+    ctx.scale(dpr,dpr);
+  }
+  new ResizeObserver(function(){ resizeCanvas(); }).observe(cv);
+  function getW(){ return cv.offsetWidth||300; }
+  function getH(){ return 240; }
+
+  function compute(){
+    var u=-u_abs;
+    var v=1/(1/f+1/u);
+    var m=v/u;
+    return {u:u, v:v, m:m, real:v>0, inverted:m<0};
+  }
+
+  function drawRay(x1,y1,x2,y2,color,lw,dashed){
+    ctx.strokeStyle=color; ctx.lineWidth=lw||1.8; ctx.lineCap='round';
+    if(dashed){ ctx.setLineDash([5,3]); ctx.globalAlpha=0.5; }
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha=1;
+  }
+
+  function drawObjArrow(x,baseY,h,color){
+    var tip=baseY-h, dir=h>0?1:-1, hL=8;
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=2.5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x,baseY); ctx.lineTo(x,tip); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x,tip); ctx.lineTo(x-5,tip+hL*dir); ctx.lineTo(x+5,tip+hL*dir); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x-5,baseY); ctx.lineTo(x+5,baseY); ctx.stroke();
+  }
+
+  function brace(x1,x2,y,label,color){
+    ctx.strokeStyle=color; ctx.lineWidth=1; ctx.globalAlpha=0.5;
+    ctx.beginPath(); ctx.moveTo(x1,y-5); ctx.lineTo(x1,y); ctx.lineTo(x2,y); ctx.lineTo(x2,y-5); ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.fillStyle=color; ctx.font='10px "Courier New",monospace';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText(label,(x1+x2)/2,y+2);
+  }
+
+  function draw(){
+    var W=getW(), H=getH();
+    ctx.clearRect(0,0,W,H);
+    var r=compute();
+    var cy=H*0.5, lensX=W*0.52;
+    var scale=Math.min((lensX-30)/u_abs,(W-lensX-24)/Math.max(Math.abs(r.v),1));
+    scale=Math.max(scale,0.5);
+    var objX=lensX-u_abs*scale;
+    var imgX=lensX+r.v*scale;
+    var fX_r=lensX+f*scale, fX_l=lensX-f*scale;
+    var objH=H*0.20, imgH=Math.min(Math.abs(r.m)*objH,H*0.38);
+    var lensH=H*0.40;
+
+    // axis
+    ctx.strokeStyle=C.border; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(12,cy); ctx.lineTo(W-12,cy); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // focal points
+    [fX_r,fX_l].forEach(function(fx,i){
+      ctx.fillStyle=C.orange; ctx.beginPath(); ctx.arc(fx,cy,4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=C.orange; ctx.font='bold 11px "Courier New",monospace';
+      ctx.textAlign='center'; ctx.textBaseline='top';
+      ctx.fillText(i===0?'F':'F\'',fx,cy+6);
+    });
+
+    // lens
+    ctx.strokeStyle=C.navy; ctx.lineWidth=2.5; ctx.fillStyle='rgba(27,42,74,0.06)';
+    ctx.beginPath();
+    ctx.moveTo(lensX,cy-lensH);
+    ctx.bezierCurveTo(lensX+20,cy-lensH*0.5,lensX+20,cy+lensH*0.5,lensX,cy+lensH);
+    ctx.bezierCurveTo(lensX-20,cy+lensH*0.5,lensX-20,cy-lensH*0.5,lensX,cy-lensH);
+    ctx.fill(); ctx.stroke();
+    ctx.strokeStyle=C.navy; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(lensX-7,cy-lensH); ctx.lineTo(lensX+7,cy-lensH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lensX-7,cy+lensH); ctx.lineTo(lensX+7,cy+lensH); ctx.stroke();
+
+    // rays
+    var tipY=cy-objH;
+    var tipImgY=r.inverted ? cy+imgH : cy-imgH;
+
+    // Ray 1: parallel to axis → through F
+    drawRay(objX,tipY,lensX,tipY,C.teal,1.8);
+    if(r.real){ drawRay(lensX,tipY,imgX,tipImgY,C.teal,1.8); }
+    else {
+      drawRay(lensX,tipY,lensX+(W-lensX)*0.9,tipY+(tipImgY-tipY)*0.9,C.teal,1.8,true);
+      ctx.strokeStyle=C.teal; ctx.lineWidth=1; ctx.setLineDash([4,3]); ctx.globalAlpha=0.4;
+      ctx.beginPath(); ctx.moveTo(lensX,tipY); ctx.lineTo(imgX,tipImgY); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha=1;
+    }
+
+    // Ray 2: through optical centre
+    drawRay(objX,tipY,r.real?imgX:imgX-20,r.real?tipImgY:tipImgY*0.9,C.orange,1.8);
+
+    // Ray 3: through F on object side → parallel
+    var r3RefY=cy+(tipY-cy)/(1-(f/u_abs));
+    drawRay(objX,tipY,lensX,r3RefY,C.yellow,1.8);
+    if(r.real){ drawRay(lensX,r3RefY,imgX,tipImgY,C.yellow,1.8); }
+    else { drawRay(lensX,r3RefY,lensX+(W-lensX)*0.9,r3RefY,C.yellow,1.8,true); }
+
+    // object
+    drawObjArrow(objX,cy,objH,C.teal);
+    ctx.fillStyle=C.teal; ctx.font='bold 11px "Nunito",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('Object',objX,cy-objH-4);
+
+    // image
+    if(Math.abs(r.v)<500&&Math.abs(imgX-lensX)>8){
+      drawObjArrow(imgX,cy,r.real?-imgH:imgH,r.real?C.orange:'rgba(224,112,32,0.5)');
+      ctx.fillStyle=r.real?C.orange:'rgba(224,112,32,0.7)';
+      ctx.font='bold 11px "Nunito",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+      ctx.fillText(r.real?'Real image':'Virtual image',imgX,cy-(r.real?imgH:imgH)-4);
+    }
+
+    // braces
+    if(objX>10) brace(objX,lensX,cy+objH+12,'|u|='+u_abs+' cm',C.teal);
+    if(Math.abs(imgX-lensX)>20&&Math.abs(r.v)<500) brace(lensX,imgX,cy+objH+12,'|v|='+Math.abs(r.v).toFixed(0)+' cm',C.orange);
+    ctx.textBaseline='alphabetic';
+  }
+
+  function updateUI(){
+    var r=compute();
+    document.getElementById('q08-r-u').textContent=r.u+' cm';
+    document.getElementById('q08-r-v').textContent=(r.v>0?'+':'')+r.v.toFixed(1)+' cm';
+    document.getElementById('q08-r-v').style.color=r.real?C.orange:C.muted;
+    document.getElementById('q08-r-m').textContent=r.m.toFixed(2)+'×';
+    document.getElementById('q08-r-type').textContent=r.real?(r.inverted?'Real, Inverted':'Real, Upright'):'Virtual, Upright';
+    document.getElementById('q08-r-type').style.color=r.real?C.teal:C.muted;
+    var denom=f*u_abs, num=u_abs-f;
+    document.getElementById('q08-fl-sub').innerHTML=
+      '1/v − 1/<span class="hi-red">('+r.u+')</span> = 1/<span class="hi-orange">'+f+'</span>';
+    document.getElementById('q08-fl-solve').innerHTML=
+      '1/v = 1/'+f+' − 1/'+u_abs+' = '+num+'/'+denom+' = 1/'+(denom/num).toFixed(0);
+    document.getElementById('q08-fl-result').innerHTML=
+      'v = <span class="hi-orange">'+(r.v>0?'+':'')+r.v.toFixed(1)+' cm</span>'+(r.real?' (real, other side)':' (virtual, same side)');
+  }
+
+  function updateBar(wId,fId,tId,val,min,max){
+    var w=document.getElementById(wId),f2=document.getElementById(fId),t=document.getElementById(tId);
+    var W=w.offsetWidth,R=10,px=R+((val-min)/(max-min))*(W-2*R);
+    f2.style.width=px+'px'; t.style.left=px+'px';
+  }
+
+  document.getElementById('q08-u-slider').addEventListener('input',function(){
+    u_abs=parseInt(this.value);
+    document.getElementById('q08-u-display').textContent=u_abs+' cm';
+    updateBar('q08-u-wrap','q08-u-fill','q08-u-thumb',u_abs,25,120);
+    updateUI();
+  });
+  document.getElementById('q08-f-slider').addEventListener('input',function(){
+    f=parseInt(this.value);
+    document.getElementById('q08-f-display').textContent='+'+f+' cm';
+    updateBar('q08-f-wrap','q08-f-fill','q08-f-thumb',f,10,50);
+    updateUI();
+  });
+
+  var prev=null;
+  function loop(ts){
+    var dt=prev?Math.min((ts-prev)/1000,0.05):0.016; prev=ts;
+    draw(); requestAnimationFrame(loop);
+  }
+
+  updateBar('q08-u-wrap','q08-u-fill','q08-u-thumb',60,25,120);
+  updateBar('q08-f-wrap','q08-f-fill','q08-f-thumb',20,10,50);
+  updateUI();
+  setTimeout(function(){ resizeCanvas(); requestAnimationFrame(loop); },150);
+})();
+</script>
