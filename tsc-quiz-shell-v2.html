@@ -304,6 +304,36 @@ body{
 .btn-submit-test{background:var(--teal);color:#fff}
 .btn-submit-test:hover{background:#0a7a70;transform:translateY(-1px)}
 
+/* Prominent Next button row */
+.next-btn-row{
+  padding:12px 20px 4px;
+  display:flex;
+  justify-content:flex-end;
+}
+.btn-next-prominent{
+  background:var(--navy);color:#fff;
+  border:none;border-radius:10px;
+  font:800 15px 'Nunito',sans-serif;
+  letter-spacing:.04em;
+  padding:12px 28px;
+  cursor:pointer;
+  transition:all .18s;
+  box-shadow:0 3px 12px rgba(27,42,74,0.25);
+}
+.btn-next-prominent:hover{background:#243860;transform:translateY(-2px);box-shadow:0 5px 16px rgba(27,42,74,0.32)}
+.btn-next-prominent:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-submit-prominent{
+  background:var(--teal);color:#fff;
+  border:none;border-radius:10px;
+  font:800 15px 'Nunito',sans-serif;
+  letter-spacing:.04em;
+  padding:12px 28px;
+  cursor:pointer;
+  transition:all .18s;
+  box-shadow:0 3px 12px rgba(13,148,136,0.3);
+}
+.btn-submit-prominent:hover{background:#0a7a70;transform:translateY(-2px);box-shadow:0 5px 16px rgba(13,148,136,0.4)}
+
 /* Mobile palette row */
 .palette-mobile-row{
   display:none;
@@ -543,12 +573,14 @@ body{
         <div class="iframe-wrap">
           <iframe class="question-iframe" id="q-iframe" scrolling="no"></iframe>
         </div>
+        <div class="next-btn-row" id="next-btn-row">
+          <button class="btn-next-prominent" id="btn-next-q" onclick="nextQuestion()" disabled>Next Question →</button>
+          <button class="btn-submit-prominent" id="btn-submit" onclick="confirmSubmit()" style="display:none">Submit Test ✓</button>
+        </div>
         <div class="q-nav-bar">
           <div class="q-nav-info" id="q-nav-info">Question 1 of 10</div>
           <div class="q-nav-right">
             <button class="btn-nav btn-skip" id="btn-skip" onclick="skipQuestion()">Skip</button>
-            <button class="btn-nav btn-next-q" id="btn-next-q" onclick="nextQuestion()" disabled>Next →</button>
-            <button class="btn-nav btn-submit-test" id="btn-submit" onclick="confirmSubmit()" style="display:none">Submit Test</button>
           </div>
         </div>
       </div>
