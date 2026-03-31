@@ -95,26 +95,26 @@
   <div class="meta">
     <span class="qlbl">Q1</span>
     <span class="topic-tag">Kinematics — Velocity &amp; Acceleration</span>
-    <span class="level-tag">L1 · Conceptual</span>
+    <span class="level-tag">L2 · Conceptual</span>
   </div>
 
   <!-- Question -->
   <div class="qwrap">
-    <div class="qtxt">An object moving in a straight line has a <strong>constant positive velocity</strong>. What is true about its acceleration?</div>
+    <div class="qtxt">A car moves in the <strong>+x direction</strong> at 8 m/s and uniformly decelerates to rest in 4 s. Which statement about its acceleration is correct?</div>
   </div>
 
   <!-- Options -->
   <div class="opts" id="q01-opts">
-    <button class="opt" data-idx="0" onclick="q01Answer(this)"><span class="opt-lbl">A</span>The acceleration is positive</button>
-    <button class="opt" data-idx="1" onclick="q01Answer(this)"><span class="opt-lbl">B</span>The acceleration is zero</button>
-    <button class="opt" data-idx="2" onclick="q01Answer(this)"><span class="opt-lbl">C</span>The acceleration is negative</button>
-    <button class="opt" data-idx="3" onclick="q01Answer(this)"><span class="opt-lbl">D</span>The acceleration equals the velocity</button>
+    <button class="opt" data-idx="0" onclick="q01Answer(this)"><span class="opt-lbl">A</span>a = +2 m/s², because motion is in the +x direction</button>
+    <button class="opt" data-idx="1" onclick="q01Answer(this)"><span class="opt-lbl">B</span>a = 0, because the car eventually comes to rest</button>
+    <button class="opt" data-idx="2" onclick="q01Answer(this)"><span class="opt-lbl">C</span>a = −2 m/s², opposite to the direction of motion</button>
+    <button class="opt" data-idx="3" onclick="q01Answer(this)"><span class="opt-lbl">D</span>a = −8 m/s², equal to the initial speed with reversed sign</button>
   </div>
 
   <!-- Correct answer reveal (wrong only) -->
   <div class="correct-line" id="q01-correct-line">
     <div class="correct-line-lbl">✓ Correct Answer</div>
-    B — The acceleration is zero
+    C — a = −2 m/s²
   </div>
 
   <!-- Answer feedback box -->
@@ -122,14 +122,14 @@
     <div class="answer-main" id="q01-answer-main"></div>
     <div class="answer-trap" id="q01-answer-trap">
       <div class="answer-trap-lbl" id="q01-trap-lbl">💡 Don't Fall For This</div>
-      <strong>Confusing motion with acceleration:</strong> If an object is moving fast, it must have acceleration — Wrong. Acceleration only occurs when velocity is <em>changing</em>.<br><br>
-      <strong>The sign-matching trap:</strong> Reading "positive velocity" and instinctively selecting "positive acceleration" is one of the most common errors. The sign of velocity indicates direction; the sign of acceleration indicates the direction of <em>change</em> in velocity — these are completely independent.
+      <strong>The direction-of-motion trap:</strong> The car moves in +x, so many students select "positive acceleration." But acceleration tells you how velocity is <em>changing</em> — not which direction you're going. Here, velocity is decreasing (+8 → 0), so Δv is negative.<br><br>
+      <strong>The "comes to rest = zero" trap:</strong> The final velocity is 0, but that's the endpoint, not the acceleration during the journey. a = Δv/Δt = −8/4 = −2 m/s² throughout.
     </div>
   </div>
 
   <!-- Simulation -->
   <div class="sim-wrap">
-    <div class="sim-label">▶ See the Physics — Constant Velocity &amp; Acceleration</div>
+    <div class="sim-label">▶ See the Physics — Deceleration &amp; Sign of Acceleration</div>
     <div class="sim-inner">
       <div class="overlay" id="q01-overlay">
         <div class="overlay-icon">🔒</div>
@@ -188,9 +188,9 @@
         <!-- Formula -->
         <div class="sim-formula">
           <div class="formula-eq">
-            a = &Delta;v / &Delta;t = (v<sub>f</sub> &minus; v<sub>i</sub>) / &Delta;t = (v &minus; v) / &Delta;t = <strong>0</strong>
+            a = &Delta;v / &Delta;t = (v<sub>f</sub> &minus; v<sub>i</sub>) / &Delta;t = (0 &minus; 8) / 4 = <strong>&minus;2 m/s&sup2;</strong>
           </div>
-          <div class="formula-note">Constant velocity → Δv = 0 → zero acceleration, regardless of speed.</div>
+          <div class="formula-note">Velocity decreases (+x → 0), so Δv is negative → acceleration is negative even though motion is in +x.</div>
         </div>
 
       </div><!-- /.sim-content -->
@@ -208,7 +208,7 @@
 
 <script>
 (function(){
-  var CORRECT = 1; // index of correct option (B)
+  var CORRECT = 2; // index of correct option (C)
 
   // ── Mode detection ──
   var mode = 'study';
@@ -260,7 +260,7 @@
       trap.style.color     = '#1b4a2a';
       trap.style.background = '#d8f0e4';
       trapLbl.style.color  = '#1b6b3a';
-      main.innerHTML = '✓ <strong>Correct!</strong> Acceleration is defined as the rate of change of velocity: a = Δv / Δt. Since the velocity is constant, Δv = 0, and therefore a = 0. An object can be moving at any speed — even very fast — and still have zero acceleration as long as that speed and direction are not changing.';
+      main.innerHTML = '✓ <strong>Correct!</strong> a = Δv/Δt = (0 − 8)/4 = <strong>−2 m/s²</strong>. The negative sign means acceleration points in the −x direction — opposite to motion. This is what "decelerating" means physically: the velocity vector is shrinking. The car is still moving in +x throughout, but acceleration is in −x.';
     } else {
       box.style.background = '#fff8f4';
       box.style.border     = '1px solid #f0c8a8';
@@ -270,7 +270,7 @@
       trap.style.color     = '#7a3000';
       trap.style.background = '#fdeee4';
       trapLbl.style.color  = '#c85a00';
-      main.innerHTML = '✗ <strong>Not quite.</strong> Acceleration is the rate of change of velocity — a = Δv / Δt. When velocity is constant, Δv = 0 no matter how fast the object is moving, so a = 0. The correct answer is B.';
+      main.innerHTML = '✗ <strong>Not quite.</strong> a = Δv/Δt = (0 − 8)/4 = <strong>−2 m/s²</strong>. The sign comes from the <em>change</em> in velocity, not the velocity itself. Moving in +x with <em>decreasing</em> speed means Δv is negative, so a is negative. The correct answer is C.';
     }
 
     // Unlock simulation
@@ -317,7 +317,8 @@ function reportHeight(){
 
   // ── Simulation ──
   var C = { navy:'#1b2a4a', teal:'#0d9488', orange:'#e07020', yellow:'#f7c948', muted:'#5a6e8a', grid:'rgba(27,42,74,0.08)' };
-  var vel = 5, running = true, simT = 0;
+  var simVi = 8, simAcc = -2, simDur = 4; // 8 m/s → 0 in 4s
+  var running = true, simT = 0;
   var hist = [];
 
   var car   = document.getElementById('q01-car');
@@ -326,11 +327,16 @@ function reportHeight(){
 
   function stepCar(dt){
     if(!running) return;
-    var speed = vel / 10;
-    carPos += speed * dt * 110; // always moves right
-    var maxX = track.offsetWidth - 52;
-    if(carPos > maxX){ carPos = 0; } // wrap back to left edge
+    simT += dt;
+    if(simT > simDur + 0.8){ simT = 0; carPos = 0; hist.length = 0; }
+    var v = Math.max(0, simVi + simAcc * Math.min(simT, simDur));
+    carPos += v * dt * 14;
+    var maxX = (track.offsetWidth || 300) - 52;
+    if(carPos > maxX){ carPos = maxX; }
     car.style.left = carPos + 'px';
+    // update live displays
+    document.getElementById('q01-v-display').textContent = '+' + v.toFixed(1) + ' m/s';
+    document.getElementById('q01-a-display').textContent = (simT < simDur ? simAcc.toFixed(1) : '0.0') + ' m/s²';
   }
 
   function updateThumb(v){
@@ -338,18 +344,16 @@ function reportHeight(){
     var fill  = document.getElementById('q01-slider-fill');
     var thumb = document.getElementById('q01-slider-thumb');
     var W = wrap.offsetWidth, R = 10;
-    var pct = (v - 1) / 9;
+    var pct = Math.max(0, v / simVi);
     var px  = R + pct * (W - 2 * R);
     fill.style.width = px + 'px';
     thumb.style.left = px + 'px';
   }
 
-  document.getElementById('q01-vel-slider').addEventListener('input', function(){
-    vel = +this.value;
-    document.getElementById('q01-v-display').textContent = '+' + vel.toFixed(1) + ' m/s';
-    updateThumb(vel);
-    hist.length = 0; simT = 0;
-  });
+  // Slider shows live speed — disable manual input
+  var sliderEl = document.getElementById('q01-vel-slider');
+  if(sliderEl){ sliderEl.disabled = true; sliderEl.style.pointerEvents = 'none'; }
+  if(sliderEl){ sliderEl.min = 0; sliderEl.max = 8; sliderEl.value = 8; }
 
   var cvV  = document.getElementById('q01-cv-v');
   var cvA  = document.getElementById('q01-cv-a');
@@ -366,7 +370,7 @@ function reportHeight(){
   }
 
   var ro = new ResizeObserver(function(){
-    resizeCanvas(cvV); resizeCanvas(cvA); updateThumb(vel);
+    resizeCanvas(cvV); resizeCanvas(cvA);
   });
   ro.observe(cvV); ro.observe(cvA);
   resizeCanvas(cvV); resizeCanvas(cvA);
@@ -427,15 +431,16 @@ function reportHeight(){
     prev = ts;
     stepCar(dt);
     if(running){
-      simT += dt;
-      if(simT > 20){ simT = 0; hist.length = 0; }
-      hist.push({ t:simT, v:vel, a:0 });
+      var v = Math.max(0, simVi + simAcc * Math.min(simT, simDur));
+      var a = simT < simDur ? simAcc : 0;
+      hist.push({ t: simT, v: v, a: a });
       if(hist.length > 800) hist.shift();
+      updateThumb(v);
     }
     var WV = cvV.offsetWidth || cvV.width/(window.devicePixelRatio||1);
     var WA = cvA.offsetWidth || cvA.width/(window.devicePixelRatio||1);
     drawGraph(ctxV, WV, 140, hist.map(function(p){return{t:p.t,val:p.v}}), C.teal,  0, 10, [0,2,4,6,8,10], 'v (m/s)');
-    drawGraph(ctxA, WA, 140, hist.map(function(p){return{t:p.t,val:p.a}}), C.orange,-2,  2, [-2,-1,0,1,2],  'a (m/s²)');
+    drawGraph(ctxA, WA, 140, hist.map(function(p){return{t:p.t,val:p.a}}), C.orange,-3, 1, [-2,-1,0,1],  'a (m/s²)');
     requestAnimationFrame(loop);
   }
 
@@ -445,7 +450,7 @@ function reportHeight(){
     if(!running){ hist.length = 0; simT = 0; }
   };
 
-  updateThumb(vel);
+  updateThumb(simVi);
   carPos = 0; car.style.left = '0px';
   car.style.transform = 'translateY(-62%) scaleX(-1)';
   requestAnimationFrame(loop);

@@ -75,30 +75,32 @@
   <div class="meta">
     <span class="qlbl">Q10</span>
     <span class="topic-tag">Waves &amp; Superposition</span>
-    <span class="level-tag">L2 · Conceptual</span>
+    <span class="level-tag">L3 · Numerical</span>
   </div>
 
   <div class="qwrap">
-    <div class="qtxt">Two waves y₁ = A sin(ωt) and y₂ = A sin(ωt + π) are superimposed. The resultant amplitude is:</div>
+    <div class="qtxt">Two waves y₁ = A sin(ωt) and y₂ = A sin(ωt + 2π/3) are superimposed. The resultant amplitude is:</div>
   </div>
 
   <div class="opts" id="q10-opts">
     <button class="opt" data-idx="0" onclick="q10Answer(this)"><span class="opt-lbl">A</span>2A</button>
     <button class="opt" data-idx="1" onclick="q10Answer(this)"><span class="opt-lbl">B</span>A</button>
-    <button class="opt" data-idx="2" onclick="q10Answer(this)"><span class="opt-lbl">C</span>A√2</button>
+    <button class="opt" data-idx="2" onclick="q10Answer(this)"><span class="opt-lbl">C</span>A√3</button>
     <button class="opt" data-idx="3" onclick="q10Answer(this)"><span class="opt-lbl">D</span>Zero</button>
   </div>
 
   <div class="correct-line" id="q10-correct-line">
     <div class="correct-line-lbl">✓ Correct Answer</div>
-    D — Zero
+    B — A
   </div>
 
   <div class="answer-box" id="q10-answer-box">
     <div class="answer-main" id="q10-answer-main"></div>
     <div class="answer-trap" id="q10-answer-trap">
       <div class="answer-trap-lbl" id="q10-trap-lbl">💡 Don't Fall For This</div>
-      <strong>Assuming superposition always doubles amplitude (→ 2A):</strong> Two identical waves only produce 2A when they are perfectly in phase (Δφ = 0). When Δφ = π (180°), every crest of one wave aligns with a trough of the other — they cancel perfectly. Phase difference, not just amplitude, determines the result.
+      <strong>Picking Zero (→ full cancellation):</strong> Δφ = π gives zero, but Δφ = 2π/3 is only 120° — not 180°. Students who memorise "phase difference → zero" without applying the formula get caught here.<br><br>
+      <strong>Picking 2A (→ constructive):</strong> Full constructive interference only happens at Δφ = 0. At 120°, the waves are partially out of phase, so amplitude must be less than 2A.<br><br>
+      <strong>The formula:</strong> A<sub>res</sub> = 2A cos(Δφ/2) = 2A cos(60°) = 2A × ½ = <strong>A</strong>. Always apply this — don't guess from the phase angle alone.
     </div>
   </div>
 
@@ -116,12 +118,12 @@
 
             <div class="s-card">
               <div class="s-label">Phase difference Δφ</div>
-              <div class="s-value" style="color:#e07020" id="q10-phi-display">π rad (180°)</div>
+              <div class="s-value" style="color:#e07020" id="q10-phi-display">2π/3 rad (120°)</div>
               <div class="bar-wrap" id="q10-phi-wrap">
                 <div class="bar-bg"></div>
                 <div class="bar-fill" id="q10-phi-fill" style="background:#e07020"></div>
                 <div class="bar-thumb" id="q10-phi-thumb" style="border:2px solid #e07020"></div>
-                <input class="range-input" type="range" id="q10-phi-slider" min="0" max="360" value="180" step="1">
+                <input class="range-input" type="range" id="q10-phi-slider" min="0" max="360" value="120" step="1">
               </div>
               <div class="bar-hints"><span>0°</span><span>360°</span></div>
             </div>
@@ -139,7 +141,7 @@
             </div>
 
             <div class="r-card">
-              <div class="r-row"><span class="r-key">Δφ</span><span class="r-val" style="color:#e07020" id="q10-r-phi">180°</span></div>
+              <div class="r-row"><span class="r-key">Δφ</span><span class="r-val" style="color:#e07020" id="q10-r-phi">120°</span></div>
               <div class="r-row"><span class="r-key">A_res</span><span class="r-val" id="q10-r-Ares">0.00 A</span></div>
               <div class="r-row"><span class="r-key">Type</span><span class="r-val" id="q10-r-type" style="color:#d94f3d">Destructive</span></div>
             </div>
@@ -171,7 +173,7 @@
 
 <script>
 (function(){
-  var CORRECT=3; // D — Zero
+  var CORRECT=1; // B — A
   var mode='study';
   try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam';
     if(p.get('mode') === 'review') mode = 'review'; }catch(e){}
@@ -199,13 +201,13 @@
       main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
       trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
       trapLbl.style.color='#1b6b3a';
-      main.innerHTML='✓ <strong>Correct!</strong> Use A_res = 2A cos(Δφ/2). With Δφ = π: A_res = 2A × cos(π/2) = 2A × 0 = <strong>Zero</strong>. This is perfectly destructive interference — every crest of y₁ aligns exactly with a trough of y₂. Drag the Δφ slider to 0° to see constructive interference give 2A.';
+      main.innerHTML='✓ <strong>Correct!</strong> Use A<sub>res</sub> = 2A cos(Δφ/2). With Δφ = 2π/3: A<sub>res</sub> = 2A × cos(π/3) = 2A × ½ = <strong>A</strong>. The phase difference of 120° means partial cancellation — not full (Δφ = π) and not constructive (Δφ = 0). Drag the Δφ slider to 120° in the sim to see it.';
     } else {
       box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
       main.style.color='#7a3000'; main.style.background='#fff8f4';
       trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
       trapLbl.style.color='#c85a00';
-      main.innerHTML='✗ <strong>Not quite.</strong> A_res = 2A cos(Δφ/2) = 2A cos(90°) = 2A × 0 = <strong>Zero</strong>. The phase difference π means the waves are perfectly out of phase — they cancel completely. The correct answer is D.';
+      main.innerHTML='✗ <strong>Not quite.</strong> A<sub>res</sub> = 2A cos(Δφ/2) = 2A cos(π/3) = 2A × ½ = <strong>A</strong>. A phase difference of 2π/3 (120°) gives partial cancellation — neither fully constructive (2A) nor fully destructive (0). The correct answer is B.';
     }
     var ov=document.getElementById('q10-overlay');
     ov.classList.add('hidden');
@@ -238,7 +240,7 @@ function reportHeight(){ var h=document.getElementById('tsc-jee-q10').scrollHeig
 
   // SIMULATION
   var C={navy:'#1b2a4a',teal:'#0d9488',orange:'#e07020',yellow:'#f7c948',red:'#d94f3d',muted:'#5a6e8a',border:'#d0dae8'};
-  var deltaPhi_deg=180, simA=1.0, animT=0;
+  var deltaPhi_deg=120, simA=1.0, animT=0;
 
   var cv=document.getElementById('q10-scene'), ctx=cv.getContext('2d');
 
@@ -414,7 +416,7 @@ function reportHeight(){ var h=document.getElementById('tsc-jee-q10').scrollHeig
     requestAnimationFrame(loop);
   }
 
-  updateBar('q10-phi-wrap','q10-phi-fill','q10-phi-thumb',180,0,360);
+  updateBar('q10-phi-wrap','q10-phi-fill','q10-phi-thumb',120,0,360);
   updateBar('q10-A-wrap','q10-A-fill','q10-A-thumb',1,0.5,2);
   updateUI();
   setTimeout(function(){ resizeCanvas(); requestAnimationFrame(loop); },150);

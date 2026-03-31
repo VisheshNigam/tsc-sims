@@ -75,31 +75,32 @@
   <div class="meta">
     <span class="qlbl">Q5</span>
     <span class="topic-tag">Electrostatics</span>
-    <span class="level-tag">L1 · Conceptual</span>
+    <span class="level-tag">L2 · Numerical</span>
   </div>
 
   <div class="qwrap">
-    <div class="qtxt">Charges <strong>+4 μC</strong> and <strong>−4 μC</strong> are placed <strong>0.2 m</strong> apart. The electric field at the midpoint between them is directed:</div>
+    <div class="qtxt">Charges <strong>+4 μC</strong> and <strong>−4 μC</strong> are placed <strong>0.2 m</strong> apart. The magnitude of the electric field at the midpoint between them is: &nbsp;(k = 9 × 10⁹ N m² C⁻²)</div>
   </div>
 
   <div class="opts" id="q05-opts">
-    <button class="opt" data-idx="0" onclick="q05Answer(this)"><span class="opt-lbl">A</span>From negative to positive</button>
-    <button class="opt" data-idx="1" onclick="q05Answer(this)"><span class="opt-lbl">B</span>From positive to negative</button>
-    <button class="opt" data-idx="2" onclick="q05Answer(this)"><span class="opt-lbl">C</span>Zero — the fields cancel</button>
-    <button class="opt" data-idx="3" onclick="q05Answer(this)"><span class="opt-lbl">D</span>Perpendicular to the line joining the charges</button>
+    <button class="opt" data-idx="0" onclick="q05Answer(this)"><span class="opt-lbl">A</span>0 N/C — the fields cancel at the midpoint</button>
+    <button class="opt" data-idx="1" onclick="q05Answer(this)"><span class="opt-lbl">B</span>7.2 × 10⁶ N/C</button>
+    <button class="opt" data-idx="2" onclick="q05Answer(this)"><span class="opt-lbl">C</span>3.6 × 10⁶ N/C</button>
+    <button class="opt" data-idx="3" onclick="q05Answer(this)"><span class="opt-lbl">D</span>1.44 × 10⁷ N/C</button>
   </div>
 
   <div class="correct-line" id="q05-correct-line">
     <div class="correct-line-lbl">✓ Correct Answer</div>
-    B — From positive to negative
+    D — 1.44 × 10⁷ N/C
   </div>
 
   <div class="answer-box" id="q05-answer-box">
     <div class="answer-main" id="q05-answer-main"></div>
     <div class="answer-trap" id="q05-answer-trap">
       <div class="answer-trap-lbl" id="q05-trap-lbl">💡 Don't Fall For This</div>
-      <strong>The cancellation trap (→ Zero):</strong> Equal and opposite charges do NOT cancel the field at the midpoint. Both fields point in the same direction here — away from +q and toward −q. Fields cancel at the midpoint only when both charges have the <em>same sign</em>, because then the fields point in opposite directions.
-    </div>
+      <strong>The cancellation trap (→ 0 N/C):</strong> Many students assume opposite charges cancel the field at the midpoint — they don't. The fields from +q and −q both point in the <em>same</em> direction there, so they add, not cancel.<br><br>
+      <strong>Forgetting to double (→ 3.6 × 10⁶):</strong> Each charge contributes E = kq/r² = 3.6 × 10⁶ N/C, but there are <em>two</em> charges both contributing in the same direction. E<sub>total</sub> = 2E = 1.44 × 10⁷ N/C.<br><br>
+      <strong>Using full separation as r (→ 7.2 × 10⁶):</strong> r is the distance from each charge to the midpoint — that's 0.1 m, not 0.2 m. Using r = 0.2 m gives a value 4× too small. </div>
   </div>
 
   <div class="sim-wrap">
@@ -171,7 +172,7 @@
 
 <script>
 (function(){
-  var CORRECT=1; // B
+  var CORRECT=3; // D
   var mode='study';
   try{ var p=new URLSearchParams(window.location.search); if(p.get('mode')==='exam') mode='exam';
     if(p.get('mode') === 'review') mode = 'review'; }catch(e){}
@@ -199,13 +200,13 @@
       main.style.color='#1b4a2a'; main.style.background='#e8f5ee';
       trap.style.borderTop='1px solid #a8d8b8'; trap.style.color='#1b4a2a'; trap.style.background='#d8f0e4';
       trapLbl.style.color='#1b6b3a';
-      main.innerHTML='✓ <strong>Correct!</strong> At the midpoint, the field due to +q points <em>away</em> from +q (rightward), and the field due to −q points <em>toward</em> −q (also rightward). Both contributions point in the same direction — <strong>from positive to negative</strong> — so they add constructively. E<sub>total</sub> = 2E = 2 × kq/r².';
+      main.innerHTML = '✓ <strong>Correct!</strong> r = 0.1 m (half the separation). Each charge contributes E = kq/r² = (9×10⁹ × 4×10⁻⁶) / (0.1)² = <strong>3.6 × 10⁶ N/C</strong>. Both fields point in the <em>same</em> direction at the midpoint (both point from +q toward −q), so E<sub>total</sub> = 2 × 3.6 × 10⁶ = <strong>1.44 × 10⁷ N/C</strong>.';
     } else {
       box.style.background='#fff8f4'; box.style.border='1px solid #f0c8a8';
       main.style.color='#7a3000'; main.style.background='#fff8f4';
       trap.style.borderTop='1px solid #f0c8a8'; trap.style.color='#7a3000'; trap.style.background='#fdeee4';
       trapLbl.style.color='#c85a00';
-      main.innerHTML='✗ <strong>Not quite.</strong> At the midpoint: E from +q points away from +q (→), and E from −q points toward −q (also →). Both point in the same direction — <strong>from + to −</strong>. The correct answer is B.';
+      main.innerHTML='✗ <strong>Not quite.</strong> r = 0.1 m (half of 0.2 m). E from each charge = kq/r² = (9×10⁹ × 4×10⁻⁶) / 0.01 = 3.6 × 10⁶ N/C. Both fields point in the <em>same</em> direction at the midpoint, so E<sub>total</sub> = 2 × 3.6 × 10⁶ = <strong>1.44 × 10⁷ N/C</strong>. The correct answer is D.';
     }
     var ov=document.getElementById('q05-overlay');
     ov.classList.add('hidden');
