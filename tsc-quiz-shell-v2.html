@@ -515,26 +515,7 @@ body{
         </div>
       </div>
 
-      <div class="name-group">
-        <label class="input-label" for="student-name">Your Name</label>
-        <input class="tsc-input" id="student-name" type="text" placeholder="Enter your name…" autocomplete="off">
-      </div>
-
-      <div class="mode-section-label">🎯 Select Test Mode</div>
-      <div class="mode-toggle-grid">
-        <div class="mode-card" onclick="selectMode('exam')" id="mode-card-exam">
-          <div class="mode-card-icon">🎯</div>
-          <div class="mode-card-title">Exam Mode</div>
-          <div class="mode-card-desc">Explanations hidden during test. Revealed only after final submission — just like the real JEE.</div>
-        </div>
-        <div class="mode-card" onclick="selectMode('study')" id="mode-card-study">
-          <div class="mode-card-icon">📖</div>
-          <div class="mode-card-title">Study Mode</div>
-          <div class="mode-card-desc">Correct answer and explanation revealed immediately after each answer. Great for learning.</div>
-        </div>
-      </div>
-
-      <button class="btn-primary" id="btn-start-test" onclick="startTest()" disabled>Start Test →</button>
+      <button class="btn-selector-start" id="btn-start-test" onclick="startTest()">Start Challenge →</button>
     </div>
   </div>
 
@@ -758,31 +739,12 @@ window.goToStart = function(){
 };
 
 // ════════════════════════════════
-// SCREEN 2 — JEE START
+// SCREEN 2 — JEE START (Exam-only, no name)
 // ════════════════════════════════
-var nameInput = document.getElementById('student-name');
-nameInput.addEventListener('input', checkStartReady);
-nameInput.addEventListener('keydown', function(e){
-  if(e.key === 'Enter') checkStartReady();
-});
-
-window.selectMode = function(m){
-  state.mode = m;
-  document.getElementById('mode-card-exam').classList.remove('selected-exam','selected-study');
-  document.getElementById('mode-card-study').classList.remove('selected-exam','selected-study');
-  document.getElementById('mode-card-'+m).classList.add('selected-'+m);
-  checkStartReady();
-};
-
-function checkStartReady(){
-  var nameOk = nameInput.value.trim().length >= 2;
-  var modeOk = state.mode !== '';
-  document.getElementById('btn-start-test').disabled = !(nameOk && modeOk);
-}
 
 window.startTest = function(){
-  state.name = nameInput.value.trim();
-  if(!state.name || !state.mode) return;
+  state.mode = 'exam';
+  state.name = 'Student';
 
   // Build bank — randomly pick 10 from full pool, preserve topic order
   activeBank = buildActiveBank(state.stream);
@@ -794,8 +756,8 @@ window.startTest = function(){
 
   // Mode badge
   var badge = document.getElementById('mode-badge');
-  badge.textContent = state.mode === 'exam' ? 'Exam Mode' : 'Study Mode';
-  badge.className   = 'mode-badge ' + state.mode;
+  badge.textContent = 'Exam Mode';
+  badge.className   = 'mode-badge exam';
   badge.style.display = 'block';
 
   // Show timer bar
@@ -803,11 +765,6 @@ window.startTest = function(){
   document.querySelector('.tsc-header-bar').classList.add('active');
   updateTimerDisplay();
   startTimer();
-
-  // Show live score only in study mode
-  if(state.mode === 'study'){
-    document.getElementById('palette-score-box').style.display = 'block';
-  }
 
   buildPalette();
   showScreen('screen-quiz');
@@ -1079,9 +1036,8 @@ window.showFeedback = function(){
   var marks   = state.score;
   var secs    = state.elapsed;
   var total   = activeBank.length;
-  var name    = state.name;
 
-  document.getElementById('fb-title').textContent    = name + "'s Performance Report";
+  document.getElementById('fb-title').textContent    = 'Your Performance Report';
   document.getElementById('fb-subtitle').textContent = 'IIT JEE Physics · 10 Questions · ' + formatTime(secs);
 
   // Time note
@@ -1145,10 +1101,6 @@ window.retakeQuiz = function(){
   state.mode  = '';
   state.name  = '';
   state.score = 0;
-  document.getElementById('student-name').value = '';
-  document.getElementById('mode-card-exam').classList.remove('selected-exam','selected-study');
-  document.getElementById('mode-card-study').classList.remove('selected-exam','selected-study');
-  document.getElementById('btn-start-test').disabled = true;
   document.getElementById('mode-badge').style.display = 'none';
   document.getElementById('palette-score-box').style.display = 'none';
   showScreen('screen-start');
