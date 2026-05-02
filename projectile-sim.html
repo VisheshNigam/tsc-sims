@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion: Trajectory and Range Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+#tsc-projectile-sim {
+  font-family: 'Nunito', sans-serif;
+  background: #FFFFFF;
+  color: #0F172A;
+  padding: 18px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+#tsc-projectile-sim *,
+#tsc-projectile-sim *::before,
+#tsc-projectile-sim *::after { box-sizing: border-box; }
+
+#tsc-projectile-sim .tsc-canvas-wrap {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 8px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+@keyframes tsc-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.tsc-clock-active circle {
+  animation: tsc-pulse 1.5s infinite ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes tsc-float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+#tsc-splash-screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle, rgba(248, 250, 252, 0.4) 0%, rgba(248, 250, 252, 0) 70%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+.tsc-splash-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 24px 36px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: -100px; 
+}
+#tsc-splash-screen:hover .tsc-splash-card {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12), 0 6px 10px rgba(0, 0, 0, 0.06);
+}
+#tsc-splash-screen .tsc-splash-icon {
+  font-size: 50px; 
+  animation: tsc-float 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+  margin-bottom: 8px;
+}
+#tsc-splash-screen h2 {
+  font-size: 22px;
+  color: #0F172A;
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+#tsc-splash-screen p {
+  color: #0D9488;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+}
+#tsc-splash-screen .tsc-splash-btn {
+  background: #10B981;
+  color: #FFFFFF;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  pointer-events: none; 
+}
+
+#tsc-projectile-sim .tsc-canvas-time-readout {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0F172A;
+  transition: all 0.2s ease;
+}
+#tsc-projectile-sim .tsc-canvas-toggles {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+#tsc-projectile-sim .tsc-toggle-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+}
+#tsc-projectile-sim .tsc-toggle-label input {
+  cursor: pointer;
+  margin: 0;
+}
+#tsc-projectile-sim .tsc-toggle-label:hover {
+  color: #0F172A;
+}
+#tsc-projectile-sim .tsc-toggle-label.tsc-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#tsc-projectile-sim .tsc-toggle-label.tsc-disabled input {
+  cursor: not-allowed;
+}
+#tsc-projectile-sim .tsc-toggle-label.tsc-disabled:hover {
+  color: #64748B;
+}
+#tsc-projectile-sim canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  touch-action: none;
+}
+#tsc-projectile-sim .tsc-top-canvas { height: 620px; } 
+
+#tsc-projectile-sim .tsc-main-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 12px 18px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  gap: 15px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
+}
+#tsc-projectile-sim .tsc-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+#tsc-projectile-sim .tsc-compact-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 820px) {
+  #tsc-projectile-sim .tsc-main-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+  #tsc-projectile-sim .tsc-toolbar-group { justify-content: center; gap: 10px; }
+  #tsc-projectile-sim .tsc-top-canvas { height: 400px; }
+}
+
+#tsc-projectile-sim input[type="number"] {
+  background: #FFFFFF;
+  color: #047857;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  width: 80px;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#tsc-projectile-sim input[type="number"]:focus {
+  border-color: #10B981;
+}
+
+#tsc-projectile-sim .tsc-btn {
+  background: #FFFFFF;
+  border: 1px solid #10B981;
+  color: #047857;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#tsc-projectile-sim .tsc-btn:hover { background: #10B981; color: #FFFFFF; }
+#tsc-projectile-sim .tsc-btn.active { background: #10B981; color: #FFFFFF; }
+
+#tsc-projectile-sim .tsc-footer {
+  margin-top: 14px;
+  text-align: right;
+  font-size: 12px;
+  color: #64748B;
+}
+#tsc-projectile-sim .tsc-footer a {
+  color: #64748B;
+  text-decoration: none;
+  border-bottom: 1px solid #E2E8F0;
+}
+#tsc-projectile-sim .tsc-footer a:hover { color: #10B981; border-bottom-color: #10B981; }
+</style>
+</head>
+<body>
+
+<div id="tsc-projectile-sim">
+  <div class="tsc-main-toolbar">
+    <div class="tsc-toolbar-group">
+      <div class="tsc-compact-ctrl">
+        <span class="tsc-ctrl-label-primary">Launch angle θ₀ (°)</span>
+        <input type="number" id="tsc-angle" min="0" max="90" step="1" value="45">
+      </div>
+      <div class="tsc-compact-ctrl">
+        <span class="tsc-ctrl-label-primary">Initial speed v₀ (m/s)</span>
+        <input type="number" id="tsc-speed" min="5" max="50" step="1" value="20">
+      </div>
+      <div class="tsc-compact-ctrl">
+        <span class="tsc-ctrl-label-primary">Initial height y₀ (m)</span>
+        <input type="number" id="tsc-height" min="0" max="50" step="1" value="0">
+      </div>
+    </div>
+
+    <div class="tsc-toolbar-group">
+      <button class="tsc-btn" id="tsc-btn-play">Play</button>
+      <button class="tsc-btn" id="tsc-btn-slow">Slow Motion</button>
+      <button class="tsc-btn" id="tsc-btn-step">Step</button>
+      <button class="tsc-btn" id="tsc-btn-reset">Reset</button>
+    </div>
+  </div>
+
+  <div class="tsc-canvas-wrap tsc-top-canvas">
+    <div id="tsc-splash-screen">
+      <div class="tsc-splash-card">
+        <div class="tsc-splash-icon">🍉</div>
+        <h2>Projectile Motion</h2>
+        <p>Master 2D Kinematics & Vectors</p>
+        <button class="tsc-splash-btn">Click to Explore</button>
+      </div>
+    </div>
+
+    <div class="tsc-canvas-time-readout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span id="tsc-canvas-time">t = 0.00 s</span>
+    </div>
+    <div class="tsc-canvas-toggles">
+      <label class="tsc-toggle-label"><input type="checkbox" id="tsc-strobe" checked> Strobe Map</label>
+      <label class="tsc-toggle-label"><input type="checkbox" id="tsc-target"> Target Mode</label>
+      <label class="tsc-toggle-label"><input type="checkbox" id="tsc-comp-angle"> Complementary (90°-θ₀)</label>
+      <label class="tsc-toggle-label"><input type="checkbox" id="tsc-drag"> Air Drag</label>
+    </div>
+    <canvas id="tsc-canvas-top"></canvas>
+  </div>
+
+  <div class="tsc-footer">
+    <a href="https://www.thesciencecube.com/" target="_blank" rel="noopener">The Science Cube</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- Constants & State ----------
+  var DT = 0.016;                  
+  var CANVAS_ACCENT = '#10B981';   
+  var TEAL = '#0D9488';            
+  var ORANGE = '#EA580C';          
+  var YELLOW = '#D97706';          
+  var TEXT_CANVAS = '#64748B';     
+  var GRID = '#E2E8F0';            
+  var BG_CANVAS = '#F8FAFC';       
+
+  var S = {
+    angleDeg: 45, v0: 20, y0: 0, g: 9.8, t: 0, x: 0, y: 0, vx: 0, vy: 0,
+    rotationAngle: 0, omega: 0, dragEnabled: false, strobeEnabled: true,
+    strobes: [], strobeInterval: 0.25, targetMode: false, targetX: 100,
+    targetW: 8, targetHit: false, compAngleEnabled: false, showSplashFountain: false,
+    running: false, slow: false, finished: false, trail: [],
+    peakReached: false, peakX: 0, peakY: 0, rangeCrossReached: false, rangeCrossX: 0
+  };
+
+  var birds = []; // Array to hold our background flock
+
+  // ---------- Element refs ----------
+  var elTop = document.getElementById('tsc-canvas-top');
+  var ctxT = elTop.getContext('2d');
+  
+  var elAngle = document.getElementById('tsc-angle');
+  var elSpeed = document.getElementById('tsc-speed');
+  var elHeight = document.getElementById('tsc-height');
+  var elDrag = document.getElementById('tsc-drag');
+  var elStrobe = document.getElementById('tsc-strobe');
+  var elTarget = document.getElementById('tsc-target');
+  var elCompAngle = document.getElementById('tsc-comp-angle');
+
+  var canvasTime = document.getElementById('tsc-canvas-time');
+  var elClockSvg = document.querySelector('#tsc-projectile-sim .tsc-canvas-time-readout svg');
+  var splashScreen = document.getElementById('tsc-splash-screen');
+
+  var btnPlay = document.getElementById('tsc-btn-play');
+  var btnSlow = document.getElementById('tsc-btn-slow');
+  var btnStep = document.getElementById('tsc-btn-step');
+  var btnReset = document.getElementById('tsc-btn-reset');
+
+  // ---------- Math & Scaling ----------
+  function predictedMetrics() {
+    var th = S.angleDeg * Math.PI / 180;
+    var v0y = S.v0 * Math.sin(th);
+    var v0x = S.v0 * Math.cos(th);
+    
+    if (S.dragEnabled) {
+      var t = 0, x = 0, y = S.y0, vx = v0x, vy = v0y;
+      var kD = 0.007, dt = 0.016, peakY = S.y0;
+      while(y >= 0 && t < 30) {
+        var v = Math.sqrt(vx*vx + vy*vy);
+        vx += (-kD * v * vx) * dt;
+        vy += (-S.g - kD * v * vy) * dt;
+        x += vx * dt;
+        y += vy * dt;
+        t += dt;
+        if (y > peakY) peakY = y;
+      }
+      return { T: t, R: x, H: peakY, v0x: v0x, v0y: v0y };
+    } else {
+      var T = (v0y + Math.sqrt(v0y * v0y + 2 * S.g * S.y0)) / S.g;
+      var R = v0x * T;
+      var H = S.y0 + (v0y * v0y) / (2 * S.g);
+      return { T: T, R: R, H: H, v0x: v0x, v0y: v0y };
+    }
+  }
+
+  function topScale() {
+    var pm = predictedMetrics();
+    var W = elTop.width, H = elTop.height;
+    var xRange, yRange, vScale, padL = 38, padR, padT = 18, padB;
+
+    if (S.targetMode) {
+      xRange = 150;  
+      yRange = 85;   
+      vScale = 2.5;  
+      padR = 60;
+      padB = 130;
+    } else {
+      xRange = Math.max(pm.R * 1.1, 50);
+      var maxH = pm.H;
+      if (S.compAngleEnabled) {
+        var compTh = (90 - S.angleDeg) * Math.PI / 180;
+        var compV0y = S.v0 * Math.sin(compTh);
+        maxH = Math.max(maxH, S.y0 + (compV0y * compV0y) / (2 * S.g));
+      }
+      yRange = Math.max(maxH * 1.25, xRange * 0.4);
+      if (yRange < 20) yRange = 20;
+
+      vScale = Math.min(6, 120 / Math.max(1, S.v0));
+      padR = Math.max(30, (pm.v0x * vScale) + 40);
+      padB = Math.max(80, (pm.v0y * vScale) + 50);
+    }
+
+    var sx = (W - padL - padR) / xRange;
+    var sy = (H - padB - padT) / yRange;
+    
+    // Calculate aspect ratio multiplier for vectors so they stretch cleanly with the grid
+    var th = S.angleDeg * Math.PI / 180;
+    var v0x = S.v0 * Math.cos(th);
+    var v0y = S.v0 * Math.sin(th);
+    var rawVisLen = Math.sqrt(Math.pow(v0x * sx, 2) + Math.pow(v0y * sy, 2));
+    var vMult = (vScale * S.v0) / (rawVisLen || 1);
+
+    return {
+      W: W, H: H, padL: padL, padR: padR, padB: padB, padT: padT,
+      sx: sx, sy: sy, xRange: xRange, yRange: yRange,
+      toX: function(wx){ return padL + wx * sx; },
+      toY: function(wy){ return H - padB - wy * sy; },
+      vScale: vScale,
+      vMult: vMult
+    };
+  }
+
+  function resizeCanvas(canvas) {
+    var rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width - 16;
+    canvas.height = rect.height - 16;
+  }
+
+  // ---------- Ambient Background Animations ----------
+  function initBirds() {
+    birds = [];
+    for(var i = 0; i < 6; i++) {
+      birds.push({
+        x: Math.random() * 1500,
+        y: 20 + Math.random() * 150, // Keep them in the upper sky
+        vx: 15 + Math.random() * 25, // Gentle horizontal drift
+        vy: (Math.random() - 0.5) * 5,
+        phase: Math.random() * Math.PI * 2, // Desynchronize wing flaps
+        speed: 3 + Math.random() * 4,
+        size: 4 + Math.random() * 4
+      });
+    }
+  }
+
+  function updateBirds(dt) {
+    birds.forEach(function(b) {
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.phase += b.speed * dt;
+      b.y += Math.sin(b.phase) * 0.1; // Tiny vertical bobbing with flap
+      
+      // Wrap around screen
+      if (b.x > elTop.width + 50) {
+        b.x = -50;
+        b.y = 20 + Math.random() * 150;
+      }
+    });
+  }
+
+  function drawBirds(ctx) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)'; // Slate-400 with 40% opacity for subtlety
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    birds.forEach(function(b) {
+      ctx.beginPath();
+      var wingY = Math.sin(b.phase) * b.size;
+      // Left wing
+      ctx.moveTo(b.x - b.size, b.y - wingY);
+      ctx.quadraticCurveTo(b.x, b.y + b.size * 0.4, b.x, b.y);
+      // Right wing
+      ctx.quadraticCurveTo(b.x, b.y + b.size * 0.4, b.x + b.size, b.y - wingY);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function niceStep(range, targetTicks) {
+    var rough = range / targetTicks;
+    var pow10 = Math.pow(10, Math.floor(Math.log10(rough)));
+    var n = rough / pow10;
+    var step = (n < 1.5) ? 1 : ((n < 3) ? 2 : ((n < 7) ? 5 : 10));
+    return step * pow10;
+  }
+
+  // ---------- Drawing Engine ----------
+  function drawTop() {
+    var s = topScale();
+    var ctx = ctxT;
+    ctx.clearRect(0, 0, s.W, s.H);
+
+    // Background
+    ctx.fillStyle = BG_CANVAS;
+    ctx.fillRect(0, 0, s.W, s.H);
+
+    // Draw ambient birds far in the background
+    drawBirds(ctx);
+
+    // Grid
+    ctx.strokeStyle = GRID;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    var xStep = niceStep(s.xRange, 6);
+    for (var gx = xStep; gx <= s.xRange; gx += xStep) {
+      var px = s.toX(gx);
+      ctx.beginPath(); ctx.moveTo(px, s.padT); ctx.lineTo(px, s.H - s.padB); ctx.stroke();
+    }
+    var yStep = niceStep(s.yRange, 5);
+    for (var gy = yStep; gy <= s.yRange; gy += yStep) {
+      var py = s.toY(gy);
+      ctx.beginPath(); ctx.moveTo(s.padL, py); ctx.lineTo(s.W - s.padR, py); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Ground line (y = 0)
+    ctx.strokeStyle = '#94A3B8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(s.padL, s.toY(0));
+    ctx.lineTo(s.W - s.padR, s.toY(0));
+    ctx.stroke();
+
+    // Visual Cliff/Table
+    if (S.y0 > 0) {
+      ctx.fillStyle = '#F1F5F9'; 
+      var cliffX = s.toX(0);
+      var cliffY = s.toY(S.y0);
+      var groundY = s.toY(0);
+      
+      ctx.fillRect(0, cliffY, cliffX, groundY - cliffY);
+      
+      ctx.strokeStyle = '#CBD5E1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, cliffY);
+      ctx.lineTo(cliffX, cliffY);
+      ctx.lineTo(cliffX, groundY);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(cliffX, cliffY);
+      ctx.lineTo(s.W - s.padR, cliffY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Axes labels (ticks)
+    ctx.fillStyle = TEXT_CANVAS;
+    ctx.font = '11px "JetBrains Mono", "Courier New", monospace';
+    ctx.textAlign = 'center';
+    for (var tx = 0; tx <= s.xRange; tx += xStep) {
+      ctx.fillText(tx.toFixed(0), s.toX(tx), s.H - s.padB + 14);
+    }
+    ctx.textAlign = 'right';
+    for (var ty = 0; ty <= s.yRange; ty += yStep) {
+      ctx.fillText(ty.toFixed(0), s.padL - 6, s.toY(ty) + 4);
+    }
+    ctx.fillStyle = TEXT_CANVAS;
+    ctx.font = 'bold 10px Nunito, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('x (m)', s.W - s.padR - 36, s.H - s.padB - 6);
+    ctx.save();
+    ctx.translate(12, s.padT + 30);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('y (m)', 0, 0);
+    ctx.restore();
+
+    if (S.showSplashFountain) {
+      drawGalileosFountain(ctx, s);
+    } else {
+      // 1. Draw Background Traces
+      if (S.dragEnabled) drawIdealTrace(ctx, s);
+      if (S.compAngleEnabled) drawCompTrace(ctx, s);
+      if (S.targetMode) drawTarget(ctx, s);
+      
+      // Calculate origin coordinates for layering
+      var startPx = s.toX(0);
+      var startPy = s.toY(S.y0);
+      var th = S.angleDeg * Math.PI / 180;
+
+      // Calculate ASPECT RATIO CORRECTED visual angle for the cannon
+      var visualAngle = Math.atan2(Math.sin(th) * s.sy, Math.cos(th) * s.sx);
+
+      // 2. Base Layer: Draw the Launcher so it sits in the background
+      drawSpringLauncher(ctx, startPx, startPy, visualAngle, S.t);
+
+      // 3. Middle Layer: Draw the Trail, Strobes, and Markers OVER the launcher
+      drawTelemetry(ctx, s);
+
+      // 4. Foreground Layer: Draw active projectile and all vectors absolutely on TOP
+      drawProjectileAndVectors(ctx, s, startPx, startPy, th);
+    }
+  }
+
+  function drawGalileosFountain(ctx, s) {
+    var angles = [30, 45, 60];
+    var v0 = 20;
+
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = CANVAS_ACCENT;
+
+    angles.forEach(function(angDeg) {
+      var th = angDeg * Math.PI / 180;
+      var v0x = v0 * Math.cos(th);
+      var v0y = v0 * Math.sin(th);
+      var T = 2 * v0y / S.g;
+
+      // Glow Trail
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.65)';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (var t = 0; t <= T; t += 0.05) {
+        var x = v0x * t;
+        var y = v0y * t - 0.5 * S.g * t * t;
+        if (y < 0) y = 0;
+        if (t === 0) ctx.moveTo(s.toX(x), s.toY(y));
+        else ctx.lineTo(s.toX(x), s.toY(y));
+      }
+      var finalX = v0x * T;
+      ctx.lineTo(s.toX(finalX), s.toY(0));
+      ctx.stroke();
+
+      // Strobes (transparent watermelons mapping the path)
+      ctx.globalAlpha = 0.25;
+      for (var st = 0.25; st < T; st += 0.25) { 
+         var sx = v0x * st;
+         var sy = v0y * st - 0.5 * S.g * st * st;
+         var rot = (st * 12) % (Math.PI * 2);
+         ctx.save();
+         ctx.translate(s.toX(sx), s.toY(sy));
+         ctx.rotate(rot);
+         ctx.font = '22px Arial';
+         ctx.textAlign = 'center';
+         ctx.textBaseline = 'middle';
+         ctx.fillText('🍉', 0, 0);
+         ctx.restore();
+      }
+      ctx.globalAlpha = 1.0;
+
+      // Smashed Melon at impact point
+      var px = s.toX(finalX);
+      var py = s.toY(0);
+      ctx.save();
+      ctx.translate(px, py);
+      
+      ctx.fillStyle = '#FF4444';
+      ctx.beginPath(); ctx.arc(-18, -15, 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(20, -12, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6, -22, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-26, -5, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(28, -4, 2.5, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#2ECC71';
+      ctx.beginPath(); ctx.arc(-10, -20, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(14, -18, 2, 0, Math.PI * 2); ctx.fill();
+
+      ctx.scale(1.3, 0.6);
+      ctx.translate(0, -6);
+      ctx.font = '22px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🍉', 0, 0);
+      ctx.restore();
+    });
+    ctx.restore();
+
+    // Draw Launcher fixed at 45 deg for aesthetics (Aspect Ratio Corrected)
+    var fTh = 45 * Math.PI / 180;
+    var fVisAngle = Math.atan2(Math.sin(fTh) * s.sy, Math.cos(fTh) * s.sx);
+    drawSpringLauncher(ctx, s.toX(0), s.toY(0), fVisAngle, 0);
+
+    // Symmetrical Range Labels
+    ctx.fillStyle = '#0D9488';
+    ctx.font = 'bold 13px Nunito, sans-serif';
+    ctx.textAlign = 'center';
+    
+    var range30_60 = v0 * v0 * Math.sin(2 * 30 * Math.PI / 180) / S.g;
+    var range45 = v0 * v0 * Math.sin(2 * 45 * Math.PI / 180) / S.g;
+
+    // Staggered Y offsets so the labels never overlap when rendering
+    ctx.fillText('30° & 60° share range Δx', s.toX(range30_60), s.toY(0) - 55);
+    ctx.fillText('45° achieves Max Range', s.toX(range45), s.toY(0) - 25);
+  }
+
+  function drawProjectileAndVectors(ctx, s, startPx, startPy, th) {
+    var px_projectile = s.toX(S.x);
+    var py_projectile = s.toY(S.y);
+    
+    // Draw projectile
+    ctx.save();
+    ctx.translate(px_projectile, py_projectile);
+    
+    if (S.finished) {
+      ctx.fillStyle = '#FF4444'; 
+      ctx.beginPath(); ctx.arc(-18, -15, 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(20, -12, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6, -22, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-26, -5, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(28, -4, 2.5, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#2ECC71'; 
+      ctx.beginPath(); ctx.arc(-10, -20, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(14, -18, 2, 0, Math.PI * 2); ctx.fill();
+
+      ctx.scale(1.3, 0.6); 
+      ctx.translate(0, -6); 
+    } else {
+      ctx.rotate(S.rotationAngle);
+    }
+
+    ctx.font = '22px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🍉', 0, 0);
+    ctx.restore();
+
+    // Draw initial velocity vectors (Aspect Ratio Corrected, ALWAYS visible)
+    var v0x = S.v0 * Math.cos(th);
+    var v0y = S.v0 * Math.sin(th);
+    
+    var v0x_px = v0x * s.sx * s.vMult;
+    var v0y_px = v0y * s.sy * s.vMult;
+    
+    if (S.t === 0) {
+      drawArrow(ctx, startPx, startPy, startPx + v0x_px, startPy, TEAL, 'v₀ₓ');
+      drawArrow(ctx, startPx, startPy, startPx, startPy - v0y_px, ORANGE, 'v₀ᵧ');
+      drawArrow(ctx, startPx, startPy, startPx + v0x_px, startPy - v0y_px, YELLOW, 'v₀');
+      drawAngleArc(ctx, startPx, startPy, v0x_px, v0y_px, YELLOW, S.angleDeg.toFixed(0) + '°');
+    }
+
+    // Draw in-flight dynamic velocity vectors
+    if (S.t > 0 && !S.finished) {
+      var vx_px = S.vx * s.sx * s.vMult;
+      var vy_px = S.vy * s.sy * s.vMult;
+      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile, TEAL, 'vₓ');
+      drawArrow(ctx, px_projectile, py_projectile, px_projectile, py_projectile - vy_px, ORANGE, 'vᵧ');
+      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile - vy_px, YELLOW, 'v');
+      
+      var currentAngleDeg = Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI);
+      drawAngleArc(ctx, px_projectile, py_projectile, vx_px, vy_px, YELLOW, currentAngleDeg.toFixed(0) + '°');
+    }
+
+    // Draw final impact vectors and range marker
+    if (S.finished) {
+      var vx_px = S.vx * s.sx * s.vMult;
+      var vy_px = S.vy * s.sy * s.vMult;
+      
+      // Final impact velocity vectors
+      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile, TEAL, 'vₓ');
+      drawArrow(ctx, px_projectile, py_projectile, px_projectile, py_projectile - vy_px, ORANGE, 'vᵧ');
+      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile - vy_px, YELLOW, 'v');
+      
+      var finalAngleDeg = Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI);
+      drawAngleArc(ctx, px_projectile, py_projectile, vx_px, vy_px, YELLOW, finalAngleDeg.toFixed(0) + '°');
+
+      // Range displacement marker
+      var rStartX = px_projectile;
+      var rStartY = py_projectile - 60;
+      var rEndX = px_projectile;
+      var rEndY = py_projectile - 15;
+
+      ctx.strokeStyle = CANVAS_ACCENT;
+      ctx.fillStyle = CANVAS_ACCENT;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(rStartX, rStartY);
+      ctx.lineTo(rEndX, rEndY);
+      ctx.stroke();
+
+      var rHeadAngle = Math.PI / 2;
+      var rAh = 7; 
+
+      ctx.beginPath();
+      ctx.moveTo(rEndX, rEndY);
+      ctx.lineTo(rEndX - rAh * Math.cos(rHeadAngle - 0.4), rEndY - rAh * Math.sin(rHeadAngle - 0.4));
+      ctx.lineTo(rEndX - rAh * Math.cos(rHeadAngle + 0.4), rEndY - rAh * Math.sin(rHeadAngle + 0.4));
+      ctx.closePath();
+      ctx.fill();
+
+      var displacementLabel = (S.y0 === 0) ? 'Range Δx = ' : 'Range Δx = ';
+      
+      ctx.font = 'bold 11px Nunito, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(displacementLabel + S.x.toFixed(2) + ' m', rStartX, rStartY - 2);
+    }
+  }
+
+  function drawIdealTrace(ctx, s) {
+    var idTh = S.angleDeg * Math.PI / 180;
+    var idV0x = S.v0 * Math.cos(idTh);
+    var idV0y = S.v0 * Math.sin(idTh);
+    var idT = (idV0y + Math.sqrt(idV0y * idV0y + 2 * S.g * S.y0)) / S.g;
+    
+    ctx.strokeStyle = '#CBD5E1'; 
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    for (var tStep = 0; tStep <= idT; tStep += 0.05) {
+      var cx = idV0x * tStep;
+      var cy = S.y0 + idV0y * tStep - 0.5 * S.g * tStep * tStep;
+      if (cy < 0) cy = 0;
+      if (tStep === 0) ctx.moveTo(s.toX(cx), s.toY(cy));
+      else ctx.lineTo(s.toX(cx), s.toY(cy));
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    var idPeakT = idV0y / S.g; 
+    var idPeakX = idV0x * idPeakT;
+    var idPeakY = S.y0 + idV0y * idPeakT - 0.5 * S.g * idPeakT * idPeakT;
+    
+    var pPx = s.toX(idPeakX);
+    var pPy = s.toY(idPeakY);
+    var textPx = pPx + 50;
+    var textPy = pPy - 15;
+
+    ctx.strokeStyle = '#94A3B8';
+    ctx.fillStyle = '#94A3B8';
+    ctx.lineWidth = 1.2;
+    
+    var endX = pPx + 6;
+    var endY = pPy;
+    var cpX = pPx + 25;
+    var cpY = textPy;
+    
+    ctx.beginPath();
+    ctx.moveTo(textPx - 5, textPy);
+    ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+    ctx.stroke();
+    
+    var dx = endX - cpX;
+    var dy = endY - cpY;
+    var headAngle = Math.atan2(dy, dx);
+    var ah = 6;
+    
+    ctx.beginPath();
+    ctx.moveTo(endX, endY);
+    ctx.lineTo(endX - ah * Math.cos(headAngle - 0.4), endY - ah * Math.sin(headAngle - 0.4));
+    ctx.lineTo(endX - ah * Math.cos(headAngle + 0.4), endY - ah * Math.sin(headAngle + 0.4));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Ideal (No Drag)', textPx, textPy);
+  }
+
+  function drawCompTrace(ctx, s) {
+    var compTh = (90 - S.angleDeg) * Math.PI / 180;
+    var compV0x = S.v0 * Math.cos(compTh);
+    var compV0y = S.v0 * Math.sin(compTh);
+    var compT = (compV0y + Math.sqrt(compV0y * compV0y + 2 * S.g * S.y0)) / S.g;
+    
+    ctx.strokeStyle = '#94A3B8'; 
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    for (var tStep = 0; tStep <= compT; tStep += 0.05) {
+      var cx = compV0x * tStep;
+      var cy = S.y0 + compV0y * tStep - 0.5 * S.g * tStep * tStep;
+      if (cy < 0) cy = 0;
+      if (tStep === 0) ctx.moveTo(s.toX(cx), s.toY(cy));
+      else ctx.lineTo(s.toX(cx), s.toY(cy));
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    var peakCompT = compV0y / S.g;
+    var peakCompX = compV0x * peakCompT;
+    var peakCompY = S.y0 + compV0y * peakCompT - 0.5 * S.g * peakCompT * peakCompT;
+    ctx.fillStyle = '#64748B';
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText((90 - S.angleDeg) + '° trajectory', s.toX(peakCompX), s.toY(peakCompY) - 5);
+  }
+
+  function drawTarget(ctx, s) {
+    var tX = s.toX(S.targetX);
+    var tY = s.toY(0);
+    var tWPixels = Math.max(20, S.targetW * s.sx); 
+    
+    ctx.fillStyle = '#FF4444';
+    ctx.fillRect(tX - tWPixels/2, tY - 6, tWPixels, 6);
+    ctx.fillStyle = '#F8FAFC';
+    ctx.fillRect(tX - tWPixels/4, tY - 6, tWPixels/2, 6);
+    
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = TEXT_CANVAS;
+    ctx.fillText(S.targetX + 'm', tX, tY + 16);
+
+    if (S.finished) {
+       ctx.font = '900 16px Nunito, sans-serif';
+       ctx.fillStyle = S.targetHit ? '#10B981' : '#EF4444';
+       ctx.fillText(S.targetHit ? '🎯 HIT!' : '❌ MISS', tX, tY - 35);
+    }
+  }
+
+  function drawTelemetry(ctx, s) {
+    if (S.peakReached) {
+      var peakPx = s.toX(S.peakX);
+      var peakPy = s.toY(S.peakY);
+      ctx.strokeStyle = CANVAS_ACCENT;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(s.padL, peakPy);
+      ctx.lineTo(s.W - s.padR, peakPy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      var startX = peakPx;
+      var startY = Math.max(s.padT + 10, peakPy - 35);
+      var endX = peakPx;
+      var endY = peakPy - 5;
+
+      ctx.strokeStyle = CANVAS_ACCENT;
+      ctx.fillStyle = CANVAS_ACCENT;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+
+      var headAngle = Math.PI / 2;
+      var ah = 7; 
+
+      ctx.beginPath();
+      ctx.moveTo(endX, endY);
+      ctx.lineTo(endX - ah * Math.cos(headAngle - 0.4), endY - ah * Math.sin(headAngle - 0.4));
+      ctx.lineTo(endX - ah * Math.cos(headAngle + 0.4), endY - ah * Math.sin(headAngle + 0.4));
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.font = 'bold 11px Nunito, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('Peak ' + S.peakY.toFixed(2) + ' m', startX, startY - 2);
+      
+      var peakTh = S.angleDeg * Math.PI / 180;
+      var peakV0x = S.v0 * Math.cos(peakTh);
+      var peakVx_px = peakV0x * s.sx * s.vMult;
+      drawArrow(ctx, peakPx, peakPy, peakPx + peakVx_px, peakPy, TEAL, 'vₓ');
+      
+      ctx.fillStyle = ORANGE;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('vᵧ = 0 m/s', peakPx, peakPy + 8);
+    }
+
+    if (S.y0 > 0 && S.rangeCrossReached) {
+      var rx = s.toX(S.rangeCrossX);
+      var ry = s.toY(S.y0);
+
+      ctx.fillStyle = TEAL; 
+      ctx.beginPath();
+      ctx.arc(rx, ry, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = TEAL;
+      ctx.font = 'bold 11px Nunito, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('Range Δx = ' + S.rangeCrossX.toFixed(2) + ' m', rx + 8, ry - 6);
+    }
+
+    var n = S.trail.length;
+    if (n > 1) {
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = CANVAS_ACCENT;
+      
+      for (var i = 1; i < n; i++) {
+        var p0 = S.trail[i-1], p1 = S.trail[i];
+        var alpha = Math.max(0.05, (i / n) * 0.9);
+        ctx.strokeStyle = 'rgba(16, 185, 129, ' + alpha + ')';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(s.toX(p0.x), s.toY(p0.y));
+        ctx.lineTo(s.toX(p1.x), s.toY(p1.y));
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    if (S.strobeEnabled && S.strobes.length > 0) {
+      ctx.save();
+      ctx.globalAlpha = 0.25;
+      for (var j = 0; j < S.strobes.length; j++) {
+        var st = S.strobes[j];
+        ctx.translate(s.toX(st.x), s.toY(st.y));
+        ctx.rotate(st.rot);
+        ctx.font = '22px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🍉', 0, 0);
+        ctx.setTransform(1, 0, 0, 1, 0, 0); 
+      }
+      ctx.restore();
+    }
+  }
+
+  function drawSpringLauncher(ctx, startPx, startPy, th, t) {
+    ctx.save();
+    ctx.translate(startPx, startPy);
+
+    // 1. Fixed Base Mount (Mechanically realistic - anchored to the ground)
+    var mountGrad = ctx.createLinearGradient(-14, 0, 14, 0);
+    mountGrad.addColorStop(0, '#475569');
+    mountGrad.addColorStop(0.3, '#CBD5E1'); // Metallic highlight
+    mountGrad.addColorStop(0.8, '#64748B');
+    mountGrad.addColorStop(1, '#334155');
+
+    ctx.fillStyle = mountGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 14, Math.PI, 0); // Top half circle around the pivot
+    ctx.lineTo(14, 20);            // Straight down to base
+    ctx.lineTo(-14, 20);           // Across base
+    ctx.closePath();
+    ctx.fill();
+    
+    // Add a dark outline for depth
+    ctx.strokeStyle = '#1E293B';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Now rotate the canvas so ONLY the barrel assembly swivels
+    ctx.rotate(-th); 
+
+    var barrelLength = 60; // Increased length slightly so it perfectly cups the projectile at launch
+    var barrelWidth = 26;
+    var barrelBack = -45; 
+    
+    // 2. Back Plate (Dark brushed metal)
+    var backPlateGrad = ctx.createLinearGradient(0, -barrelWidth/2 - 4, 0, barrelWidth/2 + 4);
+    backPlateGrad.addColorStop(0, '#1E293B');
+    backPlateGrad.addColorStop(0.5, '#475569');
+    backPlateGrad.addColorStop(1, '#0F172A');
+    ctx.fillStyle = backPlateGrad;
+    ctx.fillRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
+    ctx.strokeStyle = '#0F172A';
+    ctx.strokeRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
+    
+    // 3. Main Barrel (Shiny 3D Cylinder)
+    var barrelGrad = ctx.createLinearGradient(0, -barrelWidth/2, 0, barrelWidth/2);
+    barrelGrad.addColorStop(0, '#64748B');   // Dark top edge
+    barrelGrad.addColorStop(0.15, '#FFFFFF'); // Intense shiny highlight
+    barrelGrad.addColorStop(0.5, '#CBD5E1');  // Mid tone
+    barrelGrad.addColorStop(0.85, '#94A3B8'); // Lower shadow
+    barrelGrad.addColorStop(1, '#475569');   // Dark bottom edge
+
+    ctx.fillStyle = barrelGrad;
+    ctx.fillRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
+
+    // 4. Dynamic Spring Mechanics
+    var springStart = barrelBack;
+    var springEnd = (t === 0) ? -14 : 5; 
+    
+    ctx.strokeStyle = '#94A3B8';
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    // Add a drop shadow so the spring looks like it's inside the barrel
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetY = 2;
+
+    ctx.beginPath();
+    var coils = 7;
+    var springLength = springEnd - springStart;
+    var step = springLength / coils;
+    var amplitude = 7;
+    
+    ctx.moveTo(springStart, 0);
+    for(var i = 1; i <= coils; i++) {
+      var xCoil = springStart + step * i;
+      var xMid = springStart + step * (i - 0.5);
+      var yCoil = (i % 2 === 0) ? amplitude : -amplitude;
+      ctx.lineTo(xMid, yCoil);
+      ctx.lineTo(xCoil, 0);
+    }
+    ctx.stroke();
+
+    // Reset shadow for the remaining elements
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    // 5. Red Pusher Plate (Glossy Red Bevel)
+    var pusherGrad = ctx.createLinearGradient(0, -barrelWidth/2 + 2, 0, barrelWidth/2 - 2);
+    pusherGrad.addColorStop(0, '#991B1B');
+    pusherGrad.addColorStop(0.3, '#EF4444'); // Highlight
+    pusherGrad.addColorStop(0.7, '#DC2626');
+    pusherGrad.addColorStop(1, '#7F1D1D');
+    
+    ctx.fillStyle = pusherGrad;
+    ctx.fillRect(springEnd - 4, -barrelWidth/2 + 2, 4, barrelWidth - 4);
+    
+    // Add a tiny white glare line to make it look like plastic
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillRect(springEnd - 3, -barrelWidth/2 + 3, 2, barrelWidth - 6);
+
+    // 6. Pivot Pin (Radial Gradient for spherical shine)
+    // We un-rotate the canvas so the pin's light source is always perfectly top-left
+    ctx.rotate(th); 
+    var pinGrad = ctx.createRadialGradient(-1.5, -1.5, 0, 0, 0, 5);
+    pinGrad.addColorStop(0, '#FFFFFF'); // Hotspot glare
+    pinGrad.addColorStop(0.4, '#CBD5E1');
+    pinGrad.addColorStop(1, '#475569');
+
+    ctx.fillStyle = pinGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1E293B';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawArrow(ctx, x1, y1, x2, y2, color, label){
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    if (len < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    var ang = Math.atan2(dy, dx);
+    var ah = 8;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    if (label){
+      ctx.font = 'bold 12px Nunito, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, x2 + 6, y2 + 6);
+    }
+  }
+
+  function drawAngleArc(ctx, x, y, vx, vy, color, angleDegStr){
+    var radius = 25;
+    var dyCanvas = -vy; 
+    var dxCanvas = vx;
+    var angle = Math.atan2(dyCanvas, dxCanvas);
+    
+    ctx.strokeStyle = '#888888';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + radius + 15, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, Math.min(0, angle), Math.max(0, angle), false);
+    ctx.stroke();
+    
+    var midAngle = angle / 2;
+    var lx = x + (radius + 12) * Math.cos(midAngle);
+    var ly = y + (radius + 12) * Math.sin(midAngle);
+    ctx.font = 'bold 12px Nunito, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(angleDegStr, lx, ly);
+  }
+
+  // ---------- Physics Engine & Event Handlers ----------
+  function setInitial() {
+    var th = S.angleDeg * Math.PI / 180;
+    S.y0 = parseFloat(elHeight.value) || 0; 
+    
+    // Disable complementary angle if launching from a cliff (y0 > 0)
+    if (S.y0 > 0) {
+      elCompAngle.disabled = true;
+      elCompAngle.checked = false;
+      S.compAngleEnabled = false;
+      elCompAngle.parentElement.classList.add('tsc-disabled');
+    } else {
+      elCompAngle.disabled = false;
+      elCompAngle.parentElement.classList.remove('tsc-disabled');
+    }
+
+    S.t = 0;
+    S.x = 0;
+    S.y = S.y0;
+    S.vx = S.v0 * Math.cos(th);
+    S.vy = S.v0 * Math.sin(th);
+    
+    S.rotationAngle = 0;
+    S.omega = (Math.random() - 0.5) * 12;
+
+    S.trail = [{ x: 0, y: S.y0 }];
+    S.strobes = [];
+    S.finished = false;
+    S.peakReached = false;
+    S.rangeCrossReached = false;
+  }
+
+  function stepOnce() {
+    if (S.finished) return;
+    var th = S.angleDeg * Math.PI / 180;
+    var v0x = S.v0 * Math.cos(th);
+    var v0y = S.v0 * Math.sin(th);
+    
+    if (S.dragEnabled) {
+      var v = Math.sqrt(S.vx * S.vx + S.vy * S.vy);
+      var kD = 0.007; 
+      var ax = -kD * v * S.vx;
+      var ay = -S.g - kD * v * S.vy;
+      
+      S.vx += ax * DT;
+      S.vy += ay * DT;
+      S.x += S.vx * DT;
+      S.y += S.vy * DT;
+      S.t += DT;
+    } else {
+      S.t += DT;
+      S.x = v0x * S.t;
+      S.y = S.y0 + v0y * S.t - 0.5 * S.g * S.t * S.t;
+      S.vx = v0x;
+      S.vy = v0y - S.g * S.t;
+    }
+    
+    S.rotationAngle += S.omega * DT;
+
+    if (S.strobeEnabled && S.t > 0 && Math.floor(S.t / S.strobeInterval) > Math.floor((S.t - DT) / S.strobeInterval)) {
+      S.strobes.push({x: S.x, y: S.y, rot: S.rotationAngle});
+    }
+
+    if (S.vy <= 0 && !S.peakReached){
+      S.peakReached = true;
+      S.peakY = S.y < 0 ? 0 : S.y;
+      S.peakX = S.x;
+    }
+
+    if (S.y0 > 0 && S.vy < 0 && S.y <= S.y0 && !S.rangeCrossReached) {
+      S.rangeCrossReached = true;
+      var prevY = S.y - S.vy * DT; 
+      if (prevY > S.y0) {
+        var prevX = S.x - S.vx * DT;
+        var fraction = (prevY - S.y0) / (prevY - S.y);
+        S.rangeCrossX = prevX + fraction * (S.x - prevX);
+      } else {
+        S.rangeCrossX = S.x;
+      }
+    }
+
+    if (S.y <= 0 && S.t > DT){
+      if (S.dragEnabled) {
+        var prevY = S.y - S.vy * DT;
+        var prevX = S.x - S.vx * DT;
+        var prevT = S.t - DT;
+        var fraction = prevY / (prevY - S.y);
+        S.t = prevT + fraction * DT;
+        S.x = prevX + fraction * (S.x - prevX);
+        S.y = 0;
+      } else {
+        var T = (v0y + Math.sqrt(v0y * v0y + 2 * S.g * S.y0)) / S.g;
+        if (S.t > T) {
+          S.t = T;
+          S.x = v0x * T;
+          S.y = 0;
+          S.vy = v0y - S.g * T;
+        } else {
+          S.y = 0;
+        }
+      }
+      S.finished = true;
+      S.running = false;
+      btnPlay.textContent = 'Play';
+      btnPlay.classList.remove('active');
+      if (elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
+      
+      if (S.targetMode) {
+        S.targetHit = Math.abs(S.x - S.targetX) <= (S.targetW / 2);
+      }
+    }
+
+    S.trail.push({ x: S.x, y: S.y });
+    if (S.trail.length > 4000) S.trail.shift();
+  }
+
+  function ensureSplashHidden() {
+    if (S.showSplashFountain) {
+      S.showSplashFountain = false;
+      if (splashScreen) {
+        splashScreen.style.opacity = '0';
+        splashScreen.style.pointerEvents = 'none';
+        setTimeout(function() { splashScreen.style.display = 'none'; }, 400);
+      }
+    }
+  }
+
+  // Interactive UI wiring
+  elAngle.addEventListener('input', function() { ensureSplashHidden(); S.angleDeg = parseFloat(this.value); setInitial(); drawTop(); });
+  elSpeed.addEventListener('input', function() { ensureSplashHidden(); S.v0 = parseFloat(this.value); setInitial(); drawTop(); });
+  elHeight.addEventListener('input', function() { ensureSplashHidden(); setInitial(); drawTop(); });
+  elDrag.addEventListener('change', function() { ensureSplashHidden(); S.dragEnabled = elDrag.checked; if (S.finished || S.t > 0) { btnReset.click(); } else drawTop(); });
+  elStrobe.addEventListener('change', function() { ensureSplashHidden(); S.strobeEnabled = elStrobe.checked; drawTop(); });
+  elCompAngle.addEventListener('change', function() { ensureSplashHidden(); S.compAngleEnabled = elCompAngle.checked; drawTop(); });
+  elTarget.addEventListener('change', function() { ensureSplashHidden(); S.targetMode = elTarget.checked; if(S.targetMode){ S.targetX = 30 + Math.floor(Math.random() * 100); if(S.finished) btnReset.click(); } drawTop(); });
+
+  btnPlay.addEventListener('click', function() {
+    ensureSplashHidden();
+    if (S.finished) setInitial();
+    S.running = !S.running;
+    this.textContent = S.running ? 'Pause' : 'Play';
+    this.classList.toggle('active', S.running);
+    if (elClockSvg) elClockSvg.classList.toggle('tsc-clock-active', S.running);
+  });
+
+  btnSlow.addEventListener('click', function() { ensureSplashHidden(); S.slow = !S.slow; this.classList.toggle('active', S.slow); });
+  btnStep.addEventListener('click', function() { ensureSplashHidden(); if (!S.running && !S.finished) { stepOnce(); canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s'; drawTop(); } });
+  
+  btnReset.addEventListener('click', function() {
+    ensureSplashHidden();
+    S.running = false;
+    btnPlay.textContent = 'Play';
+    btnPlay.classList.remove('active');
+    if (elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
+    setInitial();
+    canvasTime.textContent = 't = 0.00 s';
+    drawTop();
+  });
+
+  if (splashScreen) {
+    splashScreen.addEventListener('click', function() {
+      ensureSplashHidden();
+      btnPlay.click();
+    });
+  }
+
+  // ---------- Boot sequence ----------
+  var lastTime = 0, accumulator = 0;
+  function loop(now) {
+    if (!lastTime) lastTime = now;
+    var elapsed = (now - lastTime) / 1000;
+    lastTime = now;
+    if (elapsed > 0.1) elapsed = 0.1; 
+
+    // Always update ambient animations regardless of physics state
+    updateBirds(elapsed);
+
+    if (S.running && !S.finished) {
+      var rate = S.slow ? 0.2 : 1.0;
+      accumulator += elapsed * rate;
+      while (accumulator >= DT) {
+        stepOnce();
+        accumulator -= DT;
+        if (S.finished) break;
+      }
+      canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s';
+    }
+    
+    // Continuously render the canvas so the birds always fly!
+    drawTop();
+
+    requestAnimationFrame(loop);
+  }
+
+  initBirds(); // Initialize the flock on load
+  setInitial(); 
+  S.showSplashFountain = true; 
+  window.addEventListener('resize', function(){ resizeCanvas(elTop); drawTop(); });
+  
+  setTimeout(function() {
+    resizeCanvas(elTop);
+    drawTop();
+    requestAnimationFrame(loop);
+  }, 100);
+
+})();
+</script>
+</body>
+</html>
