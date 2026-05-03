@@ -145,7 +145,7 @@ body{
 .btn-selector-start:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
 
 /* ════════════════════════════════
-   SCREEN 2 — JEE START
+   SCREEN 2 — START
 ════════════════════════════════ */
 .start-body{padding:36px 32px 32px;max-width:560px;margin:0 auto}
 .start-exam-title{font:900 26px 'Nunito',sans-serif;color:var(--navy);margin-bottom:4px}
@@ -472,11 +472,10 @@ body{
           <div class="sel-card-title">IIT JEE Physics</div>
           <div class="sel-card-desc">Calculus-based · Grade 11–12 · JEE Main style</div>
         </div>
-        <div class="sel-card disabled" id="card-ap">
+        <div class="sel-card" onclick="selectStream('ap')" id="card-ap">
           <div class="sel-card-region">🇺🇸 US</div>
           <div class="sel-card-title">AP Physics 1</div>
           <div class="sel-card-desc">Algebra-based · College Board</div>
-          <div class="coming-soon-tag">In the Works</div>
         </div>
       </div>
       <button class="btn-selector-start" id="btn-to-start" onclick="goToStart()" disabled>Start Challenge →</button>
@@ -484,12 +483,12 @@ body{
   </div>
 
   <!-- ══════════════════════════════
-       SCREEN 2 — JEE START
+       SCREEN 2 — START
   ══════════════════════════════ -->
   <div class="screen" id="screen-start">
     <div class="start-body">
-      <div class="start-exam-title">JEE Main Physics Mock Test</div>
-      <div class="start-exam-sub">Attempt all questions and submit to see your result</div>
+      <div class="start-exam-title" id="start-title">JEE Main Physics Mock Test</div>
+      <div class="start-exam-sub" id="start-sub">Attempt all questions and submit to see your result</div>
 
       <div class="exam-info-row">
         <div class="exam-info-pill">
@@ -498,17 +497,17 @@ body{
         </div>
         <div class="exam-info-pill">
           <span>🏆</span>
-          <div><div class="pill-text">40 Marks</div></div>
+          <div><div class="pill-text" id="start-marks-pill">40 Marks</div></div>
         </div>
         <div class="exam-info-pill">
           <span>⏱️</span>
-          <div><div class="pill-text">25 Minutes</div></div>
+          <div><div class="pill-text" id="start-time-pill">25 Minutes</div></div>
         </div>
       </div>
 
       <div class="marking-box">
         <div class="marking-box-title">📊 Marking Scheme</div>
-        <div class="marking-row">
+        <div class="marking-row" id="marking-row">
           <div class="marking-pill marking-correct">✓ Correct: +4</div>
           <div class="marking-pill marking-wrong">✗ Wrong: −1</div>
           <div class="marking-pill marking-skip">○ Skipped: 0</div>
@@ -644,12 +643,152 @@ body{
 (function(){
 
 // ════════════════════════════════
+// PER-STREAM CONFIG
+// ════════════════════════════════
+var CONFIG = {
+  jee: {
+    label:        'IIT JEE Physics',
+    startTitle:   'JEE Main Physics Mock Test',
+    startSub:     'Attempt all questions and submit to see your result',
+    timerMinutes: 25,
+    marksPerQ:    4,
+    penaltyWrong: 1,
+    showsNegativeMarking: true,
+    cta:          'https://www.thesciencecube.com/p/mechanics-in-physics',
+    feedbackBands: [
+      { // Top tier (>=80% of max)
+        cutoffPct: 0.80,
+        ringColor: '#1b6b3a',
+        title:     '🏆 Outstanding!',
+        sub:       'Top percentile — JEE Main ready.',
+        icon:      '🏆',
+        strengths: 'You have a sharp command of JEE Physics fundamentals. A score in this range puts you in the top percentile of JEE Main aspirants — the concepts are clearly well-internalised, not just memorised.',
+        gaps:      'At this level, errors are usually in edge cases or calculation slips under time pressure. Review any question you got wrong carefully — even one concept gap can cost you in a paper where every mark counts.',
+        next:      'Move to multi-concept and application problems. Our IIT JEE course takes you from this foundation into the complex multi-step problems that separate JEE Main qualifiers from JEE Advanced candidates.'
+      },
+      { // 50–79% of max
+        cutoffPct: 0.50,
+        ringColor: '#0d9488',
+        title:     '💪 Strong Score!',
+        sub:       'Above average — a few gaps to close.',
+        icon:      '💪',
+        strengths: 'You are clearly putting in the work — a score in this range shows solid conceptual understanding across most topics. Most JEE Main qualifiers are in this range during preparation.',
+        gaps:      'A few topics are not fully consolidated. JEE questions are designed to catch "almost right" understanding — review the questions you got wrong and identify whether it was a conceptual gap or a calculation error.',
+        next:      'In our IIT JEE course, revisit the lessons for topics where you lost marks, then test yourself again. The jump from this band to the top band is very achievable with one focused revision round.'
+      },
+      { // 20–49%
+        cutoffPct: 0.20,
+        ringColor: '#e07020',
+        title:     '📈 Developing!',
+        sub:       'On the right track — keep pushing.',
+        icon:      '📈',
+        strengths: 'You are getting the fundamentals — a score in this range means key ideas are starting to register. This is a perfectly normal stage in JEE preparation and a solid base to build from.',
+        gaps:      'JEE Physics demands precision — knowing concepts roughly is not enough. Focus on understanding the "why" behind each formula, not just what to apply. Conceptual clarity is what separates a 20% score from a 75% score.',
+        next:      'Go back to the core lessons in our IIT JEE course for the topics you missed. Use the simulations to build visual intuition first — that is what turns a surface understanding into exam-ready command.'
+      },
+      { // 0–19%
+        cutoffPct: 0.0,
+        ringColor: '#c85a00',
+        title:     '🔄 Keep Practising!',
+        sub:       'This is your launchpad — start the course.',
+        icon:      '🔄',
+        strengths: 'You attempted the full test — that discipline is the first requirement for JEE success. Some questions are landing, which means the foundation is beginning to form.',
+        gaps:      'The fundamentals need significant attention before moving forward. JEE Physics builds layer by layer — gaps at the foundational level compound at every higher stage. The good news: this is completely fixable.',
+        next:      'Start from Lesson 1 of our IIT JEE course. Take it step by step — concept, simulation, practice question. Come back and retry this mock after completing two lessons and you will see a clear improvement.'
+      },
+      { // Negative score (only possible with negative marking)
+        cutoffPct: -Infinity,
+        ringColor: '#c85a00',
+        title:     '🌱 Just Starting!',
+        sub:       'Everyone begins here — review and retry.',
+        icon:      '🌱',
+        strengths: 'Taking the test is itself a brave first step — you now know exactly where your preparation stands, which is far more valuable than guessing.',
+        gaps:      'A negative score means some incorrect guesses cost marks. In JEE, it is better to skip an uncertain question than guess — −1 for a wrong answer is a real penalty.',
+        next:      'Begin at Lesson 1 of our IIT JEE course. Build the conceptual base first, then return. Also practise the discipline of skipping uncertain questions — it is a scoring strategy, not a weakness.'
+      }
+    ],
+    timeNote: function(avgSecs){
+      if(avgSecs < 60)       return 'You averaged ' + Math.round(avgSecs) + 's per question — excellent pace. JEE Main allows ~90s per Physics question, so you have headroom to be thorough.';
+      else if(avgSecs < 120) return 'You averaged ' + Math.round(avgSecs) + 's per question — a solid, measured pace. With practice, target under 60s for conceptual questions.';
+      else                   return 'You averaged ' + Math.round(avgSecs) + 's per question. Speed is a skill — it comes naturally as the concepts become second nature. Keep practising!';
+    }
+  },
+  ap: {
+    label:        'AP Physics 1',
+    startTitle:   'AP Physics 1 Practice Sprint',
+    startSub:     'Attempt all questions and submit to see your result',
+    timerMinutes: 20,
+    marksPerQ:    1,
+    penaltyWrong: 0,
+    showsNegativeMarking: false,
+    cta:          'https://www.thesciencecube.com/p/ap-physics-1',
+    feedbackBands: [
+      { // 80–100% — score 5 territory
+        cutoffPct: 0.80,
+        ringColor: '#1b6b3a',
+        title:     '🏆 AP Score 5 Territory!',
+        sub:       'You are clearly thinking like a College Board examiner.',
+        icon:      '🏆',
+        strengths: 'You are commanding the conceptual core of AP Physics 1. A score in this range puts you on track for a 5 on the May exam — the fundamentals are not just memorised, they are understood. Newton\'s laws, energy, momentum, rotation — you can move between them fluently.',
+        gaps:      'At this level, the only growth left is precision under pressure: signs, units, vector directions, and the FRQ science-practice phrasing the College Board rewards. Review any question you got wrong — these are the exact traps the AP exam will set.',
+        next:      'Move from MCQ practice to the FRQ section. Our AP Physics 1 course walks you through the four science practices (Modelling, Mathematical Routines, Experimental Design, Argumentation) — that is what separates a 4 from a 5.'
+      },
+      { // 60–79% — score 4 territory
+        cutoffPct: 0.60,
+        ringColor: '#0d9488',
+        title:     '💪 AP Score 4 Range!',
+        sub:       'Strong foundations — a few gaps to close.',
+        icon:      '💪',
+        strengths: 'You have a real working understanding of AP Physics 1. A score in this range corresponds to a 4 on the actual exam — well above the 50% pass threshold and a credit-earning score at most colleges.',
+        gaps:      'A few specific concepts are not fully consolidated. AP MCQ traps are designed to catch "almost right" reasoning — review the questions you missed and identify whether it was a conceptual gap (e.g. confusing average and instantaneous) or an arithmetic slip.',
+        next:      'Use our AP Physics 1 course to revisit the lessons for the topics where you lost marks, then retake this sprint. The jump from a 4 to a 5 is very achievable with one focused revision round through the trap-flagged lessons.'
+      },
+      { // 40–59% — score 3 territory
+        cutoffPct: 0.40,
+        ringColor: '#e07020',
+        title:     '📈 AP Score 3 Zone!',
+        sub:       'Passing band — keep pushing.',
+        icon:      '📈',
+        strengths: 'You are scoring in the credit-earning band — a 3 on AP Physics 1 still earns college credit at many institutions. The fundamentals are starting to register and you are making real progress.',
+        gaps:      'AP Physics 1 rewards conceptual precision more than calculation speed. Focus on understanding the "why" behind each principle — the College Board specifically tests reasoning, not memorised formulas. Direction of net force, sign conventions, and conservation laws are the most common stumbling blocks.',
+        next:      'Go back to the core lessons in our AP Physics 1 course for the units you missed. Watch the simulations first — they build the visual intuition the AP exam tests in its qualitative-quantitative translation questions.'
+      },
+      { // 20–39%
+        cutoffPct: 0.20,
+        ringColor: '#c85a00',
+        title:     '🔄 Keep Practising!',
+        sub:       'This is your launchpad — start the course.',
+        icon:      '🔄',
+        strengths: 'You attempted every question — that discipline is the foundation of AP success. Some answers are landing, which means the conceptual scaffolding is beginning to form.',
+        gaps:      'The fundamentals need attention before moving forward. AP Physics 1 builds unit by unit — gaps in kinematics or Newton\'s laws will compound when you reach energy, momentum, and rotation. The good news: this is completely fixable with structured study.',
+        next:      'Start from Unit 1 of our AP Physics 1 course. Take it step by step — concept, simulation, practice question. Come back and retake this sprint after completing two units and you will see a clear improvement.'
+      },
+      { // 0–19%
+        cutoffPct: -Infinity,
+        ringColor: '#c85a00',
+        title:     '🌱 Just Starting!',
+        sub:       'Everyone begins here — review and retry.',
+        icon:      '🌱',
+        strengths: 'Taking the sprint is itself the right first step — you now know exactly where your preparation stands. That clarity is more valuable than guessing how prepared you are.',
+        gaps:      'AP Physics 1 demands a structured approach to all eight units. Random studying will leave gaps the College Board specifically targets. Begin at the start and build the conceptual foundation before tackling MCQs again.',
+        next:      'Begin at Unit 1 of our AP Physics 1 course. The simulations and trap-flagged lessons are designed to build genuine understanding — exactly what the AP exam rewards. Retry this sprint after completing the first three units.'
+      }
+    ],
+    timeNote: function(avgSecs){
+      if(avgSecs < 60)        return 'You averaged ' + Math.round(avgSecs) + 's per question — quick. The AP exam allows about 2 minutes per MCQ, so you have plenty of headroom. Use that extra time on the FRQ section, where most of the real points are.';
+      else if(avgSecs < 90)   return 'You averaged ' + Math.round(avgSecs) + 's per question — a solid, exam-ready pace. The AP target is under 2 minutes per MCQ; you are right in the zone.';
+      else                    return 'You averaged ' + Math.round(avgSecs) + 's per question. The AP MCQ section gives you about 2 minutes per question, so target under 90s with practice. Speed comes naturally as the concepts become second nature.';
+    }
+  }
+};
+
+// ════════════════════════════════
 // STATE
 // ════════════════════════════════
 var state = {
   name:     '',
   stream:   '',
-  mode:     '',       // 'exam' | 'study'
+  mode:     '',       // 'exam' | 'study' | 'review'
   qIndex:   0,
   answers:  [],       // null=unanswered, true=correct, false=wrong, 'skip'=skipped
   startTime: null,
@@ -658,6 +797,8 @@ var state = {
   secondsLeft: 25 * 60,
   score:    0
 };
+
+function getCfg(){ return CONFIG[state.stream] || CONFIG.jee; }
 
 // ════════════════════════════════
 // QUESTION BANK
@@ -669,16 +810,27 @@ var QUESTIONS = {
     { id:'jee-q01', file:'jee-q01.html' },
     { id:'jee-q02', file:'jee-q02.html' },
     { id:'jee-q03', file:'jee-q03.html' },
-    { id:'jee-q04',    file:'jee-q04.html' },
-    { id:'jee-q05',    file:'jee-q05.html' },
-    { id:'jee-q06',    file:'jee-q06.html' },
-    { id:'jee-q07',    file:'jee-q07.html' },
-    { id:'jee-q08',    file:'jee-q08.html' },
-    { id:'jee-q09',    file:'jee-q09.html' },
-    { id:'jee-q10',    file:'jee-q10.html' },
+    { id:'jee-q04', file:'jee-q04.html' },
+    { id:'jee-q05', file:'jee-q05.html' },
+    { id:'jee-q06', file:'jee-q06.html' },
+    { id:'jee-q07', file:'jee-q07.html' },
+    { id:'jee-q08', file:'jee-q08.html' },
+    { id:'jee-q09', file:'jee-q09.html' },
+    { id:'jee-q10', file:'jee-q10.html' },
     // Add Q11-Q20 here as you upload each file to GitHub
   ],
-  ap: []
+  ap: [
+    { id:'ap-q01', file:'ap-q01.html' },
+    { id:'ap-q02', file:'ap-q02.html' },
+    { id:'ap-q03', file:'ap-q03.html' },
+    { id:'ap-q04', file:'ap-q04.html' },
+    { id:'ap-q05', file:'ap-q05.html' },
+    { id:'ap-q06', file:'ap-q06.html' },
+    { id:'ap-q07', file:'ap-q07.html' },
+    { id:'ap-q08', file:'ap-q08.html' },
+    { id:'ap-q09', file:'ap-q09.html' },
+    { id:'ap-q10', file:'ap-q10.html' }
+  ]
 };
 
 // ── Random picker: select min(10, pool.length) from bank, preserve topic order ──
@@ -726,7 +878,7 @@ window.goToSelector = function(){
   document.getElementById('btn-to-start').disabled = true;
   document.getElementById('timer-display').style.display = 'none';
   document.getElementById('mode-badge').style.display = 'none';
-  
+
   document.querySelector('.tsc-header-bar').classList.remove('active');
   showScreen('screen-selector');
 };
@@ -734,25 +886,51 @@ window.goToSelector = function(){
 window.goToStart = function(){
   if(!selectedStream) return;
   state.stream = selectedStream;
-  
+
+  // Update Screen 2 copy and marking display based on selected stream
+  var cfg = getCfg();
+  document.getElementById('start-title').textContent     = cfg.startTitle;
+  document.getElementById('start-sub').textContent       = cfg.startSub;
+  var totalMarks = QUESTIONS[state.stream].length * cfg.marksPerQ;
+  // Use 10 in display since we cap activeBank at 10 — recompute for clarity
+  totalMarks = Math.min(10, QUESTIONS[state.stream].length) * cfg.marksPerQ;
+  document.getElementById('start-marks-pill').textContent = totalMarks + ' Marks';
+  document.getElementById('start-time-pill').textContent  = cfg.timerMinutes + ' Minutes';
+
+  // Marking row
+  var row = document.getElementById('marking-row');
+  if(cfg.showsNegativeMarking){
+    row.innerHTML =
+      '<div class="marking-pill marking-correct">✓ Correct: +' + cfg.marksPerQ + '</div>' +
+      '<div class="marking-pill marking-wrong">✗ Wrong: −' + cfg.penaltyWrong + '</div>' +
+      '<div class="marking-pill marking-skip">○ Skipped: 0</div>';
+  } else {
+    row.innerHTML =
+      '<div class="marking-pill marking-correct">✓ Correct: +' + cfg.marksPerQ + '</div>' +
+      '<div class="marking-pill marking-skip">✗ Wrong: 0</div>' +
+      '<div class="marking-pill marking-skip">○ Skipped: 0</div>';
+  }
+
   showScreen('screen-start');
 };
 
 // ════════════════════════════════
-// SCREEN 2 — JEE START (Exam-only, no name)
+// SCREEN 2 — START (Exam-only, no name)
 // ════════════════════════════════
 
 window.startTest = function(){
   state.mode = 'exam';
   state.name = 'Student';
 
-  // Build bank — randomly pick 10 from full pool, preserve topic order
+  var cfg = getCfg();
+
+  // Build bank — randomly pick up to 10 from full pool, preserve topic order
   activeBank = buildActiveBank(state.stream);
   state.answers   = new Array(activeBank.length).fill(null);
   state.qIndex    = 0;
   state.score     = 0;
   state.startTime = Date.now();
-  state.secondsLeft = 25 * 60;
+  state.secondsLeft = cfg.timerMinutes * 60;
 
   // Mode badge
   var badge = document.getElementById('mode-badge');
@@ -799,6 +977,7 @@ function buildPalette(){
 }
 
 function updatePalette(){
+  var cfg = getCfg();
   activeBank.forEach(function(q, i){
     var answered = state.answers[i] !== null;
     var isCurrent = i === state.qIndex;
@@ -814,9 +993,9 @@ function updatePalette(){
   if(state.mode === 'study'){
     var correct = state.answers.filter(function(a){ return a === true; }).length;
     var wrong   = state.answers.filter(function(a){ return a === false; }).length;
-    var marks   = correct * 4 - wrong;
+    var marks   = correct * cfg.marksPerQ - wrong * cfg.penaltyWrong;
     document.getElementById('palette-score-val').textContent = marks >= 0 ? '+' + marks : marks;
-    document.getElementById('palette-score-detail').textContent = '+' + (correct*4) + ' / −' + wrong;
+    document.getElementById('palette-score-detail').textContent = '+' + (correct*cfg.marksPerQ) + ' / −' + (wrong*cfg.penaltyWrong);
   }
 }
 
@@ -855,7 +1034,8 @@ function updateTimerDisplay(){
 }
 
 function autoSubmit(){
-  state.elapsed = 25 * 60;
+  var cfg = getCfg();
+  state.elapsed = cfg.timerMinutes * 60;
   finishTest();
 }
 
@@ -965,13 +1145,14 @@ window.nextQuestion = function(){
 };
 
 window.confirmSubmit = function(){
+  var cfg = getCfg();
   var unanswered = state.answers.filter(function(a){ return a === null; }).length;
   if(unanswered > 0){
     if(!confirm(unanswered + ' question(s) not yet answered. Submit anyway?')) return;
   }
   // Mark remaining nulls as skip
   state.answers = state.answers.map(function(a){ return a === null ? 'skip' : a; });
-  state.elapsed = (25 * 60) - state.secondsLeft;
+  state.elapsed = (cfg.timerMinutes * 60) - state.secondsLeft;
   stopTimer();
   finishTest();
 };
@@ -980,14 +1161,15 @@ window.confirmSubmit = function(){
 // FINISH TEST
 // ════════════════════════════════
 function finishTest(){
+  var cfg = getCfg();
   var correct = state.answers.filter(function(a){ return a === true;  }).length;
   var wrong   = state.answers.filter(function(a){ return a === false; }).length;
   var skipped = state.answers.filter(function(a){ return a === 'skip'; }).length;
-  var marks   = correct * 4 - wrong * 1;
+  var marks   = correct * cfg.marksPerQ - wrong * cfg.penaltyWrong;
 
   state.score = marks;
 
-  var maxMarks = activeBank.length * 4;
+  var maxMarks = activeBank.length * cfg.marksPerQ;
   document.getElementById('score-num').textContent    = marks;
   document.querySelector('.score-denom').textContent  = '/ ' + maxMarks;
   document.getElementById('stat-correct').textContent = correct;
@@ -995,30 +1177,25 @@ function finishTest(){
   document.getElementById('stat-skipped').textContent = skipped;
   document.getElementById('stat-time').textContent    = formatTime(state.elapsed);
 
-  // Ring colour
-  var ring = document.getElementById('score-ring');
-  if(marks >= 32)      ring.style.borderColor = '#1b6b3a';
-  else if(marks >= 20) ring.style.borderColor = '#0d9488';
-  else if(marks >= 8)  ring.style.borderColor = '#e07020';
-  else                 ring.style.borderColor = '#c85a00';
-
-  // Title
-  var titles = [
-    [32, '🏆 Outstanding!',   'Top percentile — JEE Main ready.'],
-    [20, '💪 Strong Score!',  'Above average — a few gaps to close.'],
-    [ 8, '📈 Developing!',    'On the right track — keep pushing.'],
-    [ 0, '🔄 Keep Practising!', 'This is your launchpad — start the course.'],
-    [-10,'🌱 Just Starting!', 'Everyone begins here — review and retry.']
-  ];
-  for(var i=0; i<titles.length; i++){
-    if(marks >= titles[i][0]){
-      document.getElementById('score-title').textContent = titles[i][1];
-      document.getElementById('score-sub').textContent   = titles[i][2];
+  // Pick band based on % of max
+  var pct = maxMarks > 0 ? (marks / maxMarks) : 0;
+  var band = cfg.feedbackBands[cfg.feedbackBands.length - 1];  // default: lowest band
+  for(var i = 0; i < cfg.feedbackBands.length; i++){
+    if(pct >= cfg.feedbackBands[i].cutoffPct){
+      band = cfg.feedbackBands[i];
       break;
     }
   }
 
-  if(marks >= 36) launchConfetti();
+  // Ring colour and titles
+  document.getElementById('score-ring').style.borderColor = band.ringColor;
+  document.getElementById('score-title').textContent = band.title;
+  document.getElementById('score-sub').textContent   = cfg.label + ' · ' + activeBank.length + ' Questions';
+
+  // Stash band for showFeedback to use
+  state._band = band;
+
+  if(pct >= 0.90) launchConfetti();
   showScreen('screen-score');
   document.getElementById('timer-display').style.display = 'none';
   document.querySelector('.tsc-header-bar').classList.remove('active');
@@ -1027,68 +1204,34 @@ function finishTest(){
   var isExam = state.mode === 'exam';
   document.getElementById('btn-show-solutions').style.display = isExam ? 'block' : 'none';
   document.getElementById('btn-change-stream').style.display  = isExam ? 'none'  : 'block';
+
+  // Update CTA link to per-stream course
+  document.getElementById('fb-cta').setAttribute('href', cfg.cta);
 }
 
 // ════════════════════════════════
 // FEEDBACK
 // ════════════════════════════════
 window.showFeedback = function(){
-  var marks   = state.score;
-  var secs    = state.elapsed;
-  var total   = activeBank.length;
+  var cfg  = getCfg();
+  var secs = state.elapsed;
+  var total = activeBank.length;
 
   document.getElementById('fb-title').textContent    = 'Your Performance Report';
-  document.getElementById('fb-subtitle').textContent = 'IIT JEE Physics · 10 Questions · ' + formatTime(secs);
+  document.getElementById('fb-subtitle').textContent = cfg.label + ' · ' + total + ' Questions · ' + formatTime(secs);
 
-  // Time note
-  var avgSecs = secs / total;
-  var timeNote = '';
-  if(avgSecs < 60)       timeNote = 'You averaged ' + Math.round(avgSecs) + 's per question — excellent pace. JEE Main allows ~90s per Physics question, so you have headroom to be thorough.';
-  else if(avgSecs < 120) timeNote = 'You averaged ' + Math.round(avgSecs) + 's per question — a solid, measured pace. With practice, target under 60s for conceptual questions.';
-  else                   timeNote = 'You averaged ' + Math.round(avgSecs) + 's per question. Speed is a skill — it comes naturally as the concepts become second nature. Keep practising!';
-  document.getElementById('fb-time-text').textContent = timeNote;
+  // Time note from per-stream config
+  var avgSecs = total > 0 ? secs / total : 0;
+  document.getElementById('fb-time-text').textContent = cfg.timeNote(avgSecs);
 
-  // Band: score out of 40
-  var band = marks >= 32 ? 0 : marks >= 20 ? 1 : marks >= 8 ? 2 : marks >= 0 ? 3 : 4;
+  var band = state._band || cfg.feedbackBands[cfg.feedbackBands.length - 1];
+  document.getElementById('fb-icon').textContent           = band.icon;
+  document.getElementById('fb-strengths-text').textContent = band.strengths;
+  document.getElementById('fb-gaps-text').textContent      = band.gaps;
+  document.getElementById('fb-next-text').textContent      = band.next;
 
-  var FB = [
-    { // 32-40
-      icon:'🏆',
-      strengths: 'You have a sharp command of JEE Physics fundamentals. A score in this range puts you in the top percentile of JEE Main aspirants — the concepts are clearly well-internalised, not just memorised.',
-      gaps:      'At this level, errors are usually in edge cases or calculation slips under time pressure. Review any question you got wrong carefully — even one concept gap can cost you in a paper where every mark counts.',
-      next:      'Move to multi-concept and application problems. Our IIT JEE course takes you from this foundation into the complex multi-step problems that separate JEE Main qualifiers from JEE Advanced candidates.'
-    },
-    { // 20-31
-      icon:'💪',
-      strengths: 'You are clearly putting in the work — a score above 20 shows solid conceptual understanding across most topics. Most JEE Main qualifiers are in this range during preparation.',
-      gaps:      'A few topics are not fully consolidated. JEE questions are designed to catch "almost right" understanding — review the questions you got wrong and identify whether it was a conceptual gap or a calculation error.',
-      next:      'In our IIT JEE course, revisit the lessons for topics where you lost marks, then test yourself again. The jump from 20–30 to 32+ is very achievable with one focused revision round.'
-    },
-    { // 8-19
-      icon:'📈',
-      strengths: 'You are getting the fundamentals — a score in this range means key ideas are starting to register. This is a perfectly normal stage in JEE preparation and a solid base to build from.',
-      gaps:      'JEE Physics demands precision — knowing concepts roughly is not enough. Focus on understanding the "why" behind each formula, not just what to apply. Conceptual clarity is what separates 8 marks from 30.',
-      next:      'Go back to the core lessons in our IIT JEE course for the topics you missed. Use the simulations to build visual intuition first — that is what turns a surface understanding into exam-ready command.'
-    },
-    { // 0-7
-      icon:'🔄',
-      strengths: 'You attempted the full test — that discipline is the first requirement for JEE success. Some questions are landing, which means the foundation is beginning to form.',
-      gaps:      'The fundamentals need significant attention before moving forward. JEE Physics builds layer by layer — gaps at the foundational level compound at every higher stage. The good news: this is completely fixable.',
-      next:      'Start from Lesson 1 of our IIT JEE course. Take it step by step — concept, simulation, practice question. Come back and retry this mock after completing two lessons and you will see a clear improvement.'
-    },
-    { // negative
-      icon:'🌱',
-      strengths: 'Taking the test is itself a brave first step — you now know exactly where your preparation stands, which is far more valuable than guessing.',
-      gaps:      'A negative score means some incorrect guesses cost marks. In JEE, it is better to skip an uncertain question than guess — −1 for a wrong answer is a real penalty.',
-      next:      'Begin at Lesson 1 of our IIT JEE course. Build the conceptual base first, then return. Also practise the discipline of skipping uncertain questions — it is a scoring strategy, not a weakness.'
-    }
-  ];
-
-  var t = FB[band];
-  document.getElementById('fb-icon').textContent           = t.icon;
-  document.getElementById('fb-strengths-text').textContent = t.strengths;
-  document.getElementById('fb-gaps-text').textContent      = t.gaps;
-  document.getElementById('fb-next-text').textContent      = t.next;
+  // Update CTA again in case user came here via a different path
+  document.getElementById('fb-cta').setAttribute('href', cfg.cta);
 
   showScreen('screen-feedback');
 };
