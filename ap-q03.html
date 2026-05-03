@@ -1,0 +1,431 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q03 ── */
+#tsc-ap-q03{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q03 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q03 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q03 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q03 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q03 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q03 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q03 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q03 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q03 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q03 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q03 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q03 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q03 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q03 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q03 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q03 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q03 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q03 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q03 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q03 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q03 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q03 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q03 .sim-inner{position:relative}
+#tsc-ap-q03 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q03 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q03 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q03 .overlay-icon{font-size:28px}
+#tsc-ap-q03 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q03 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q03 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q03 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — top-down circular track */
+#tsc-ap-q03 .scene-wrap{background:#1b2a4a;border-radius:10px;height:340px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q03 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+#tsc-ap-q03 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q03 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q03 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q03 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q03 .sim-card-val.vel{color:#0d9488}
+#tsc-ap-q03 .sim-card-val.force{color:#e07020}
+#tsc-ap-q03 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q03 .sim-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q03 .speed-slider-wrap{display:flex;align-items:center;gap:10px;font:600 12px 'Nunito',sans-serif;color:#5a6e8a;flex:1;min-width:0}
+#tsc-ap-q03 .speed-slider-wrap input[type=range]{flex:1;min-width:80px}
+#tsc-ap-q03 .speed-slider-val{font:700 13px 'Courier New',monospace;color:#1b2a4a;min-width:60px;text-align:right}
+#tsc-ap-q03 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q03 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q03 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q03 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q03 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q03 .opts{grid-template-columns:1fr}
+  #tsc-ap-q03 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q03 .qtxt{font-size:16px}
+  #tsc-ap-q03 .scene-wrap{height:280px}
+}
+</style>
+
+<div id="tsc-ap-q03">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q3</span>
+    <span class="topic-tag">Circular Motion — Net Force Direction</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A car drives around a flat circular track at constant speed. In which direction does the net force on the car point?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q03-opts">
+    <button class="opt" data-idx="0" onclick="apQ03Answer(this)"><span class="opt-lbl">A</span>Forward, in the direction of motion</button>
+    <button class="opt" data-idx="1" onclick="apQ03Answer(this)"><span class="opt-lbl">B</span>Toward the center of the circle</button>
+    <button class="opt" data-idx="2" onclick="apQ03Answer(this)"><span class="opt-lbl">C</span>Outward, away from the center</button>
+    <button class="opt" data-idx="3" onclick="apQ03Answer(this)"><span class="opt-lbl">D</span>Zero, since the speed is constant</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q03-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — toward the center of the circle (centripetal)
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q03-answer-box">
+    <div class="answer-main" id="ap-q03-answer-main"></div>
+    <div class="answer-trap" id="ap-q03-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q03-trap-lbl">💡 Don't Fall For This</div>
+      The "centrifugal force" trap (option C): inside the car, you <em>feel</em> pushed outward — so it seems the force must point outward. But that's an illusion of your own inertia. Your body wants to keep going in a straight line; it's the door that pushes you <em>inward</em>, forcing you to follow the curve.<br><br>
+      The "constant speed = no force" trap (option D): constant <em>speed</em> doesn't mean constant <em>velocity</em>. Velocity is a vector — its direction is changing every instant. Changing velocity means there is acceleration, and Newton's second law says there must be a net force to cause it. That net force points toward the center.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Velocity Tangent, Net Force Inward</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q03-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q03-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene: top-down circular track -->
+        <div class="scene-wrap" id="ap-q03-scene">
+          <svg class="scene-svg" id="ap-q03-svg" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <!-- Sleek slim arrowheads -->
+              <marker id="ap-q03-arrow-teal" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#0d9488"/>
+              </marker>
+              <marker id="ap-q03-arrow-orange" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#e07020"/>
+              </marker>
+              <!-- Track gradient -->
+              <radialGradient id="ap-q03-track-grad" cx="50%" cy="50%" r="55%">
+                <stop offset="0%"  stop-color="#2a3d62"/>
+                <stop offset="100%" stop-color="#15233f"/>
+              </radialGradient>
+              <!-- Car body gradient -->
+              <linearGradient id="ap-q03-car-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#fde08a"/>
+                <stop offset="55%" stop-color="#f7c948"/>
+                <stop offset="100%" stop-color="#c79722"/>
+              </linearGradient>
+              <linearGradient id="ap-q03-glass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#cfe6f3" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#5e7e96" stop-opacity="0.75"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Outer track ring (asphalt) -->
+            <circle cx="300" cy="170" r="135" fill="none" stroke="#3a4658" stroke-width="48"/>
+            <!-- Outer edge line -->
+            <circle cx="300" cy="170" r="159" fill="none" stroke="#5a6e8a" stroke-width="1.5" opacity="0.4"/>
+            <!-- Inner edge line -->
+            <circle cx="300" cy="170" r="111" fill="none" stroke="#5a6e8a" stroke-width="1.5" opacity="0.4"/>
+            <!-- Center line (dashed yellow) -->
+            <circle cx="300" cy="170" r="135" fill="none" stroke="#f7c948" stroke-width="2" stroke-dasharray="10,12" opacity="0.65"/>
+
+            <!-- Center marker -->
+            <circle cx="300" cy="170" r="4" fill="#f7c948"/>
+            <text x="300" y="190" text-anchor="middle" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="800" font-size="11" letter-spacing="0.08em">CENTER</text>
+
+            <!-- Radius dashed line (drawn from center to car position, updated each frame) -->
+            <line id="ap-q03-radius" x1="300" y1="170" x2="435" y2="170" stroke="#fff" stroke-width="1" stroke-dasharray="3,4" opacity="0.35"/>
+
+            <!-- Car group (rotates and translates around the track) -->
+            <g id="ap-q03-car-g">
+              <!-- Velocity arrow (tangent, teal) — local +x = direction of motion -->
+              <g id="ap-q03-vel-arrow">
+                <line id="ap-q03-vel-line" x1="0" y1="0" x2="50" y2="0" stroke="#0d9488" stroke-width="2.5" marker-end="url(#ap-q03-arrow-teal)" stroke-linecap="round"/>
+                <text id="ap-q03-vel-label" x="28" y="-8" text-anchor="middle" fill="#0d9488" font-family="Nunito,sans-serif" font-weight="800" font-size="13">v</text>
+              </g>
+              <!-- Force arrow (centripetal, orange) — local +y points toward center after rotation by (θ+90°) -->
+              <g id="ap-q03-force-arrow">
+                <line id="ap-q03-force-line" x1="0" y1="0" x2="0" y2="40" stroke="#e07020" stroke-width="2.5" marker-end="url(#ap-q03-arrow-orange)" stroke-linecap="round"/>
+                <text id="ap-q03-force-label" x="14" y="22" text-anchor="start" fill="#e07020" font-family="Nunito,sans-serif" font-weight="800" font-size="13">F_net</text>
+              </g>
+              <!-- Car body (top-down view: oval-ish rectangle with rounded corners; "front" points along +x to match velocity arrow) -->
+              <g id="ap-q03-car-body">
+                <!-- Body -->
+                <rect x="-22" y="-12" width="44" height="24" rx="6" fill="url(#ap-q03-car-grad)" stroke="#0c1830" stroke-width="1.4"/>
+                <!-- Roof / cabin -->
+                <rect x="-12" y="-9" width="20" height="18" rx="3" fill="url(#ap-q03-glass)" stroke="#0c1830" stroke-width="0.8"/>
+                <!-- Windshield divider -->
+                <line x1="-2" y1="-9" x2="-2" y2="9" stroke="#0c1830" stroke-width="0.6" opacity="0.6"/>
+                <!-- Headlights (front, +x side) -->
+                <circle cx="20" cy="-7" r="2" fill="#fff7c0"/>
+                <circle cx="20" cy="7" r="2" fill="#fff7c0"/>
+                <!-- Tail lights (rear, -x side) -->
+                <rect x="-23" y="-9" width="2" height="3" fill="#c4302b"/>
+                <rect x="-23" y="6" width="2" height="3" fill="#c4302b"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Velocity (v)</div>
+            <div class="sim-card-val vel" id="ap-q03-v-display">15.0 m/s</div>
+            <div class="sim-card-note">Constant in <em>magnitude</em>, but its direction changes every instant — always tangent to the circle.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Net force (F_net)</div>
+            <div class="sim-card-val force" id="ap-q03-f-display">→ center</div>
+            <div class="sim-card-note">F = mv²/r, always pointing toward the center. This is what bends the path.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <div class="speed-slider-wrap">
+            <span>Speed:</span>
+            <input type="range" id="ap-q03-speed-slider" min="6" max="24" step="1" value="15">
+            <span class="speed-slider-val" id="ap-q03-speed-val">15 m/s</span>
+          </div>
+          <button class="sim-btn" id="ap-q03-pause-btn" onclick="apQ03ToggleMotion()">Pause</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            a_c = v² / r &nbsp;|&nbsp; F_net = m·a_c &nbsp;(both directed toward the center)
+          </div>
+          <div class="formula-note">Constant speed ≠ constant velocity. The direction is changing — that's acceleration. By Newton's second law, the net force must point in the same direction as that acceleration: inward.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q03 -->
+
+<script>
+(function(){
+  var CORRECT = 1; // index of correct option (B)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q03-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ03Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q03-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q03-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q03-answer-box');
+    var main  = document.getElementById('ap-q03-answer-main');
+    var trap  = document.getElementById('ap-q03-answer-trap');
+    var trapLbl = document.getElementById('ap-q03-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! At constant speed, the velocity vector\'s direction is changing — the car is accelerating toward the center of the circle. By Newton\'s second law, the net force must point in the same direction as that acceleration: inward, toward the center. This is centripetal force, and it\'s what bends the car\'s straight-line path into a curve.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Velocity is a vector — its <em>direction</em> changes every instant in circular motion, even at constant speed. That changing velocity is acceleration, and acceleration points toward the center. By Newton\'s second law (F = ma), the net force points the same way: inward. The correct answer is B.';
+    }
+
+    var ov = document.getElementById('ap-q03-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q03-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q03-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q03-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q03').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: car on circular track ──
+  var carG = document.getElementById('ap-q03-car-g');
+  var radiusLine = document.getElementById('ap-q03-radius');
+  var slider = document.getElementById('ap-q03-speed-slider');
+  var speedVal = document.getElementById('ap-q03-speed-val');
+  var vDisp = document.getElementById('ap-q03-v-display');
+
+  var CX = 300, CY = 170, R = 135;
+  var angle = 0;          // radians
+  var speed = 15;         // m/s (drives angular velocity)
+  var running = true;
+
+  var velLine   = document.getElementById('ap-q03-vel-line');
+  var velLabel  = document.getElementById('ap-q03-vel-label');
+  var forceLine = document.getElementById('ap-q03-force-line');
+  var forceLabel= document.getElementById('ap-q03-force-label');
+
+  // Slider goes 6..24 m/s. Map to:
+  //   velocity arrow length:   28..78 px (scales linearly with v)
+  //   force arrow length:      18..70 px (scales with v² since F_c = m v²/r)
+  function updateSpeed(){
+    speed = parseInt(slider.value);
+    speedVal.textContent = speed + ' m/s';
+    vDisp.textContent = speed.toFixed(1) + ' m/s';
+
+    var vMin = 6, vMax = 24;
+    var vT   = (speed - vMin) / (vMax - vMin);     // 0..1
+    var fT   = (speed*speed - vMin*vMin) / (vMax*vMin*0 + (vMax*vMax - vMin*vMin));
+
+    var velLen   = 28 + vT * (78 - 28);
+    var forceLen = 18 + fT * (70 - 18);
+
+    velLine.setAttribute('x2', velLen.toFixed(1));
+    velLabel.setAttribute('x', (velLen/2).toFixed(1));
+
+    forceLine.setAttribute('y2', forceLen.toFixed(1));
+    forceLabel.setAttribute('y', (forceLen/2 + 4).toFixed(1));
+  }
+  slider.addEventListener('input', updateSpeed);
+  updateSpeed();
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+
+    if(running){
+      // angular speed scales with linear speed; clamp to a comfortable visual range
+      var omega = speed * 0.06; // rad/s for animation pacing
+      angle += omega * dt;
+    }
+
+    // Car position on the circle
+    var x = CX + R * Math.cos(angle);
+    var y = CY + R * Math.sin(angle);
+
+    // Tangent direction (counterclockwise → tangent is perpendicular to radius, rotated +90°)
+    // Local +x of car group should point along the tangent direction of motion.
+    // For a point at angle θ on the circle, position = (R cosθ, R sinθ). Tangent (ccw) = (−sinθ, cosθ).
+    // The angle of the tangent from +x axis = θ + π/2.
+    var tangentDeg = (angle * 180 / Math.PI) + 90;
+
+    carG.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + y.toFixed(2) + ') rotate(' + tangentDeg.toFixed(2) + ')');
+
+    // Update radius line
+    radiusLine.setAttribute('x2', x.toFixed(2));
+    radiusLine.setAttribute('y2', y.toFixed(2));
+
+    requestAnimationFrame(loop);
+  }
+
+  window.apQ03ToggleMotion = function(){
+    running = !running;
+    document.getElementById('ap-q03-pause-btn').textContent = running ? 'Pause' : 'Resume';
+  };
+
+  requestAnimationFrame(loop);
+
+})();
+</script>

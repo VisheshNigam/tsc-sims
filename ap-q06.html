@@ -1,0 +1,490 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q06 ── */
+#tsc-ap-q06{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q06 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q06 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q06 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q06 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q06 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q06 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q06 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q06 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q06 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q06 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q06 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q06 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q06 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q06 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q06 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q06 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q06 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q06 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q06 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q06 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q06 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q06 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q06 .sim-inner{position:relative}
+#tsc-ap-q06 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q06 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q06 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q06 .overlay-icon{font-size:28px}
+#tsc-ap-q06 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q06 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q06 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q06 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — seesaw scene */
+#tsc-ap-q06 .scene-wrap{background:#1b2a4a;border-radius:10px;height:300px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q06 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+/* Torque bars panel */
+#tsc-ap-q06 .torque-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q06 .torque-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q06 .torque-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:6px}
+#tsc-ap-q06 .torque-bar-wrap{position:relative;height:16px;background:#e0e6ee;border-radius:4px;overflow:hidden;margin-bottom:6px}
+#tsc-ap-q06 .torque-bar-fill{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .15s linear}
+#tsc-ap-q06 .torque-bar-fill.left{background:linear-gradient(90deg,#0d9488,#22b8a6)}
+#tsc-ap-q06 .torque-bar-fill.right{background:linear-gradient(90deg,#e07020,#f48a3c)}
+#tsc-ap-q06 .torque-bar-val{font:700 16px 'Courier New',monospace;color:#1b2a4a}
+
+#tsc-ap-q06 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q06 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q06 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q06 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q06 .sim-card-val.dist{color:#e07020}
+#tsc-ap-q06 .sim-card-val.status{color:#0d9488}
+#tsc-ap-q06 .sim-card-val.status.unbal{color:#c85a00}
+#tsc-ap-q06 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q06 .sim-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q06 .dist-slider-wrap{display:flex;align-items:center;gap:10px;font:600 12px 'Nunito',sans-serif;color:#5a6e8a;flex:1;min-width:0}
+#tsc-ap-q06 .dist-slider-wrap input[type=range]{flex:1;min-width:80px}
+#tsc-ap-q06 .dist-slider-val{font:700 13px 'Courier New',monospace;color:#1b2a4a;min-width:60px;text-align:right}
+#tsc-ap-q06 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q06 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q06 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q06 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q06 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q06 .opts{grid-template-columns:1fr}
+  #tsc-ap-q06 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q06 .torque-panel{grid-template-columns:1fr}
+  #tsc-ap-q06 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q06">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q6</span>
+    <span class="topic-tag">Torque — Rotational Equilibrium</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A 30 kg child sits 2 m to the left of the pivot of a seesaw. A 20 kg child sits to the right of the pivot. How far from the pivot must the second child sit for the seesaw to balance?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q06-opts">
+    <button class="opt" data-idx="0" onclick="apQ06Answer(this)"><span class="opt-lbl">A</span>3 m</button>
+    <button class="opt" data-idx="1" onclick="apQ06Answer(this)"><span class="opt-lbl">B</span>2 m</button>
+    <button class="opt" data-idx="2" onclick="apQ06Answer(this)"><span class="opt-lbl">C</span>1.33 m</button>
+    <button class="opt" data-idx="3" onclick="apQ06Answer(this)"><span class="opt-lbl">D</span>4 m</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q06-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    A — d = (30·2)/20 = 3 m
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q06-answer-box">
+    <div class="answer-main" id="ap-q06-answer-main"></div>
+    <div class="answer-trap" id="ap-q06-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q06-trap-lbl">💡 Don't Fall For This</div>
+      The "same distance" trap (option B): students assume both children sit the same distance from the pivot. But a lighter child needs a longer lever arm to produce the same torque as a heavier child closer in.<br><br>
+      The "inverted ratio" trap (option C): some students apply the mass ratio the wrong way. If you wrote (20/30)·2 = 1.33 m, you've placed the lighter child <em>closer</em> to the pivot — that makes the imbalance worse, not better.<br><br>
+      Why d = 3 m: the lighter child needs to sit farther from the pivot to compensate for being lighter. Mass ratio is 30:20 = 3:2, so the distance ratio must invert to 2:3 — the 30 kg child at 2 m, the 20 kg child at 3 m.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Torque Balance: τ_left = τ_right</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q06-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q06-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q06-scene">
+          <svg class="scene-svg" id="ap-q06-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="ap-q06-plank-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c79722"/>
+                <stop offset="55%" stop-color="#a37516"/>
+                <stop offset="100%" stop-color="#6b4a0d"/>
+              </linearGradient>
+              <linearGradient id="ap-q06-pivot-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9aa3b2"/>
+                <stop offset="100%" stop-color="#3a4658"/>
+              </linearGradient>
+              <radialGradient id="ap-q06-shadow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="rgba(0,0,0,0.4)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+              <linearGradient id="ap-q06-child1-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3ecbb8"/>
+                <stop offset="100%" stop-color="#066b62"/>
+              </linearGradient>
+              <linearGradient id="ap-q06-child2-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f59455"/>
+                <stop offset="100%" stop-color="#a44a0d"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Ground baseline -->
+            <line x1="20" y1="270" x2="580" y2="270" stroke="#0d9488" stroke-width="3" opacity="0.55"/>
+            <line x1="20" y1="270" x2="580" y2="270" stroke="#0d9488" stroke-width="6" opacity="0.18"/>
+
+            <!-- Pivot triangle (fixed, ground-anchored) -->
+            <polygon points="280,260 320,260 300,200" fill="url(#ap-q06-pivot-grad)" stroke="#0c1830" stroke-width="1.4"/>
+            <ellipse cx="300" cy="262" rx="32" ry="3" fill="url(#ap-q06-shadow)"/>
+
+            <!-- Seesaw rotating group (pivots around 300,200) -->
+            <g id="ap-q06-seesaw-g">
+              <!-- Plank -->
+              <rect x="50" y="192" width="500" height="14" rx="2" fill="url(#ap-q06-plank-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Plank top highlight -->
+              <rect x="50" y="192" width="500" height="3" fill="#fff" opacity="0.25"/>
+              <!-- Plank tick marks every 50px (= 1 m if 50 px/m) -->
+              <g stroke="#0c1830" stroke-width="0.8" opacity="0.6">
+                <line x1="50"  y1="192" x2="50"  y2="186"/>
+                <line x1="100" y1="192" x2="100" y2="186"/>
+                <line x1="150" y1="192" x2="150" y2="186"/>
+                <line x1="200" y1="192" x2="200" y2="186"/>
+                <line x1="250" y1="192" x2="250" y2="186"/>
+                <line x1="350" y1="192" x2="350" y2="186"/>
+                <line x1="400" y1="192" x2="400" y2="186"/>
+                <line x1="450" y1="192" x2="450" y2="186"/>
+                <line x1="500" y1="192" x2="500" y2="186"/>
+                <line x1="550" y1="192" x2="550" y2="186"/>
+              </g>
+
+              <!-- Child 1 (30 kg, teal, fixed at 2 m left = pivot at 300, scale 50 px/m → x=200) -->
+              <g id="ap-q06-child1" transform="translate(200,192)">
+                <!-- Body -->
+                <ellipse cx="0" cy="-22" rx="20" ry="22" fill="url(#ap-q06-child1-grad)" stroke="#0c1830" stroke-width="1.2"/>
+                <!-- Head -->
+                <circle cx="0" cy="-50" r="11" fill="#f5d3a8" stroke="#0c1830" stroke-width="1"/>
+                <!-- Hair -->
+                <path d="M -10 -55 Q 0 -65 10 -55" fill="#3a2a18" stroke="#0c1830" stroke-width="0.8"/>
+                <!-- Mass label -->
+                <rect x="-18" y="-3" width="36" height="12" rx="2" fill="#fff" opacity="0.92"/>
+                <text x="0" y="6" text-anchor="middle" fill="#1b2a4a" font-family="Nunito,sans-serif" font-weight="900" font-size="10">30 kg</text>
+              </g>
+
+              <!-- Child 2 (20 kg, orange, position varies; default at d=3 m right = x=450) -->
+              <g id="ap-q06-child2" transform="translate(450,192)">
+                <!-- Body -->
+                <ellipse cx="0" cy="-19" rx="17" ry="19" fill="url(#ap-q06-child2-grad)" stroke="#0c1830" stroke-width="1.2"/>
+                <!-- Head -->
+                <circle cx="0" cy="-44" r="10" fill="#f5d3a8" stroke="#0c1830" stroke-width="1"/>
+                <!-- Hair (different style) -->
+                <path d="M -9 -49 Q 0 -57 9 -49" fill="#5a3a18" stroke="#0c1830" stroke-width="0.8"/>
+                <!-- Mass label -->
+                <rect x="-16" y="-3" width="32" height="12" rx="2" fill="#fff" opacity="0.92"/>
+                <text x="0" y="6" text-anchor="middle" fill="#1b2a4a" font-family="Nunito,sans-serif" font-weight="900" font-size="10">20 kg</text>
+              </g>
+            </g>
+
+            <!-- Distance labels (fixed in scene, not rotating) -->
+            <text x="200" y="285" text-anchor="middle" fill="#0d9488" font-family="Nunito,sans-serif" font-weight="800" font-size="12">2 m</text>
+            <text id="ap-q06-d2-label" x="450" y="285" text-anchor="middle" fill="#e07020" font-family="Nunito,sans-serif" font-weight="800" font-size="12">d = 3.0 m</text>
+
+            <!-- Pivot point label -->
+            <text x="300" y="285" text-anchor="middle" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="800" font-size="11">PIVOT</text>
+          </svg>
+        </div>
+
+        <!-- Torque bars -->
+        <div class="torque-panel">
+          <div class="torque-card">
+            <div class="torque-card-lbl">Left torque (30 kg child)</div>
+            <div class="torque-bar-wrap">
+              <div class="torque-bar-fill left" id="ap-q06-tleft-bar" style="width:60%"></div>
+            </div>
+            <div class="torque-bar-val" id="ap-q06-tleft-val">τ_L = 60 (units of kg·m)</div>
+          </div>
+          <div class="torque-card">
+            <div class="torque-card-lbl">Right torque (20 kg child)</div>
+            <div class="torque-bar-wrap">
+              <div class="torque-bar-fill right" id="ap-q06-tright-bar" style="width:60%"></div>
+            </div>
+            <div class="torque-bar-val" id="ap-q06-tright-val">τ_R = 60 (units of kg·m)</div>
+          </div>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">20 kg child's distance (d)</div>
+            <div class="sim-card-val dist" id="ap-q06-d-display">3.0 m</div>
+            <div class="sim-card-note">Slide the lever arm to find the balance point.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Status</div>
+            <div class="sim-card-val status" id="ap-q06-status-display">⚖ Balanced</div>
+            <div class="sim-card-note" id="ap-q06-status-note">Net torque = 0. Plank stays horizontal.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <div class="dist-slider-wrap">
+            <span>Distance d (right child):</span>
+            <input type="range" id="ap-q06-d-slider" min="0.5" max="5" step="0.1" value="3">
+            <span class="dist-slider-val" id="ap-q06-d-slider-val">3.0 m</span>
+          </div>
+          <button class="sim-btn" onclick="apQ06SetBalance()">Snap to balance</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            τ_L = τ_R &nbsp;⟹&nbsp; (30)(2) = (20)(d) &nbsp;⟹&nbsp; d = 60/20 = 3 m
+          </div>
+          <div class="formula-note">Slide the bar — the seesaw tips when the torques don't match. The plank stays level only when both bars have equal length.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q06 -->
+
+<script>
+(function(){
+  var CORRECT = 0; // index of correct option (A)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q06-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ06Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q06-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q06-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q06-answer-box');
+    var main  = document.getElementById('ap-q06-answer-main');
+    var trap  = document.getElementById('ap-q06-answer-trap');
+    var trapLbl = document.getElementById('ap-q06-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! For rotational equilibrium, the torques on each side of the pivot must be equal: m₁·d₁ = m₂·d₂. So (30)(2) = (20)(d) ⟹ d = 60/20 = 3 m. The lighter child needs a longer lever arm to balance the heavier child closer in.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Set the torques equal: m₁·d₁ = m₂·d₂ ⟹ (30)(2) = (20)(d) ⟹ d = 3 m. The lighter child needs a <em>longer</em> arm to compensate. The correct answer is A.';
+    }
+
+    var ov = document.getElementById('ap-q06-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q06-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q06-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q06-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q06').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: seesaw with torque-driven tilt ──
+  // Pivot at (300, 200). Plank rotates around this point.
+  // Scale: 50 px = 1 m. So child 1 at 2 m left → x = 200. Child 2 distance d (m) → x = 300 + d*50.
+  // Torque imbalance Δ = m1·d1 − m2·d  (positive = left side heavier → rotates ccw → plank tilts left-side-down)
+
+  var seesawG    = document.getElementById('ap-q06-seesaw-g');
+  var child2G    = document.getElementById('ap-q06-child2');
+  var slider     = document.getElementById('ap-q06-d-slider');
+  var sliderVal  = document.getElementById('ap-q06-d-slider-val');
+  var dDisp      = document.getElementById('ap-q06-d-display');
+  var statusDisp = document.getElementById('ap-q06-status-display');
+  var statusNote = document.getElementById('ap-q06-status-note');
+  var d2Label    = document.getElementById('ap-q06-d2-label');
+  var tLeftBar   = document.getElementById('ap-q06-tleft-bar');
+  var tRightBar  = document.getElementById('ap-q06-tright-bar');
+  var tLeftVal   = document.getElementById('ap-q06-tleft-val');
+  var tRightVal  = document.getElementById('ap-q06-tright-val');
+
+  var M1 = 30, D1 = 2;
+  var M2 = 20;
+  var d  = 3;            // current distance of right child (m)
+  var tilt = 0;          // current tilt angle (deg)
+  var targetTilt = 0;
+
+  function update(){
+    d = parseFloat(slider.value);
+    sliderVal.textContent = d.toFixed(1) + ' m';
+    dDisp.textContent     = d.toFixed(1) + ' m';
+    d2Label.textContent   = 'd = ' + d.toFixed(1) + ' m';
+
+    // Reposition child 2 inside the rotating seesaw group
+    var x2 = 300 + d * 50;
+    child2G.setAttribute('transform', 'translate(' + x2 + ',192)');
+    // Update the static x-coord of the d-label below the plank
+    d2Label.setAttribute('x', x2);
+
+    // Compute torques (units: kg·m, ignoring g since it cancels)
+    var tauL = M1 * D1;            // 60
+    var tauR = M2 * d;             // 20·d
+    var maxTau = Math.max(tauL, tauR, 60);
+
+    // Bar widths normalised to the larger of the two
+    tLeftBar.style.width  = (tauL / maxTau * 100).toFixed(1) + '%';
+    tRightBar.style.width = (tauR / maxTau * 100).toFixed(1) + '%';
+    tLeftVal.textContent  = 'τ_L = ' + tauL.toFixed(0) + ' kg·m';
+    tRightVal.textContent = 'τ_R = ' + tauR.toFixed(0) + ' kg·m';
+
+    // Determine balance status and target tilt
+    var diff = tauL - tauR; // positive = left heavier → plank tilts left-down (clockwise looking head-on; in SVG y-down coords, that's negative angle)
+    var tol = 0.5;          // tolerance in kg·m
+    if(Math.abs(diff) < tol){
+      statusDisp.textContent = '⚖ Balanced';
+      statusDisp.classList.remove('unbal');
+      statusNote.textContent = 'Net torque = 0. Plank stays horizontal.';
+      targetTilt = 0;
+    } else if(diff > 0){
+      statusDisp.textContent = '↘ Left side falls';
+      statusDisp.classList.add('unbal');
+      statusNote.textContent = 'Left torque (' + tauL + ') > right torque (' + tauR.toFixed(0) + '). Plank rotates clockwise.';
+      // Map magnitude to a tilt angle, capped
+      var mag = Math.min(1, Math.abs(diff) / 60);
+      targetTilt = -12 * mag;  // SVG: negative degrees rotates ccw, but we want left side down which in SVG y-down is ... let's test by sign convention
+    } else {
+      statusDisp.textContent = '↙ Right side falls';
+      statusDisp.classList.add('unbal');
+      statusNote.textContent = 'Right torque (' + tauR.toFixed(0) + ') > left torque (' + tauL + '). Plank rotates counterclockwise.';
+      var mag2 = Math.min(1, Math.abs(diff) / 60);
+      targetTilt = 12 * mag2;
+    }
+  }
+
+  slider.addEventListener('input', update);
+  update();
+
+  window.apQ06SetBalance = function(){
+    slider.value = '3';
+    update();
+  };
+
+  // Smooth tilt animation
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+    // Ease tilt toward target
+    tilt += (targetTilt - tilt) * Math.min(1, dt * 3.5);
+    seesawG.setAttribute('transform', 'rotate(' + tilt.toFixed(2) + ' 300 200)');
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

@@ -1,0 +1,577 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q02 ── */
+#tsc-ap-q02{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q02 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q02 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q02 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q02 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q02 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q02 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q02 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q02 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q02 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q02 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q02 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q02 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q02 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q02 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q02 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q02 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q02 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q02 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q02 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q02 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q02 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q02 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q02 .sim-inner{position:relative}
+#tsc-ap-q02 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q02 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q02 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q02 .overlay-icon{font-size:28px}
+#tsc-ap-q02 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q02 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q02 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q02 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — collision scene */
+#tsc-ap-q02 .scene-wrap{background:#1b2a4a;border-radius:10px;height:240px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q02 .scene-ground{position:absolute;bottom:0;left:0;right:0;height:8px;background:#0d9488;opacity:.55}
+#tsc-ap-q02 .scene-dashes{position:absolute;bottom:8px;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,#f7c948 0,#f7c948 18px,transparent 18px,transparent 36px);opacity:.35}
+#tsc-ap-q02 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+#tsc-ap-q02 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q02 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q02 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q02 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q02 .sim-card-val.force{color:#0d9488}
+#tsc-ap-q02 .sim-card-val.acc{color:#e07020}
+#tsc-ap-q02 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q02 .sim-graphs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q02 .graph-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:10px 10px 6px}
+#tsc-ap-q02 .graph-title{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:6px}
+#tsc-ap-q02 .sim-canvas{display:block;width:100%;height:140px}
+#tsc-ap-q02 .sim-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q02 .mass-slider-wrap{display:flex;align-items:center;gap:10px;font:600 12px 'Nunito',sans-serif;color:#5a6e8a;flex:1;min-width:0}
+#tsc-ap-q02 .mass-slider-wrap input[type=range]{flex:1;min-width:80px}
+#tsc-ap-q02 .mass-slider-val{font:700 13px 'Courier New',monospace;color:#1b2a4a;min-width:60px;text-align:right}
+#tsc-ap-q02 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q02 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q02 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q02 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q02 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q02 .opts{grid-template-columns:1fr}
+  #tsc-ap-q02 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q02 .sim-graphs{grid-template-columns:1fr}
+  #tsc-ap-q02 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q02">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q2</span>
+    <span class="topic-tag">Dynamics — Newton's Third Law</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A heavy truck collides head-on with a small car. During the collision, how do the forces on the two vehicles compare?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q02-opts">
+    <button class="opt" data-idx="0" onclick="apQ02Answer(this)"><span class="opt-lbl">A</span>The truck exerts a larger force on the car than the car exerts on the truck</button>
+    <button class="opt" data-idx="1" onclick="apQ02Answer(this)"><span class="opt-lbl">B</span>The car exerts a larger force on the truck because the car decelerates more</button>
+    <button class="opt" data-idx="2" onclick="apQ02Answer(this)"><span class="opt-lbl">C</span>The forces are equal in magnitude and opposite in direction</button>
+    <button class="opt" data-idx="3" onclick="apQ02Answer(this)"><span class="opt-lbl">D</span>The forces depend on the masses — the heavier vehicle pushes harder</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q02-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    C — equal in magnitude, opposite in direction
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q02-answer-box">
+    <div class="answer-main" id="ap-q02-answer-main"></div>
+    <div class="answer-trap" id="ap-q02-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q02-trap-lbl">💡 Don't Fall For This</div>
+      The "bigger object pushes harder" trap: students see "heavy truck vs small car" and assume the truck must exert more force. But that confuses force with damage. Newton's third law says the force pair is always equal — F<sub>truck on car</sub> = −F<sub>car on truck</sub>, no exceptions.<br><br>
+      Why the car gets wrecked: it's not because the force on the car is bigger. It's because a = F/m, and the car has a tiny m. Same force on the truck barely budges it. Equal forces, dramatically unequal accelerations.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Force Pair vs Acceleration Pair</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q02-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q02-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q02-scene">
+          <div class="scene-dashes"></div>
+          <div class="scene-ground"></div>
+          <svg class="scene-svg" id="ap-q02-svg" viewBox="0 0 600 240" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <!-- Sleek slim arrowheads (scale with stroke width) -->
+              <marker id="ap-q02-arrow-teal" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#0d9488"/>
+              </marker>
+              <marker id="ap-q02-arrow-orange" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#e07020"/>
+              </marker>
+
+              <!-- Truck cab gradient -->
+              <linearGradient id="ap-q02-cab-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#fde08a"/>
+                <stop offset="55%" stop-color="#f7c948"/>
+                <stop offset="100%" stop-color="#c79722"/>
+              </linearGradient>
+              <!-- Truck cargo box gradient -->
+              <linearGradient id="ap-q02-cargo-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#3b5582"/>
+                <stop offset="55%" stop-color="#2a4068"/>
+                <stop offset="100%" stop-color="#15233f"/>
+              </linearGradient>
+              <!-- Car body gradient -->
+              <linearGradient id="ap-q02-car-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#f59455"/>
+                <stop offset="55%" stop-color="#e07020"/>
+                <stop offset="100%" stop-color="#a44a0d"/>
+              </linearGradient>
+              <!-- Glass gradient for windows -->
+              <linearGradient id="ap-q02-glass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#cfe6f3" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#5e7e96" stop-opacity="0.75"/>
+              </linearGradient>
+              <!-- Wheel rim gradient -->
+              <radialGradient id="ap-q02-rim" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="#9aa3b2"/>
+                <stop offset="60%" stop-color="#5b6470"/>
+                <stop offset="100%" stop-color="#262b34"/>
+              </radialGradient>
+              <!-- Subtle ground shadow -->
+              <radialGradient id="ap-q02-shadow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="rgba(0,0,0,0.45)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+            </defs>
+
+            <!-- ───────── TRUCK group (translates as a unit) ───────── -->
+            <g id="ap-q02-truck-g">
+              <!-- Ground shadow under truck -->
+              <ellipse cx="135" cy="201" rx="115" ry="6" fill="url(#ap-q02-shadow)"/>
+
+              <!-- Cargo box (rear, taller) -->
+              <rect x="34" y="98" width="120" height="92" rx="3" fill="url(#ap-q02-cargo-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Cargo door panels -->
+              <line x1="64" y1="105" x2="64" y2="183" stroke="#0c1830" stroke-width="1" opacity="0.6"/>
+              <line x1="94" y1="105" x2="94" y2="183" stroke="#0c1830" stroke-width="1" opacity="0.6"/>
+              <line x1="124" y1="105" x2="124" y2="183" stroke="#0c1830" stroke-width="1" opacity="0.6"/>
+              <!-- Top highlight strip on cargo -->
+              <rect x="34" y="98" width="120" height="6" fill="#fff" opacity="0.18"/>
+              <!-- Logo plate -->
+              <rect x="60" y="135" width="68" height="18" rx="2" fill="#f7c948" opacity="0.92"/>
+              <text x="94" y="148" text-anchor="middle" fill="#1b2a4a" font-family="Nunito,sans-serif" font-weight="900" font-size="11" letter-spacing="1.2">TRUCK</text>
+
+              <!-- Cab (front, shorter, with windshield) -->
+              <path d="M 154 116 L 168 100 L 198 100 L 210 116 L 210 190 L 154 190 Z"
+                    fill="url(#ap-q02-cab-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Windshield -->
+              <path d="M 168 104 L 196 104 L 207 116 L 158 116 Z" fill="url(#ap-q02-glass)" stroke="#0c1830" stroke-width="0.8"/>
+              <!-- Side window -->
+              <rect x="158" y="120" width="48" height="18" rx="1.5" fill="url(#ap-q02-glass)" stroke="#0c1830" stroke-width="0.6"/>
+              <!-- Door handle -->
+              <rect x="178" y="148" width="14" height="2" rx="1" fill="#0c1830"/>
+              <!-- Headlight (front, right side of cab) -->
+              <ellipse cx="207" cy="160" rx="3.5" ry="4" fill="#fff7c0" stroke="#0c1830" stroke-width="0.6"/>
+              <!-- Grille -->
+              <rect x="200" y="168" width="9" height="14" rx="1" fill="#1b2a4a" stroke="#0c1830" stroke-width="0.6"/>
+              <!-- Bumper -->
+              <rect x="152" y="184" width="60" height="6" rx="1" fill="#3a4658" stroke="#0c1830" stroke-width="0.6"/>
+
+              <!-- Wheels (with rims and tyres) -->
+              <g>
+                <circle cx="65" cy="192" r="15" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="65" cy="192" r="9"  fill="url(#ap-q02-rim)"/>
+                <circle cx="65" cy="192" r="2"  fill="#1a1f28"/>
+              </g>
+              <g>
+                <circle cx="185" cy="192" r="15" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="185" cy="192" r="9"  fill="url(#ap-q02-rim)"/>
+                <circle cx="185" cy="192" r="2"  fill="#1a1f28"/>
+              </g>
+
+              <!-- Force on truck (pointing left, away from car) — label sits well above the arrow line -->
+              <g id="ap-q02-force-truck" opacity="0">
+                <text x="155" y="62" text-anchor="middle" fill="#0d9488" font-family="Nunito,sans-serif" font-weight="800" font-size="13">F on truck</text>
+                <line x1="195" y1="80" x2="115" y2="80" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ap-q02-arrow-teal)"/>
+              </g>
+              <!-- Acceleration on truck (small leftward arrow under truck) -->
+              <g id="ap-q02-acc-truck" opacity="0">
+                <line id="ap-q02-acc-truck-line" x1="135" y1="223" x2="113" y2="223" stroke="#e07020" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ap-q02-arrow-orange)"/>
+                <text id="ap-q02-acc-truck-label" x="124" y="237" text-anchor="middle" fill="#e07020" font-family="Nunito,sans-serif" font-weight="800" font-size="11">small a</text>
+              </g>
+            </g>
+
+            <!-- ───────── CAR group (front faces left, toward truck) ───────── -->
+            <g id="ap-q02-car-g">
+              <!-- Ground shadow under car -->
+              <ellipse cx="480" cy="195" rx="92" ry="5" fill="url(#ap-q02-shadow)"/>
+
+              <!-- Car lower body / chassis -->
+              <path d="M 402 178 L 402 158 Q 410 152 422 150 L 442 142 Q 460 130 482 130 L 522 130 Q 542 130 552 144 L 562 158 L 562 178 Z"
+                    fill="url(#ap-q02-car-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Roof / cabin curve -->
+              <path d="M 444 142 Q 460 132 480 132 L 522 132 Q 538 132 546 144 L 540 144 Q 530 138 522 138 L 482 138 Q 466 138 452 144 Z"
+                    fill="#0c1830" opacity="0.45"/>
+              <!-- Windshield (front, slanting left) -->
+              <path d="M 444 144 Q 460 134 480 134 L 488 134 L 480 152 L 446 152 Z" fill="url(#ap-q02-glass)" stroke="#0c1830" stroke-width="0.8"/>
+              <!-- Rear window -->
+              <path d="M 492 134 L 522 134 Q 538 134 544 144 L 544 152 L 492 152 Z" fill="url(#ap-q02-glass)" stroke="#0c1830" stroke-width="0.8"/>
+              <!-- B-pillar -->
+              <rect x="488" y="135" width="3" height="18" fill="#0c1830"/>
+              <!-- Body trim line / character line -->
+              <line x1="406" y1="166" x2="558" y2="166" stroke="#0c1830" stroke-width="0.8" opacity="0.55"/>
+              <!-- Door handle -->
+              <rect x="510" y="161" width="12" height="2" rx="1" fill="#0c1830"/>
+              <!-- Highlight along top -->
+              <path d="M 446 142 Q 478 132 522 132 Q 542 132 549 142" fill="none" stroke="#fff" stroke-width="1.2" opacity="0.55"/>
+
+              <!-- Headlight (front, on the LEFT — the side facing the truck) -->
+              <ellipse cx="408" cy="160" rx="4" ry="5" fill="#fff7c0" stroke="#0c1830" stroke-width="0.6"/>
+              <!-- Grille -->
+              <rect x="404" y="167" width="6" height="9" rx="1" fill="#1b2a4a" stroke="#0c1830" stroke-width="0.5"/>
+              <!-- Front bumper -->
+              <rect x="402" y="174" width="10" height="6" rx="1" fill="#3a4658" stroke="#0c1830" stroke-width="0.5"/>
+              <!-- Tail-light (rear, right side) -->
+              <rect x="556" y="158" width="6" height="6" rx="1" fill="#c4302b" stroke="#0c1830" stroke-width="0.4"/>
+
+              <!-- Wheels -->
+              <g>
+                <circle cx="430" cy="183" r="13" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="430" cy="183" r="7.5" fill="url(#ap-q02-rim)"/>
+                <circle cx="430" cy="183" r="1.8" fill="#1a1f28"/>
+              </g>
+              <g>
+                <circle cx="535" cy="183" r="13" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="535" cy="183" r="7.5" fill="url(#ap-q02-rim)"/>
+                <circle cx="535" cy="183" r="1.8" fill="#1a1f28"/>
+              </g>
+
+              <!-- Force on car (pointing right, away from truck) — label sits well above the arrow line -->
+              <g id="ap-q02-force-car" opacity="0">
+                <text x="450" y="62" text-anchor="middle" fill="#0d9488" font-family="Nunito,sans-serif" font-weight="800" font-size="13">F on car</text>
+                <line x1="410" y1="80" x2="490" y2="80" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ap-q02-arrow-teal)"/>
+              </g>
+              <!-- Acceleration on car (large rightward arrow under car) -->
+              <g id="ap-q02-acc-car" opacity="0">
+                <line id="ap-q02-acc-car-line" x1="445" y1="223" x2="555" y2="223" stroke="#e07020" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ap-q02-arrow-orange)"/>
+                <text id="ap-q02-acc-car-label" x="500" y="237" text-anchor="middle" fill="#e07020" font-family="Nunito,sans-serif" font-weight="800" font-size="11">large a</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Force pair (Newton's 3rd Law)</div>
+            <div class="sim-card-val force" id="ap-q02-f-display">|F| = 12000 N</div>
+            <div class="sim-card-note">Truck and car feel the same magnitude — opposite directions.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Acceleration ratio</div>
+            <div class="sim-card-val acc" id="ap-q02-a-display">a_car / a_truck = 6.0×</div>
+            <div class="sim-card-note">Same force, but a = F/m. Smaller mass → larger acceleration.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <div class="mass-slider-wrap">
+            <span>Mass ratio (truck / car):</span>
+            <input type="range" id="ap-q02-mass-slider" min="2" max="20" step="1" value="6">
+            <span class="mass-slider-val" id="ap-q02-mass-val">6×</span>
+          </div>
+          <button class="sim-btn" id="ap-q02-replay-btn" onclick="apQ02Replay()">Replay</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            F<sub>truck on car</sub> = − F<sub>car on truck</sub> &nbsp;(equal &amp; opposite, always)
+          </div>
+          <div class="formula-note">Same force on each — but a = F/m, so the smaller mass accelerates more. That's why the car gets wrecked, not because it "felt more force."</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q02 -->
+
+<script>
+(function(){
+  var CORRECT = 2; // index of correct option (C)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q02-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ02Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q02-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q02-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q02-answer-box');
+    var main  = document.getElementById('ap-q02-answer-main');
+    var trap  = document.getElementById('ap-q02-answer-trap');
+    var trapLbl = document.getElementById('ap-q02-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! By Newton\'s third law, the force the truck exerts on the car is exactly equal in magnitude (and opposite in direction) to the force the car exerts on the truck. Always. The car gets wrecked because its small mass means a huge acceleration for the same force — not because it experienced a larger force.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Newton\'s third law is non-negotiable: the forces in any interaction pair are equal in magnitude and opposite in direction. The car suffers more <em>damage</em> because a = F/m, and the car\'s mass is small — but the force on each vehicle is identical. The correct answer is C.';
+    }
+
+    var ov = document.getElementById('ap-q02-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ apQ02Replay(); }, 600);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q02-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q02-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q02-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+      setTimeout(apQ02Replay, 400);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q02').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: collision animation ──
+  var truckG = document.getElementById('ap-q02-truck-g');
+  var carG   = document.getElementById('ap-q02-car-g');
+  var fTruck = document.getElementById('ap-q02-force-truck');
+  var fCar   = document.getElementById('ap-q02-force-car');
+  var aTruck = document.getElementById('ap-q02-acc-truck');
+  var aCar   = document.getElementById('ap-q02-acc-car');
+  var slider = document.getElementById('ap-q02-mass-slider');
+  var massVal = document.getElementById('ap-q02-mass-val');
+  var fDisp  = document.getElementById('ap-q02-f-display');
+  var aDisp  = document.getElementById('ap-q02-a-display');
+
+  // Initial positions (in SVG units; truck right-edge baseline = 210, car left-edge baseline = 400 → gap of 190)
+  // For contact, both meet at the midpoint of that gap (x = 305) — truck offset = +95, car offset = −95
+  var TRUCK_CONTACT_OFFSET = 95;
+  var CAR_CONTACT_OFFSET   = -95;
+  var TRUCK_START_OFFSET   = -120;
+  var CAR_START_OFFSET     = 120;
+  var truckXFinal = 0;
+  var carXFinal   = 0;
+
+  // Phase: 0=approach, 1=contact (forces shown), 2=separate (acc shown), 3=done
+  var phase = 0;
+  var phaseT = 0;
+  var massRatio = 6;
+
+  var accTruckLine  = document.getElementById('ap-q02-acc-truck-line');
+  var accTruckLabel = document.getElementById('ap-q02-acc-truck-label');
+  var accCarLine    = document.getElementById('ap-q02-acc-car-line');
+  var accCarLabel   = document.getElementById('ap-q02-acc-car-label');
+
+  function updateRatio(){
+    massRatio = parseInt(slider.value);
+    massVal.textContent = massRatio + '×';
+    aDisp.textContent = 'a_car / a_truck = ' + massRatio.toFixed(1) + '×';
+
+    // Acceleration arrow lengths.
+    // Truck: tiny constant recoil (length 14 px, pointing left from x=135 to x=121)
+    // Car:   length scales linearly with massRatio (since a_car = ratio × a_truck), capped at 110 px
+    var truckLen = 14;
+    var carLen   = Math.min(110, 14 * massRatio);
+
+    // Truck arrow (start x=135, points LEFT)
+    var truckTipX = 135 - truckLen;
+    accTruckLine.setAttribute('x1', 135);
+    accTruckLine.setAttribute('x2', truckTipX);
+    accTruckLabel.setAttribute('x', (135 + truckTipX) / 2);
+
+    // Car arrow (start x=445, points RIGHT)
+    var carTipX = 445 + carLen;
+    accCarLine.setAttribute('x1', 445);
+    accCarLine.setAttribute('x2', carTipX);
+    accCarLabel.setAttribute('x', (445 + carTipX) / 2);
+  }
+  slider.addEventListener('input', updateRatio);
+  updateRatio();
+
+  function setTransform(g, x){
+    g.setAttribute('transform', 'translate(' + x + ',0)');
+  }
+
+  function reset(){
+    phase = 0; phaseT = 0;
+    setTransform(truckG, TRUCK_START_OFFSET);
+    setTransform(carG, CAR_START_OFFSET);
+    fTruck.setAttribute('opacity', 0);
+    fCar.setAttribute('opacity', 0);
+    aTruck.setAttribute('opacity', 0);
+    aCar.setAttribute('opacity', 0);
+  }
+
+  window.apQ02Replay = function(){
+    reset();
+  };
+
+  reset();
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+    phaseT += dt;
+
+    if(phase === 0){
+      // Approach phase: 1.4s — both vehicles ease into contact at the meeting point
+      var p = Math.min(1, phaseT / 1.4);
+      var ease = 1 - Math.pow(1-p, 2);
+      var tx = TRUCK_START_OFFSET + ease * (TRUCK_CONTACT_OFFSET - TRUCK_START_OFFSET);
+      var cx = CAR_START_OFFSET   + ease * (CAR_CONTACT_OFFSET   - CAR_START_OFFSET);
+      setTransform(truckG, tx);
+      setTransform(carG, cx);
+      if(p >= 1){ phase = 1; phaseT = 0; }
+    } else if(phase === 1){
+      // Contact phase: 1.6s — vehicles touching, force arrows appear (equal lengths)
+      fTruck.setAttribute('opacity', Math.min(1, phaseT * 3));
+      fCar.setAttribute('opacity', Math.min(1, phaseT * 3));
+      // Tiny impact shake around the contact position
+      var shake = Math.sin(phaseT * 30) * 1.5 * Math.max(0, 1 - phaseT * 0.6);
+      setTransform(truckG, TRUCK_CONTACT_OFFSET + shake);
+      setTransform(carG,   CAR_CONTACT_OFFSET   - shake);
+      if(phaseT >= 1.6){ phase = 2; phaseT = 0; }
+    } else if(phase === 2){
+      // Separation phase: 2.4s — vehicles bounce apart from contact position at unequal speeds
+      var truckV = -20;                       // px/s, leftward (recoil)
+      var carV   = 20 * massRatio / 6 * 1.4;  // px/s, rightward (scales with mass ratio)
+      truckXFinal = TRUCK_CONTACT_OFFSET + truckV * phaseT;
+      carXFinal   = CAR_CONTACT_OFFSET   + carV   * phaseT;
+      setTransform(truckG, truckXFinal);
+      setTransform(carG,   carXFinal);
+      aTruck.setAttribute('opacity', Math.min(1, phaseT * 2));
+      aCar.setAttribute('opacity', Math.min(1, phaseT * 2));
+      // Force arrows fade as they separate
+      var fade = Math.max(0, 1 - phaseT / 1.5);
+      fTruck.setAttribute('opacity', fade);
+      fCar.setAttribute('opacity', fade);
+      if(phaseT >= 2.4){ phase = 3; phaseT = 0; }
+    } else if(phase === 3){
+      // Pause then loop
+      if(phaseT >= 1.2){ reset(); }
+    }
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

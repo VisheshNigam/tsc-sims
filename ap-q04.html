@@ -1,0 +1,497 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q04 ── */
+#tsc-ap-q04{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q04 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q04 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q04 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q04 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q04 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q04 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q04 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q04 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q04 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q04 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q04 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q04 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q04 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q04 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q04 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q04 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q04 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q04 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q04 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q04 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q04 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q04 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q04 .sim-inner{position:relative}
+#tsc-ap-q04 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q04 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q04 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q04 .overlay-icon{font-size:28px}
+#tsc-ap-q04 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q04 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q04 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q04 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — ramp scene */
+#tsc-ap-q04 .scene-wrap{background:#1b2a4a;border-radius:10px;height:280px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q04 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+/* Energy bars panel */
+#tsc-ap-q04 .energy-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q04 .energy-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q04 .energy-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:6px}
+#tsc-ap-q04 .energy-bar-wrap{position:relative;height:16px;background:#e0e6ee;border-radius:4px;overflow:hidden;margin-bottom:6px}
+#tsc-ap-q04 .energy-bar-fill{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .15s linear}
+#tsc-ap-q04 .energy-bar-fill.pe{background:linear-gradient(90deg,#0d9488,#22b8a6)}
+#tsc-ap-q04 .energy-bar-fill.ke{background:linear-gradient(90deg,#e07020,#f48a3c)}
+#tsc-ap-q04 .energy-bar-val{font:700 16px 'Courier New',monospace;color:#1b2a4a}
+
+#tsc-ap-q04 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q04 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q04 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q04 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q04 .sim-card-val.height{color:#0d9488}
+#tsc-ap-q04 .sim-card-val.speed{color:#e07020}
+#tsc-ap-q04 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q04 .sim-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q04 .height-slider-wrap{display:flex;align-items:center;gap:10px;font:600 12px 'Nunito',sans-serif;color:#5a6e8a;flex:1;min-width:0}
+#tsc-ap-q04 .height-slider-wrap input[type=range]{flex:1;min-width:80px}
+#tsc-ap-q04 .height-slider-val{font:700 13px 'Courier New',monospace;color:#1b2a4a;min-width:60px;text-align:right}
+#tsc-ap-q04 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q04 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q04 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q04 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q04 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q04 .opts{grid-template-columns:1fr}
+  #tsc-ap-q04 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q04 .energy-panel{grid-template-columns:1fr}
+  #tsc-ap-q04 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q04">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q4</span>
+    <span class="topic-tag">Energy — Conservation on a Ramp</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A 2 kg block is released from rest at the top of a frictionless ramp of height 1.8 m. What is its speed at the bottom? &nbsp;(g = 10 m/s²)</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q04-opts">
+    <button class="opt" data-idx="0" onclick="apQ04Answer(this)"><span class="opt-lbl">A</span>3 m/s</button>
+    <button class="opt" data-idx="1" onclick="apQ04Answer(this)"><span class="opt-lbl">B</span>6 m/s</button>
+    <button class="opt" data-idx="2" onclick="apQ04Answer(this)"><span class="opt-lbl">C</span>18 m/s</button>
+    <button class="opt" data-idx="3" onclick="apQ04Answer(this)"><span class="opt-lbl">D</span>36 m/s</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q04-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — v = √(2gh) = √36 = 6 m/s
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q04-answer-box">
+    <div class="answer-main" id="ap-q04-answer-main"></div>
+    <div class="answer-trap" id="ap-q04-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q04-trap-lbl">💡 Don't Fall For This</div>
+      The "forgot the square root" trap (option D): students compute 2gh = 2·10·1.8 = 36 and stop. But that's v², not v. You still have to take the square root → v = 6 m/s.<br><br>
+      The "mass matters" trap: notice that mass cancels out. mgh = ½mv² → v = √(2gh). The block could be 2 kg or 200 kg — same speed at the bottom. Energy conservation is mass-independent for a free slide.<br><br>
+      The "ramp shape matters" trap: the answer doesn't depend on the angle or shape of the ramp — only on the vertical drop h. A long shallow ramp and a short steep one give the same final speed (with no friction).
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — PE → KE on a Frictionless Ramp</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q04-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q04-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q04-scene">
+          <svg class="scene-svg" id="ap-q04-svg" viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="ap-q04-block-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#fde08a"/>
+                <stop offset="55%" stop-color="#f7c948"/>
+                <stop offset="100%" stop-color="#c79722"/>
+              </linearGradient>
+              <linearGradient id="ap-q04-ramp-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5a6e8a"/>
+                <stop offset="100%" stop-color="#3a4658"/>
+              </linearGradient>
+              <linearGradient id="ap-q04-ground-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0d9488" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="#0d9488" stop-opacity="0.25"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Ground baseline -->
+            <line x1="20" y1="240" x2="580" y2="240" stroke="#0d9488" stroke-width="3" opacity="0.55"/>
+            <!-- Ground hatching -->
+            <line x1="20" y1="240" x2="580" y2="240" stroke="url(#ap-q04-ground-grad)" stroke-width="6" opacity="0.4"/>
+
+            <!-- Ramp polygon: top-left high point → bottom-right low point → ground at left -->
+            <polygon id="ap-q04-ramp" points="80,80 480,240 80,240" fill="url(#ap-q04-ramp-grad)" stroke="#1b2a4a" stroke-width="2"/>
+
+            <!-- Height line + label (left side, vertical) -->
+            <line id="ap-q04-h-line" x1="60" y1="80" x2="60" y2="240" stroke="#f7c948" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <line x1="55" y1="80" x2="65" y2="80" stroke="#f7c948" stroke-width="1.5"/>
+            <line x1="55" y1="240" x2="65" y2="240" stroke="#f7c948" stroke-width="1.5"/>
+            <text id="ap-q04-h-label" x="50" y="165" text-anchor="end" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="800" font-size="13">h = 1.8 m</text>
+
+            <!-- Block group (translates and rotates along the ramp) -->
+            <g id="ap-q04-block-g">
+              <!-- Block shadow -->
+              <ellipse cx="0" cy="14" rx="14" ry="3" fill="rgba(0,0,0,0.35)"/>
+              <!-- Block body -->
+              <rect x="-15" y="-15" width="30" height="22" rx="3" fill="url(#ap-q04-block-grad)" stroke="#1b2a4a" stroke-width="1.4"/>
+              <!-- Block highlight -->
+              <rect x="-13" y="-13" width="26" height="3" rx="1" fill="#fff" opacity="0.35"/>
+              <!-- Mass label -->
+              <text x="0" y="-1" text-anchor="middle" fill="#1b2a4a" font-family="Nunito,sans-serif" font-weight="900" font-size="10">2 kg</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Energy bars -->
+        <div class="energy-panel">
+          <div class="energy-card">
+            <div class="energy-card-lbl">Potential Energy (mgh)</div>
+            <div class="energy-bar-wrap">
+              <div class="energy-bar-fill pe" id="ap-q04-pe-bar" style="width:100%"></div>
+            </div>
+            <div class="energy-bar-val" id="ap-q04-pe-val">36.0 J</div>
+          </div>
+          <div class="energy-card">
+            <div class="energy-card-lbl">Kinetic Energy (½mv²)</div>
+            <div class="energy-bar-wrap">
+              <div class="energy-bar-fill ke" id="ap-q04-ke-bar" style="width:0%"></div>
+            </div>
+            <div class="energy-bar-val" id="ap-q04-ke-val">0.0 J</div>
+          </div>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Drop height (h)</div>
+            <div class="sim-card-val height" id="ap-q04-h-display">1.8 m</div>
+            <div class="sim-card-note">Only the vertical drop matters — not ramp angle or shape.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Speed at bottom (v)</div>
+            <div class="sim-card-val speed" id="ap-q04-v-display">6.0 m/s</div>
+            <div class="sim-card-note">v = √(2gh). Square-root relationship — quadruple h to double v.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <div class="height-slider-wrap">
+            <span>Drop height (h):</span>
+            <input type="range" id="ap-q04-h-slider" min="0.2" max="5" step="0.1" value="1.8">
+            <span class="height-slider-val" id="ap-q04-h-slider-val">1.8 m</span>
+          </div>
+          <button class="sim-btn" id="ap-q04-replay-btn" onclick="apQ04Replay()">Replay</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            mgh = ½mv² &nbsp;⟹&nbsp; v = √(2gh) &nbsp;|&nbsp; with h = 1.8 m, g = 10 m/s² → v = √36 = 6 m/s
+          </div>
+          <div class="formula-note">As the block slides down, PE shrinks and KE grows by the same amount. The two bars sum to a constant — that's energy conservation in one picture.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q04 -->
+
+<script>
+(function(){
+  var CORRECT = 1; // index of correct option (B)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q04-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ04Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q04-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q04-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q04-answer-box');
+    var main  = document.getElementById('ap-q04-answer-main');
+    var trap  = document.getElementById('ap-q04-answer-trap');
+    var trapLbl = document.getElementById('ap-q04-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! Energy conservation: mgh = ½mv². Mass cancels, so v = √(2gh) = √(2·10·1.8) = √36 = 6 m/s. Notice that mass and ramp shape don\'t enter the answer — only the vertical drop h does.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Apply energy conservation: mgh = ½mv². Cancel mass, solve for v: v = √(2gh) = √(2·10·1.8) = √36 = 6 m/s. The correct answer is B.';
+    }
+
+    var ov = document.getElementById('ap-q04-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ apQ04Replay(); }, 600);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q04-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q04-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q04-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+      setTimeout(apQ04Replay, 400);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q04').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: block sliding down a frictionless ramp ──
+  // SVG layout (viewBox 600x280):
+  //   Ramp: top-left at (RAMP_TOP_X, RAMP_TOP_Y), bottom-right at (RAMP_BOT_X, GROUND_Y), and (RAMP_TOP_X, GROUND_Y)
+  //   Visual height range maps to physical h = 0.2..5 m.
+  var GROUND_Y    = 240;
+  var RAMP_TOP_X  = 80;
+  var RAMP_BOT_X  = 480;
+  var H_MIN_M     = 0.2;
+  var H_MAX_M     = 5.0;
+  var Y_MIN_PX    = 60;     // top of ramp in pixels (when h = max)
+  var Y_MAX_PX    = 230;    // top of ramp in pixels (when h = min, near ground)
+  var MASS = 2;
+  var G    = 10;
+
+  var ramp     = document.getElementById('ap-q04-ramp');
+  var blockG   = document.getElementById('ap-q04-block-g');
+  var hLine    = document.getElementById('ap-q04-h-line');
+  var hLabel   = document.getElementById('ap-q04-h-label');
+  var slider   = document.getElementById('ap-q04-h-slider');
+  var sliderVal= document.getElementById('ap-q04-h-slider-val');
+  var hDisp    = document.getElementById('ap-q04-h-display');
+  var vDisp    = document.getElementById('ap-q04-v-display');
+  var peBar    = document.getElementById('ap-q04-pe-bar');
+  var keBar    = document.getElementById('ap-q04-ke-bar');
+  var peVal    = document.getElementById('ap-q04-pe-val');
+  var keVal    = document.getElementById('ap-q04-ke-val');
+
+  var hM = 1.8;             // current physical height in metres
+  var rampTopY = 80;        // current pixel y-coord of ramp top (left point)
+
+  // Simulation state
+  var s = 0;                // distance traveled along ramp (px)
+  var sMax = 0;             // total ramp length (px)
+  var t = 0;                // elapsed time (s)
+  var running = true;
+  var totalEnergy = MASS * G * hM;  // joules at top
+
+  function updateGeometry(){
+    // Map slider value to ramp-top y position
+    var frac = (hM - H_MIN_M) / (H_MAX_M - H_MIN_M); // 0..1
+    rampTopY = Y_MAX_PX - frac * (Y_MAX_PX - Y_MIN_PX);
+    // Update ramp polygon
+    ramp.setAttribute('points', RAMP_TOP_X + ',' + rampTopY + ' ' + RAMP_BOT_X + ',' + GROUND_Y + ' ' + RAMP_TOP_X + ',' + GROUND_Y);
+    // Update height line
+    hLine.setAttribute('y1', rampTopY);
+    var midY = (rampTopY + GROUND_Y) / 2;
+    hLabel.setAttribute('y', midY + 4);
+    hLabel.textContent = 'h = ' + hM.toFixed(1) + ' m';
+    // Recompute ramp length
+    var dx = RAMP_BOT_X - RAMP_TOP_X;
+    var dy = GROUND_Y - rampTopY;
+    sMax = Math.sqrt(dx*dx + dy*dy);
+    // Update HUD
+    hDisp.textContent = hM.toFixed(1) + ' m';
+    var v = Math.sqrt(2 * G * hM);
+    vDisp.textContent = v.toFixed(2) + ' m/s';
+    totalEnergy = MASS * G * hM;
+    peVal.textContent = totalEnergy.toFixed(1) + ' J';
+    keVal.textContent = '0.0 J';
+    peBar.style.width = '100%';
+    keBar.style.width = '0%';
+  }
+
+  function placeBlock(distAlongRamp){
+    var dx = RAMP_BOT_X - RAMP_TOP_X;
+    var dy = GROUND_Y - rampTopY;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var t01 = Math.min(1, distAlongRamp / len);
+    var x = RAMP_TOP_X + t01 * dx;
+    var y = rampTopY + t01 * dy - 12; // sit on ramp surface
+    var angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+    blockG.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + y.toFixed(2) + ') rotate(' + angleDeg.toFixed(2) + ')');
+    return t01;
+  }
+
+  function updateEnergyBars(t01){
+    // Height fraction remaining from top (1 at top, 0 at bottom)
+    var hRemaining = (1 - t01) * hM;
+    var pe = MASS * G * hRemaining;
+    var ke = totalEnergy - pe;
+    if(ke < 0) ke = 0;
+    var pePct = (pe / totalEnergy) * 100;
+    var kePct = (ke / totalEnergy) * 100;
+    peBar.style.width = pePct.toFixed(1) + '%';
+    keBar.style.width = kePct.toFixed(1) + '%';
+    peVal.textContent = pe.toFixed(1) + ' J';
+    keVal.textContent = ke.toFixed(1) + ' J';
+  }
+
+  slider.addEventListener('input', function(){
+    hM = parseFloat(slider.value);
+    sliderVal.textContent = hM.toFixed(1) + ' m';
+    updateGeometry();
+    apQ04Replay();
+  });
+
+  window.apQ04Replay = function(){
+    s = 0; t = 0; running = true;
+    placeBlock(0);
+    peBar.style.width = '100%';
+    keBar.style.width = '0%';
+    peVal.textContent = totalEnergy.toFixed(1) + ' J';
+    keVal.textContent = '0.0 J';
+  };
+
+  // Initialize
+  updateGeometry();
+  apQ04Replay();
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+
+    if(running && s < sMax){
+      // Physics: a = g·sinθ along the incline. sinθ = dy/length.
+      var dx = RAMP_BOT_X - RAMP_TOP_X;
+      var dy = GROUND_Y - rampTopY;
+      var len = Math.sqrt(dx*dx + dy*dy);
+      var sinTheta = dy / len;
+      // Convert metres to pixels: ramp covers hM metres vertically over (GROUND_Y - rampTopY) px.
+      // So 1 metre ≈ (GROUND_Y - rampTopY) / hM pixels (vertical scaling), but along ramp it's len/hypotenuseM.
+      // For a clean visual, just use real physics with a metres-to-pixels factor based on vertical scale.
+      var pxPerM = dy / hM;
+      var aPx = G * sinTheta * pxPerM; // acceleration in px/s² along incline
+      t += dt;
+      var vPx = aPx * t;
+      s = 0.5 * aPx * t * t;
+      if(s >= sMax){ s = sMax; running = false; }
+      var t01 = placeBlock(s);
+      updateEnergyBars(t01);
+    } else if(!running){
+      // Pause briefly at bottom, then auto-replay for continuous loop
+      t += dt;
+      if(t > 1.4){ apQ04Replay(); }
+    }
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

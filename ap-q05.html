@@ -1,0 +1,510 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q05 ── */
+#tsc-ap-q05{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q05 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q05 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q05 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q05 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q05 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q05 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q05 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q05 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q05 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q05 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q05 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q05 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q05 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q05 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q05 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q05 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q05 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q05 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q05 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q05 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q05 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q05 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q05 .sim-inner{position:relative}
+#tsc-ap-q05 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q05 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q05 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q05 .overlay-icon{font-size:28px}
+#tsc-ap-q05 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q05 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q05 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q05 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — collision scene */
+#tsc-ap-q05 .scene-wrap{background:#1b2a4a;border-radius:10px;height:240px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q05 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+/* Energy bars panel */
+#tsc-ap-q05 .energy-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q05 .energy-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q05 .energy-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:6px}
+#tsc-ap-q05 .energy-bar-wrap{position:relative;height:16px;background:#e0e6ee;border-radius:4px;overflow:hidden;margin-bottom:6px}
+#tsc-ap-q05 .energy-bar-fill{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .15s linear}
+#tsc-ap-q05 .energy-bar-fill.p{background:linear-gradient(90deg,#0d9488,#22b8a6)}
+#tsc-ap-q05 .energy-bar-fill.k{background:linear-gradient(90deg,#e07020,#f48a3c)}
+#tsc-ap-q05 .energy-bar-val{font:700 16px 'Courier New',monospace;color:#1b2a4a}
+
+#tsc-ap-q05 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q05 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q05 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q05 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q05 .sim-card-val.before{color:#0d9488}
+#tsc-ap-q05 .sim-card-val.after{color:#e07020}
+#tsc-ap-q05 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q05 .sim-controls{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q05 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q05 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q05 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q05 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q05 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q05 .opts{grid-template-columns:1fr}
+  #tsc-ap-q05 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q05 .energy-panel{grid-template-columns:1fr}
+  #tsc-ap-q05 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q05">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q5</span>
+    <span class="topic-tag">Momentum — Inelastic Collision</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A 3 kg cart moving at 4 m/s collides with a 1 kg cart at rest. The two carts stick together after the collision. What is their final speed?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q05-opts">
+    <button class="opt" data-idx="0" onclick="apQ05Answer(this)"><span class="opt-lbl">A</span>4 m/s</button>
+    <button class="opt" data-idx="1" onclick="apQ05Answer(this)"><span class="opt-lbl">B</span>3 m/s</button>
+    <button class="opt" data-idx="2" onclick="apQ05Answer(this)"><span class="opt-lbl">C</span>2 m/s</button>
+    <button class="opt" data-idx="3" onclick="apQ05Answer(this)"><span class="opt-lbl">D</span>1 m/s</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q05-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — v_f = (3·4)/(3+1) = 3 m/s
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q05-answer-box">
+    <div class="answer-main" id="ap-q05-answer-main"></div>
+    <div class="answer-trap" id="ap-q05-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q05-trap-lbl">💡 Don't Fall For This</div>
+      The "average the velocities" trap (option C): students compute (4 + 0)/2 = 2 m/s. That works only when the masses are equal — here the 3 kg cart is three times heavier, so it pulls the centre-of-mass speed closer to 3 m/s, not the midpoint.<br><br>
+      The "speed doesn't change" trap (option A): some students assume the moving cart just keeps moving at 4 m/s. But it now has to drag along an extra 1 kg of mass — same momentum, larger total mass, so smaller speed.<br><br>
+      Why kinetic energy drops: momentum is conserved, but KE is not. p_initial = 12, p_final = 12 ✓. KE_initial = ½·3·4² = 24 J. KE_final = ½·4·3² = 18 J. About 25% of the kinetic energy is lost to deformation, sound, and heat — that's what makes it inelastic.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Momentum Conserved, KE Lost</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q05-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q05-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q05-scene">
+          <svg class="scene-svg" id="ap-q05-svg" viewBox="0 0 600 240" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <!-- Heavy cart gradient (teal) -->
+              <linearGradient id="ap-q05-cart1-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#3ecbb8"/>
+                <stop offset="55%" stop-color="#0d9488"/>
+                <stop offset="100%" stop-color="#066b62"/>
+              </linearGradient>
+              <!-- Light cart gradient (orange) -->
+              <linearGradient id="ap-q05-cart2-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#f59455"/>
+                <stop offset="55%" stop-color="#e07020"/>
+                <stop offset="100%" stop-color="#a44a0d"/>
+              </linearGradient>
+              <radialGradient id="ap-q05-rim" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="#9aa3b2"/>
+                <stop offset="60%" stop-color="#5b6470"/>
+                <stop offset="100%" stop-color="#262b34"/>
+              </radialGradient>
+              <radialGradient id="ap-q05-shadow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="rgba(0,0,0,0.45)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+              <!-- Sleek arrowheads -->
+              <marker id="ap-q05-arrow-teal" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#0d9488"/>
+              </marker>
+              <marker id="ap-q05-arrow-orange" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#e07020"/>
+              </marker>
+            </defs>
+
+            <!-- Track (rail line + dashed yellow centre) -->
+            <line x1="20" y1="190" x2="580" y2="190" stroke="#0d9488" stroke-width="3" opacity="0.55"/>
+            <line x1="20" y1="194" x2="580" y2="194" stroke="#f7c948" stroke-width="1.5" stroke-dasharray="10,12" opacity="0.4"/>
+
+            <!-- ───────── Cart 1 (3 kg, teal, larger) ───────── -->
+            <g id="ap-q05-cart1-g">
+              <!-- Shadow -->
+              <ellipse cx="0" cy="34" rx="46" ry="4" fill="url(#ap-q05-shadow)"/>
+              <!-- Body -->
+              <rect x="-44" y="-22" width="88" height="44" rx="5" fill="url(#ap-q05-cart1-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Top stripe -->
+              <rect x="-44" y="-22" width="88" height="5" fill="#fff" opacity="0.25"/>
+              <!-- Mass label -->
+              <text x="0" y="6" text-anchor="middle" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" font-size="14">3 kg</text>
+              <!-- Wheels -->
+              <g>
+                <circle cx="-26" cy="26" r="9" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="-26" cy="26" r="5" fill="url(#ap-q05-rim)"/>
+              </g>
+              <g>
+                <circle cx="26" cy="26" r="9" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="26" cy="26" r="5" fill="url(#ap-q05-rim)"/>
+              </g>
+              <!-- Velocity arrow above cart 1 -->
+              <g id="ap-q05-cart1-arrow">
+                <line id="ap-q05-cart1-vline" x1="-30" y1="-44" x2="30" y2="-44" stroke="#0d9488" stroke-width="2.5" marker-end="url(#ap-q05-arrow-teal)" stroke-linecap="round"/>
+                <text x="0" y="-52" text-anchor="middle" fill="#0d9488" font-family="Nunito,sans-serif" font-weight="800" font-size="12">v = 4 m/s</text>
+              </g>
+            </g>
+
+            <!-- ───────── Cart 2 (1 kg, orange, smaller) ───────── -->
+            <g id="ap-q05-cart2-g">
+              <!-- Shadow -->
+              <ellipse cx="0" cy="30" rx="32" ry="3.5" fill="url(#ap-q05-shadow)"/>
+              <!-- Body -->
+              <rect x="-30" y="-18" width="60" height="36" rx="4" fill="url(#ap-q05-cart2-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Top stripe -->
+              <rect x="-30" y="-18" width="60" height="4" fill="#fff" opacity="0.25"/>
+              <!-- Mass label -->
+              <text x="0" y="4" text-anchor="middle" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" font-size="13">1 kg</text>
+              <!-- Wheels -->
+              <g>
+                <circle cx="-18" cy="22" r="8" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="-18" cy="22" r="4.5" fill="url(#ap-q05-rim)"/>
+              </g>
+              <g>
+                <circle cx="18" cy="22" r="8" fill="#1a1f28" stroke="#0c1830" stroke-width="1.2"/>
+                <circle cx="18" cy="22" r="4.5" fill="url(#ap-q05-rim)"/>
+              </g>
+              <!-- "At rest" label -->
+              <text id="ap-q05-cart2-rest" x="0" y="-26" text-anchor="middle" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="800" font-size="12" font-style="italic">at rest</text>
+            </g>
+
+            <!-- After-collision velocity arrow (drawn at the combined system, hidden until phase 2) -->
+            <g id="ap-q05-after-arrow" opacity="0">
+              <line id="ap-q05-after-vline" x1="0" y1="-44" x2="44" y2="-44" stroke="#e07020" stroke-width="2.5" marker-end="url(#ap-q05-arrow-orange)" stroke-linecap="round"/>
+              <text id="ap-q05-after-label" x="22" y="-52" text-anchor="middle" fill="#e07020" font-family="Nunito,sans-serif" font-weight="800" font-size="12">v_f = 3 m/s</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Energy bars: momentum conserved, KE lost -->
+        <div class="energy-panel">
+          <div class="energy-card">
+            <div class="energy-card-lbl">Total momentum (p = mv)</div>
+            <div class="energy-bar-wrap">
+              <div class="energy-bar-fill p" id="ap-q05-p-bar" style="width:100%"></div>
+            </div>
+            <div class="energy-bar-val" id="ap-q05-p-val">12.0 kg·m/s — conserved</div>
+          </div>
+          <div class="energy-card">
+            <div class="energy-card-lbl">Total kinetic energy (½mv²)</div>
+            <div class="energy-bar-wrap">
+              <div class="energy-bar-fill k" id="ap-q05-k-bar" style="width:100%"></div>
+            </div>
+            <div class="energy-bar-val" id="ap-q05-k-val">24.0 J — initial</div>
+          </div>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Before collision</div>
+            <div class="sim-card-val before" id="ap-q05-before-val">p = 12,&nbsp; KE = 24 J</div>
+            <div class="sim-card-note">Only the 3 kg cart is moving (4 m/s). The 1 kg cart contributes nothing.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">After collision (stuck)</div>
+            <div class="sim-card-val after" id="ap-q05-after-val">p = 12,&nbsp; KE = 18 J</div>
+            <div class="sim-card-note">v_f = 3 m/s. Momentum unchanged; ~25% of KE lost to heat / sound.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <button class="sim-btn" id="ap-q05-replay-btn" onclick="apQ05Replay()">Replay</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            (m₁ + m₂)·v_f = m₁·v₁ &nbsp;⟹&nbsp; v_f = (3·4)/(3+1) = 12/4 = 3 m/s
+          </div>
+          <div class="formula-note">Watch the bars: total momentum stays at 100% (conserved), but kinetic energy drops to 75% (lost). That energy gap is the "inelastic" part — converted to deformation, heat, and sound.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q05 -->
+
+<script>
+(function(){
+  var CORRECT = 1; // index of correct option (B)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q05-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ05Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q05-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q05-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q05-answer-box');
+    var main  = document.getElementById('ap-q05-answer-main');
+    var trap  = document.getElementById('ap-q05-answer-trap');
+    var trapLbl = document.getElementById('ap-q05-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! Conservation of momentum: p_initial = p_final ⟹ (3)(4) + (1)(0) = (3+1)·v_f ⟹ v_f = 12/4 = 3 m/s. Kinetic energy is <em>not</em> conserved here: it drops from 24 J to 18 J — that\'s the signature of an inelastic collision.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Use conservation of momentum: m₁v₁ + m₂v₂ = (m₁+m₂)·v_f ⟹ (3)(4) + 0 = 4·v_f ⟹ v_f = 3 m/s. The correct answer is B.';
+    }
+
+    var ov = document.getElementById('ap-q05-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ apQ05Replay(); }, 600);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q05-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q05-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q05-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+      setTimeout(apQ05Replay, 400);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q05').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: cart collision ──
+  // SVG viewBox 600x240. Track at y=190.
+  // Cart 1 (3 kg) starts at left, body half-width = 44 → start x=70 (so left edge at 26)
+  // Cart 2 (1 kg) sits at rest at meeting point; body half-width = 30. Place its left edge against where cart1 right edge will be at impact.
+  // We choose impact point: cart1 centre = 360, cart2 centre = 360 + 44 + 30 = 434. Cart 2 sits there throughout pre-collision.
+  // After collision: combined "system" centre = somewhere between, moving at v_f = (3·4)/4 = 3 m/s. We treat the carts as joined; we render cart2 latched to cart1 at the same offset, both translating right at v_f.
+
+  var svg     = document.getElementById('ap-q05-svg');
+  var cart1G  = document.getElementById('ap-q05-cart1-g');
+  var cart2G  = document.getElementById('ap-q05-cart2-g');
+  var cart1Arrow = document.getElementById('ap-q05-cart1-arrow');
+  var cart2Rest  = document.getElementById('ap-q05-cart2-rest');
+  var afterArrow = document.getElementById('ap-q05-after-arrow');
+  var pBar = document.getElementById('ap-q05-p-bar');
+  var kBar = document.getElementById('ap-q05-k-bar');
+  var pVal = document.getElementById('ap-q05-p-val');
+  var kVal = document.getElementById('ap-q05-k-val');
+
+  var TRACK_Y = 162;        // cart group y-position (so wheels sit on track at y≈188)
+  var IMPACT_X1 = 360;      // cart1 centre at impact
+  var IMPACT_X2 = 434;      // cart2 centre at impact
+  var START_X1 = 80;        // cart1 starting centre
+
+  // Phase: 0=approach, 1=collision flash, 2=move together, 3=pause then loop
+  var phase = 0;
+  var phaseT = 0;
+
+  function setCart1(x){
+    cart1G.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + TRACK_Y + ')');
+  }
+  function setCart2(x){
+    cart2G.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + TRACK_Y + ')');
+  }
+  function setAfter(x){
+    afterArrow.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + TRACK_Y + ')');
+  }
+
+  function reset(){
+    phase = 0; phaseT = 0;
+    setCart1(START_X1);
+    setCart2(IMPACT_X2);
+    cart1Arrow.setAttribute('opacity', 1);
+    cart2Rest.setAttribute('opacity', 1);
+    afterArrow.setAttribute('opacity', 0);
+    pBar.style.width = '100%';
+    kBar.style.width = '100%';
+    pVal.textContent = '12.0 kg·m/s — conserved';
+    kVal.textContent = '24.0 J — initial';
+  }
+
+  window.apQ05Replay = function(){
+    reset();
+  };
+
+  reset();
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+    phaseT += dt;
+
+    if(phase === 0){
+      // Approach: cart 1 moves at "4 m/s" (visual px/s) from START_X1 to IMPACT_X1
+      // Use 1.6 s to traverse, ease-out gentle so it's clearly arriving
+      var T = 1.6;
+      var p = Math.min(1, phaseT / T);
+      var x = START_X1 + p * (IMPACT_X1 - START_X1);
+      setCart1(x);
+      if(p >= 1){ phase = 1; phaseT = 0; }
+    } else if(phase === 1){
+      // Collision flash: brief shake, swap arrows, transition KE bar from 100% → 75%
+      var dur = 0.5;
+      var p = Math.min(1, phaseT / dur);
+      var shake = Math.sin(phaseT * 40) * 1.5 * (1 - p);
+      setCart1(IMPACT_X1 + shake);
+      setCart2(IMPACT_X2 - shake);
+      // Fade pre-collision arrows
+      cart1Arrow.setAttribute('opacity', 1 - p);
+      cart2Rest.setAttribute('opacity', 1 - p);
+      // Animate KE bar from 100% to 75% during this phase
+      var kePct = 100 - p * 25;
+      kBar.style.width = kePct.toFixed(1) + '%';
+      kVal.textContent = (24 - p * 6).toFixed(1) + ' J' + (p >= 1 ? ' — 25% lost' : '');
+      // Show after-arrow at the combined system centre (midpoint of stuck pair)
+      var combinedCentre = (IMPACT_X1 + IMPACT_X2) / 2;
+      setAfter(combinedCentre);
+      afterArrow.setAttribute('opacity', p);
+      if(p >= 1){
+        phase = 2; phaseT = 0;
+      }
+    } else if(phase === 2){
+      // Move together at v_f = 3 m/s (visually slower than cart1's pre-collision pace)
+      // Pre-collision pace was (IMPACT_X1 - START_X1)/1.6 ≈ 175 px/s for "4 m/s"
+      // So 3 m/s ≈ 131 px/s
+      var vfPx = ((IMPACT_X1 - START_X1) / 1.6) * (3 / 4);
+      var dx = vfPx * phaseT;
+      setCart1(IMPACT_X1 + dx);
+      setCart2(IMPACT_X2 + dx);
+      var combinedCentre = (IMPACT_X1 + IMPACT_X2) / 2 + dx;
+      setAfter(combinedCentre);
+      // Stop when stuck pair exits the right side
+      if(combinedCentre > 580){
+        phase = 3; phaseT = 0;
+      }
+    } else if(phase === 3){
+      // Pause then loop
+      if(phaseT > 1.0){ reset(); }
+    }
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

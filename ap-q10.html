@@ -1,0 +1,433 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q10 ── */
+#tsc-ap-q10{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q10 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q10 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q10 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q10 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q10 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q10 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q10 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q10 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q10 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q10 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q10 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q10 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q10 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q10 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q10 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q10 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q10 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q10 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q10 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q10 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q10 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q10 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q10 .sim-inner{position:relative}
+#tsc-ap-q10 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q10 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q10 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q10 .overlay-icon{font-size:28px}
+#tsc-ap-q10 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q10 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q10 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q10 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — twin spring scene */
+#tsc-ap-q10 .scene-wrap{background:#1b2a4a;border-radius:10px;height:300px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q10 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+#tsc-ap-q10 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q10 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q10 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q10 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q10 .sim-card-val.small{color:#0d9488}
+#tsc-ap-q10 .sim-card-val.large{color:#e07020}
+#tsc-ap-q10 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q10 .sim-controls{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q10 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q10 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q10 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q10 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q10 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q10 .opts{grid-template-columns:1fr}
+  #tsc-ap-q10 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q10 .qtxt{font-size:16px}
+  #tsc-ap-q10 .scene-wrap{height:260px}
+}
+</style>
+
+<div id="tsc-ap-q10">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q10</span>
+    <span class="topic-tag">Oscillations — Amplitude &amp; Period</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A mass on a spring oscillates with amplitude A and period T. The same spring and mass are now released from amplitude 2A. What is the new period?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q10-opts">
+    <button class="opt" data-idx="0" onclick="apQ10Answer(this)"><span class="opt-lbl">A</span>T &nbsp;(the period is unchanged)</button>
+    <button class="opt" data-idx="1" onclick="apQ10Answer(this)"><span class="opt-lbl">B</span>2T &nbsp;(twice the amplitude → twice the period)</button>
+    <button class="opt" data-idx="2" onclick="apQ10Answer(this)"><span class="opt-lbl">C</span>T·√2 &nbsp;(period grows with √amplitude)</button>
+    <button class="opt" data-idx="3" onclick="apQ10Answer(this)"><span class="opt-lbl">D</span>T/2 &nbsp;(stretched more → spring pulls harder → faster)</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q10-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    A — T is unchanged. T = 2π·√(m/k) — no amplitude dependence.
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q10-answer-box">
+    <div class="answer-main" id="ap-q10-answer-main"></div>
+    <div class="answer-trap" id="ap-q10-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q10-trap-lbl">💡 Don't Fall For This</div>
+      The "more distance, more time" trap (options B and C): students reason that with twice the amplitude, the mass has to travel twice as far per cycle, so it should take longer. But it also moves <em>faster</em> at every point — exactly fast enough that the two effects cancel out. The period stays the same.<br><br>
+      The "more force, faster" trap (option D): some students reason that pulling the spring further makes it pull back harder (F = −kx is bigger), so the mass should accelerate more and finish a cycle quicker. The acceleration is bigger, but so is the distance to cover. Again, the two cancel exactly.<br><br>
+      Why amplitude doesn't matter: T = 2π·√(m/k). Only the mass and the spring constant appear. This is the defining feature of simple harmonic motion — the period is <em>isochronous</em>. Galileo discovered this watching a chandelier swing in Pisa, regardless of how widely it swung.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Twice the Amplitude, Same Period</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q10-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q10-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q10-scene">
+          <svg class="scene-svg" id="ap-q10-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="ap-q10-mass-small" cx="35%" cy="35%" r="65%">
+                <stop offset="0%"  stop-color="#3ecbb8"/>
+                <stop offset="55%" stop-color="#0d9488"/>
+                <stop offset="100%" stop-color="#066b62"/>
+              </radialGradient>
+              <radialGradient id="ap-q10-mass-large" cx="35%" cy="35%" r="65%">
+                <stop offset="0%"  stop-color="#f59455"/>
+                <stop offset="55%" stop-color="#e07020"/>
+                <stop offset="100%" stop-color="#a44a0d"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Vertical divider -->
+            <line x1="300" y1="20" x2="300" y2="290" stroke="#3a4658" stroke-width="1" stroke-dasharray="4,6" opacity="0.5"/>
+
+            <!-- Headers -->
+            <text x="150" y="32" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="900" font-size="14" letter-spacing="0.06em">AMPLITUDE A</text>
+            <text x="450" y="32" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="900" font-size="14" letter-spacing="0.06em">AMPLITUDE 2A</text>
+            <text x="150" y="48" text-anchor="middle" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="600" font-size="11">same spring, same mass</text>
+            <text x="450" y="48" text-anchor="middle" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="600" font-size="11">same spring, same mass</text>
+
+            <!-- Wall mounts -->
+            <rect x="40"  y="100" width="10" height="80" fill="#3a4658" stroke="#0c1830" stroke-width="1"/>
+            <rect x="340" y="100" width="10" height="80" fill="#3a4658" stroke="#0c1830" stroke-width="1"/>
+            <!-- Wall hatching -->
+            <g stroke="#5a6e8a" stroke-width="1" opacity="0.5">
+              <line x1="40" y1="105" x2="32" y2="113"/>
+              <line x1="40" y1="120" x2="32" y2="128"/>
+              <line x1="40" y1="135" x2="32" y2="143"/>
+              <line x1="40" y1="150" x2="32" y2="158"/>
+              <line x1="40" y1="165" x2="32" y2="173"/>
+              <line x1="340" y1="105" x2="332" y2="113"/>
+              <line x1="340" y1="120" x2="332" y2="128"/>
+              <line x1="340" y1="135" x2="332" y2="143"/>
+              <line x1="340" y1="150" x2="332" y2="158"/>
+              <line x1="340" y1="165" x2="332" y2="173"/>
+            </g>
+
+            <!-- Equilibrium reference lines -->
+            <line x1="50"  y1="200" x2="290" y2="200" stroke="#f7c948" stroke-width="1" stroke-dasharray="3,5" opacity="0.4"/>
+            <line x1="350" y1="200" x2="590" y2="200" stroke="#f7c948" stroke-width="1" stroke-dasharray="3,5" opacity="0.4"/>
+
+            <!-- Equilibrium marks (where mass centre sits at rest) -->
+            <line x1="170" y1="195" x2="170" y2="205" stroke="#f7c948" stroke-width="2" opacity="0.85"/>
+            <text x="170" y="220" text-anchor="middle" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="700" font-size="10" letter-spacing="0.06em">EQUILIBRIUM</text>
+            <line x1="470" y1="195" x2="470" y2="205" stroke="#f7c948" stroke-width="2" opacity="0.85"/>
+            <text x="470" y="220" text-anchor="middle" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="700" font-size="10" letter-spacing="0.06em">EQUILIBRIUM</text>
+
+            <!-- Amplitude tick marks -->
+            <!-- Left scene: A = 50 px, equilibrium at x=170, so range 120..220 -->
+            <line x1="120" y1="155" x2="120" y2="165" stroke="#3ecbb8" stroke-width="1.5"/>
+            <line x1="220" y1="155" x2="220" y2="165" stroke="#3ecbb8" stroke-width="1.5"/>
+            <text x="120" y="148" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="700" font-size="10">−A</text>
+            <text x="220" y="148" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="700" font-size="10">+A</text>
+
+            <!-- Right scene: 2A = 100 px, equilibrium at x=470, so range 370..570 -->
+            <line x1="370" y1="155" x2="370" y2="165" stroke="#f48a3c" stroke-width="1.5"/>
+            <line x1="570" y1="155" x2="570" y2="165" stroke="#f48a3c" stroke-width="1.5"/>
+            <text x="370" y="148" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="700" font-size="10">−2A</text>
+            <text x="570" y="148" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="700" font-size="10">+2A</text>
+
+            <!-- Spring 1 (small amplitude) — path regenerated each frame -->
+            <path id="ap-q10-spring1" fill="none" stroke="#9aa3b2" stroke-width="2" stroke-linecap="round"/>
+            <!-- Mass 1 -->
+            <g id="ap-q10-mass1-g">
+              <rect x="-22" y="-22" width="44" height="44" rx="4" fill="url(#ap-q10-mass-small)" stroke="#0c1830" stroke-width="1.4"/>
+              <text x="0" y="5" text-anchor="middle" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" font-size="13">m</text>
+            </g>
+
+            <!-- Spring 2 (large amplitude) -->
+            <path id="ap-q10-spring2" fill="none" stroke="#9aa3b2" stroke-width="2" stroke-linecap="round"/>
+            <!-- Mass 2 -->
+            <g id="ap-q10-mass2-g">
+              <rect x="-22" y="-22" width="44" height="44" rx="4" fill="url(#ap-q10-mass-large)" stroke="#0c1830" stroke-width="1.4"/>
+              <text x="0" y="5" text-anchor="middle" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" font-size="13">m</text>
+            </g>
+
+            <!-- Cycle counters -->
+            <g>
+              <rect x="20" y="252" width="265" height="36" rx="6" fill="rgba(13,148,136,0.18)" stroke="#0d9488" stroke-width="1"/>
+              <text x="35" y="267" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="800" font-size="10" letter-spacing="0.06em">SMALL AMPLITUDE</text>
+              <text id="ap-q10-cycles1" x="35" y="283" fill="#fff" font-family="Courier New,monospace" font-weight="700" font-size="13">cycles: 0.00   |   T = 2.00 s</text>
+            </g>
+            <g>
+              <rect x="315" y="252" width="265" height="36" rx="6" fill="rgba(224,112,32,0.18)" stroke="#e07020" stroke-width="1"/>
+              <text x="330" y="267" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="800" font-size="10" letter-spacing="0.06em">LARGE AMPLITUDE</text>
+              <text id="ap-q10-cycles2" x="330" y="283" fill="#fff" font-family="Courier New,monospace" font-weight="700" font-size="13">cycles: 0.00   |   T = 2.00 s</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Small amplitude (A)</div>
+            <div class="sim-card-val small">T = 2π·√(m/k)</div>
+            <div class="sim-card-note">Mass travels less per cycle, but moves slower at every point — so it takes the same time.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Large amplitude (2A)</div>
+            <div class="sim-card-val large">T = 2π·√(m/k)</div>
+            <div class="sim-card-note">Same period! Mass travels more per cycle, but moves faster — exactly cancelling out.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <button class="sim-btn" onclick="apQ10Restart()">Restart together</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            T = 2π·√(m/k) &nbsp;|&nbsp; no A in the equation
+          </div>
+          <div class="formula-note">Watch them released together: both masses pass through equilibrium at the same instant, every cycle. Doubling the amplitude only changes how far the mass swings, not how long the swing takes. This property — period independent of amplitude — is the defining signature of SHM.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q10 -->
+
+<script>
+(function(){
+  var CORRECT = 0; // index of correct option (A)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q10-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ10Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q10-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q10-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q10-answer-box');
+    var main  = document.getElementById('ap-q10-answer-main');
+    var trap  = document.getElementById('ap-q10-answer-trap');
+    var trapLbl = document.getElementById('ap-q10-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! T = 2π·√(m/k) — only mass and spring constant matter. Amplitude does not appear in the equation. With twice the amplitude, the mass has to travel twice as far per cycle, but it also moves twice as fast on average — the two effects cancel exactly. This isochronous behaviour is the defining feature of SHM.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. The period of a spring-mass system is T = 2π·√(m/k) — there is no A in the formula. Doubling the amplitude makes the mass cover more distance per cycle, but it also makes the mass move faster (more energy → higher peak speed). The two effects cancel exactly. The correct answer is A.';
+    }
+
+    var ov = document.getElementById('ap-q10-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q10-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q10-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q10-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q10').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: two springs, identical period, different amplitudes ──
+  // Both: T = 2.0 s. Released from x = +A (small) and x = +2A (large) at t=0.
+  // Small amplitude: equilibrium at x=170, A = 50 px. Range 120..220.
+  // Large amplitude: equilibrium at x=470, 2A = 100 px. Range 370..570.
+  // Spring anchor (left wall): x=50 (small), x=350 (large).
+  // Spring drawn from anchor to mass-left-edge (mass half-width = 22 px).
+
+  var spring1 = document.getElementById('ap-q10-spring1');
+  var spring2 = document.getElementById('ap-q10-spring2');
+  var mass1G  = document.getElementById('ap-q10-mass1-g');
+  var mass2G  = document.getElementById('ap-q10-mass2-g');
+  var cycles1 = document.getElementById('ap-q10-cycles1');
+  var cycles2 = document.getElementById('ap-q10-cycles2');
+
+  var T_PERIOD = 2.0; // seconds (visual)
+  var t = 0;
+
+  function buildSpringPath(x1, x2, y, coils){
+    // Sinusoidal-zigzag spring path
+    if(x2 - x1 < 4) x2 = x1 + 4;
+    var seg = (x2 - x1) / coils;
+    var amp = 8;
+    var d = 'M ' + x1.toFixed(2) + ' ' + y;
+    // Initial straight segment
+    d += ' L ' + (x1 + 6).toFixed(2) + ' ' + y;
+    // Zigzag
+    for(var i = 0; i < coils; i++){
+      var cx = x1 + 6 + (i + 0.5) * (x2 - x1 - 12) / coils;
+      var cy = y + (i % 2 === 0 ? -amp : amp);
+      d += ' L ' + cx.toFixed(2) + ' ' + cy.toFixed(2);
+    }
+    // Final straight segment
+    d += ' L ' + (x2 - 6).toFixed(2) + ' ' + y;
+    d += ' L ' + x2.toFixed(2) + ' ' + y;
+    return d;
+  }
+
+  window.apQ10Restart = function(){
+    t = 0;
+  };
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+    t += dt;
+
+    var phase = 2 * Math.PI * t / T_PERIOD;
+    // Both released from positive amplitude → x(t) = A · cos(2π t / T)
+    var x1 = 170 + 50  * Math.cos(phase);
+    var x2 = 470 + 100 * Math.cos(phase);
+
+    mass1G.setAttribute('transform', 'translate(' + x1.toFixed(2) + ',200)');
+    mass2G.setAttribute('transform', 'translate(' + x2.toFixed(2) + ',200)');
+
+    // Spring goes from wall mount edge (x=50 / x=350) to the LEFT edge of the mass (x - 22)
+    spring1.setAttribute('d', buildSpringPath(50,  x1 - 22, 200, 14));
+    spring2.setAttribute('d', buildSpringPath(350, x2 - 22, 200, 14));
+
+    var n = t / T_PERIOD;
+    cycles1.textContent = 'cycles: ' + n.toFixed(2) + '   |   T = 2.00 s';
+    cycles2.textContent = 'cycles: ' + n.toFixed(2) + '   |   T = 2.00 s';
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

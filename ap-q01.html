@@ -1,0 +1,444 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q01 ── */
+#tsc-ap-q01{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q01 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q01 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q01 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q01 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q01 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q01 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q01 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q01 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q01 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q01 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q01 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q01 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q01 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q01 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q01 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q01 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q01 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q01 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q01 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q01 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q01 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q01 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q01 .sim-inner{position:relative}
+#tsc-ap-q01 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q01 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q01 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q01 .overlay-icon{font-size:28px}
+#tsc-ap-q01 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q01 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q01 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q01 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — toss-up scene */
+#tsc-ap-q01 .scene-wrap{background:#1b2a4a;border-radius:10px;height:240px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q01 .scene-ground{position:absolute;bottom:0;left:0;right:0;height:8px;background:#0d9488;opacity:.55}
+#tsc-ap-q01 .scene-dashes{position:absolute;bottom:8px;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,#f7c948 0,#f7c948 18px,transparent 18px,transparent 36px);opacity:.35}
+#tsc-ap-q01 .scene-ball{position:absolute;left:50%;transform:translate(-50%,0);font-size:30px;line-height:1;will-change:bottom}
+#tsc-ap-q01 .scene-marker{position:absolute;left:0;right:0;height:1px;border-top:1px dashed rgba(247,201,72,0.45);pointer-events:none}
+#tsc-ap-q01 .scene-marker-lbl{position:absolute;right:8px;top:-9px;font:700 10px 'Nunito',sans-serif;color:#f7c948;background:rgba(27,42,74,0.85);padding:1px 6px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase}
+
+#tsc-ap-q01 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q01 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q01 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q01 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q01 .sim-card-val.vel{color:#0d9488}
+#tsc-ap-q01 .sim-card-val.acc{color:#e07020}
+#tsc-ap-q01 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q01 .sim-graphs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q01 .graph-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:10px 10px 6px}
+#tsc-ap-q01 .graph-title{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:6px}
+#tsc-ap-q01 .sim-canvas{display:block;width:100%;height:140px}
+#tsc-ap-q01 .sim-controls{display:flex;justify-content:flex-end;margin-bottom:14px}
+#tsc-ap-q01 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q01 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q01 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q01 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q01 .formula-eq strong{color:#0d9488}
+#tsc-ap-q01 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q01 .opts{grid-template-columns:1fr}
+  #tsc-ap-q01 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q01 .sim-graphs{grid-template-columns:1fr}
+  #tsc-ap-q01 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q01">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q1</span>
+    <span class="topic-tag">Kinematics — Velocity &amp; Acceleration</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A ball is thrown straight up. At the highest point of its flight, which statement is correct? &nbsp;(g = 9.8 m/s²)</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q01-opts">
+    <button class="opt" data-idx="0" onclick="apQ01Answer(this)"><span class="opt-lbl">A</span>Velocity is zero, acceleration is zero</button>
+    <button class="opt" data-idx="1" onclick="apQ01Answer(this)"><span class="opt-lbl">B</span>Velocity is zero, acceleration is 9.8 m/s² downward</button>
+    <button class="opt" data-idx="2" onclick="apQ01Answer(this)"><span class="opt-lbl">C</span>Velocity is zero, acceleration is 9.8 m/s² upward</button>
+    <button class="opt" data-idx="3" onclick="apQ01Answer(this)"><span class="opt-lbl">D</span>Both velocity and acceleration point downward</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q01-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    B — v = 0, a = 9.8 m/s² downward
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q01-answer-box">
+    <div class="answer-main" id="ap-q01-answer-main"></div>
+    <div class="answer-trap" id="ap-q01-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q01-trap-lbl">💡 Don't Fall For This</div>
+      The "everything stops at the top" trap: students see "highest point" and assume the ball is "at rest" in every sense — so they choose A (a = 0). But velocity and acceleration are independent quantities. The ball's velocity is momentarily zero, yes — but gravity never switches off.<br><br>
+      Why a points down, not up: acceleration always points in the direction of the <em>net force</em>. The only force on the ball in flight is gravity, which always points downward. That's exactly why the ball comes back down — if a were zero at the top, the ball would float there forever.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — What Happens at the Peak</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q01-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q01-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q01-scene">
+          <div class="scene-dashes"></div>
+          <div class="scene-ground"></div>
+          <div class="scene-marker" id="ap-q01-peak-line" style="bottom:200px">
+            <span class="scene-marker-lbl">Peak — v = 0</span>
+          </div>
+          <span class="scene-ball" id="ap-q01-ball" style="bottom:8px">⚾</span>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Velocity (v)</div>
+            <div class="sim-card-val vel" id="ap-q01-v-display">+0.0 m/s</div>
+            <div class="sim-card-note">Positive = up, negative = down. Crosses zero at the peak.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Acceleration (a)</div>
+            <div class="sim-card-val acc" id="ap-q01-a-display">−9.8 m/s²</div>
+            <div class="sim-card-note">Constant throughout — including at the peak.</div>
+          </div>
+        </div>
+
+        <!-- Graphs -->
+        <div class="sim-graphs">
+          <div class="graph-card">
+            <div class="graph-title">v – t graph</div>
+            <canvas class="sim-canvas" id="ap-q01-cv-v"></canvas>
+          </div>
+          <div class="graph-card">
+            <div class="graph-title">a – t graph</div>
+            <canvas class="sim-canvas" id="ap-q01-cv-a"></canvas>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <button class="sim-btn" id="ap-q01-pause-btn" onclick="apQ01ToggleMotion()">Pause</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            At the peak: v = 0 &nbsp;|&nbsp; a = −g = −9.8 m/s² (downward)
+          </div>
+          <div class="formula-note">Velocity passes through zero at the top — but acceleration stays constant the whole flight. That's why the ball doesn't stop there.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q01 -->
+
+<script>
+(function(){
+  var CORRECT = 1; // index of correct option (B)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  // ── Set overlay text based on mode ──
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q01-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ01Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q01-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    // Study mode: show full feedback
+    if(!ok){
+      document.getElementById('ap-q01-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q01-answer-box');
+    var main  = document.getElementById('ap-q01-answer-main');
+    var trap  = document.getElementById('ap-q01-answer-trap');
+    var trapLbl = document.getElementById('ap-q01-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! At the peak, the ball\'s velocity passes through zero (it stops going up before it starts coming down) — but gravity never turns off. The acceleration is 9.8 m/s² downward throughout the entire flight. That constant downward acceleration is exactly what brings the ball back down.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Velocity and acceleration are <em>independent</em>. At the peak, v = 0 momentarily — but the only force on the ball is gravity, which acts the entire time. So a = 9.8 m/s² downward at the peak, just like at every other point in the flight. The correct answer is B.';
+    }
+
+    // Unlock simulation
+    var ov = document.getElementById('ap-q01-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ if(typeof resizeCanvas === 'function') resizeCanvas(); }, 550);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q01-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q01-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q01-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q01').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: vertical toss ──
+  var C = { navy:'#1b2a4a', teal:'#0d9488', orange:'#e07020', yellow:'#f7c948', muted:'#5a6e8a', grid:'rgba(27,42,74,0.08)' };
+  var simV0 = 14;          // initial upward velocity (m/s)
+  var simG  = 9.8;         // gravity (m/s²)
+  var simDur = 2 * simV0 / simG;   // total flight time
+  var running = true, simT = 0;
+  var hist = [];
+
+  var ball  = document.getElementById('ap-q01-ball');
+  var scene = document.getElementById('ap-q01-scene');
+  var peakLine = document.getElementById('ap-q01-peak-line');
+
+  // Place peak marker line
+  function placeMarkers(){
+    var sceneH = scene.offsetHeight;
+    var peakHeight = (simV0 * simV0) / (2 * simG); // metres
+    // pixel range: 8px (ground) → sceneH-30px (top headroom for ball)
+    var maxPx = sceneH - 38;
+    var ratio = Math.min(1, peakHeight / (peakHeight + 0.001));
+    void ratio;
+    peakLine.style.bottom = (8 + maxPx) + 'px';
+  }
+
+  function stepBall(dt){
+    if(!running) return;
+    simT += dt;
+    if(simT > simDur + 0.6){ simT = 0; hist.length = 0; }
+    var t = Math.min(simT, simDur);
+    var y = simV0 * t - 0.5 * simG * t * t;          // metres above ground
+    var v = simV0 - simG * t;                          // m/s
+    var sceneH = scene.offsetHeight;
+    var maxPx = sceneH - 38;
+    var peakY = (simV0 * simV0) / (2 * simG);
+    var px = Math.max(0, (y / peakY) * maxPx);
+    ball.style.bottom = (8 + px) + 'px';
+    document.getElementById('ap-q01-v-display').textContent = (v >= 0 ? '+' : '') + v.toFixed(1) + ' m/s';
+    document.getElementById('ap-q01-a-display').textContent = '−9.8 m/s²';
+  }
+
+  var cvV = document.getElementById('ap-q01-cv-v');
+  var cvA = document.getElementById('ap-q01-cv-a');
+  var ctxV = cvV.getContext('2d');
+  var ctxA = cvA.getContext('2d');
+
+  function resizeCanvas(cv){
+    var rect = cv.getBoundingClientRect();
+    var dpr  = window.devicePixelRatio || 1;
+    cv.width  = rect.width * dpr;
+    cv.height = 140 * dpr;
+    cv.style.height = '140px';
+    var ctx = cv.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+
+  var ro = new ResizeObserver(function(){
+    resizeCanvas(cvV); resizeCanvas(cvA);
+    placeMarkers();
+  });
+  ro.observe(cvV); ro.observe(cvA); ro.observe(scene);
+  resizeCanvas(cvV); resizeCanvas(cvA);
+  placeMarkers();
+
+  function drawGraph(ctx, W, H, data, lineColor, yMin, yMax, yTicks, yLabel, tMax){
+    ctx.clearRect(0, 0, W, H);
+    var PL=50, PR=10, PT=14, PB=28;
+    var gW=W-PL-PR, gH=H-PT-PB;
+    var toX = function(t){ return PL + (t/tMax)*gW; };
+    var toY = function(yv){ return PT + gH - (yv-yMin)/(yMax-yMin)*gH; };
+
+    yTicks.forEach(function(tick){
+      var y = toY(tick);
+      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(W-PR,y); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.muted;
+      ctx.font = '13px "Courier New",monospace';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(tick, PL-5, y);
+    });
+
+    ctx.strokeStyle = C.navy; ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath(); ctx.moveTo(PL,PT); ctx.lineTo(PL,PT+gH+2); ctx.stroke();
+    var zY = toY(0);
+    ctx.beginPath(); ctx.moveTo(PL-4,zY); ctx.lineTo(W-PR,zY); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    ctx.save();
+    ctx.translate(11, PT+gH/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = C.muted; ctx.font = '13px "Nunito",sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(yLabel, 0, 0); ctx.restore();
+
+    ctx.fillStyle = C.muted; ctx.font = '13px "Nunito",sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('t (s)', PL+gW/2, PT+gH+6);
+
+    if(data.length > 1){
+      ctx.strokeStyle = lineColor; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      data.forEach(function(p,i){
+        var x=toX(p.t), y=toY(p.val);
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      var last = data[data.length-1];
+      ctx.fillStyle = lineColor;
+      ctx.beginPath(); ctx.arc(toX(last.t), toY(last.val), 3.5, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  var prev = null;
+  function loop(ts){
+    var dt = prev ? Math.min((ts-prev)/1000, 0.05) : 0.016;
+    prev = ts;
+    stepBall(dt);
+    if(running){
+      var t = Math.min(simT, simDur);
+      var v = simV0 - simG * t;
+      hist.push({ t: simT, v: v, a: -simG });
+      if(hist.length > 800) hist.shift();
+    }
+    var WV = cvV.offsetWidth || cvV.width/(window.devicePixelRatio||1);
+    var WA = cvA.offsetWidth || cvA.width/(window.devicePixelRatio||1);
+    drawGraph(ctxV, WV, 140, hist.map(function(p){return{t:p.t,val:p.v}}), C.teal,   -16, 16, [-15,-10,-5,0,5,10,15], 'v (m/s)',  simDur+0.3);
+    drawGraph(ctxA, WA, 140, hist.map(function(p){return{t:p.t,val:p.a}}), C.orange, -12,  2,  [-10,-5,0],            'a (m/s²)', simDur+0.3);
+    requestAnimationFrame(loop);
+  }
+
+  window.apQ01ToggleMotion = function(){
+    running = !running;
+    document.getElementById('ap-q01-pause-btn').textContent = running ? 'Pause' : 'Resume';
+    if(!running){ hist.length = 0; simT = 0; }
+  };
+
+  requestAnimationFrame(loop);
+
+})();
+</script>

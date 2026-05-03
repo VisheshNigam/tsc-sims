@@ -1,0 +1,546 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q08 ── */
+#tsc-ap-q08{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q08 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q08 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q08 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q08 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q08 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q08 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q08 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q08 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q08 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q08 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q08 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q08 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q08 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q08 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q08 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q08 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q08 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q08 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q08 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q08 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q08 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q08 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q08 .sim-inner{position:relative}
+#tsc-ap-q08 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q08 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q08 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q08 .overlay-icon{font-size:28px}
+#tsc-ap-q08 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q08 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q08 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q08 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — pipe scene */
+#tsc-ap-q08 .scene-wrap{background:#1b2a4a;border-radius:10px;height:280px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q08 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+#tsc-ap-q08 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q08 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q08 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q08 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q08 .sim-card-val.wide{color:#0d9488}
+#tsc-ap-q08 .sim-card-val.narrow{color:#e07020}
+#tsc-ap-q08 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q08 .sim-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q08 .pipe-slider-wrap{display:flex;align-items:center;gap:10px;font:600 12px 'Nunito',sans-serif;color:#5a6e8a;flex:1;min-width:0}
+#tsc-ap-q08 .pipe-slider-wrap input[type=range]{flex:1;min-width:80px}
+#tsc-ap-q08 .pipe-slider-val{font:700 13px 'Courier New',monospace;color:#1b2a4a;min-width:60px;text-align:right}
+#tsc-ap-q08 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q08 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q08 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q08 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q08 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q08 .opts{grid-template-columns:1fr}
+  #tsc-ap-q08 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q08 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q08">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q8</span>
+    <span class="topic-tag">Fluids — Continuity Equation</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">Water flows through a horizontal pipe that narrows from 6 cm² to 2 cm². If the speed in the wide section is 1 m/s, what is the speed in the narrow section?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q08-opts">
+    <button class="opt" data-idx="0" onclick="apQ08Answer(this)"><span class="opt-lbl">A</span>0.33 m/s</button>
+    <button class="opt" data-idx="1" onclick="apQ08Answer(this)"><span class="opt-lbl">B</span>1 m/s</button>
+    <button class="opt" data-idx="2" onclick="apQ08Answer(this)"><span class="opt-lbl">C</span>3 m/s</button>
+    <button class="opt" data-idx="3" onclick="apQ08Answer(this)"><span class="opt-lbl">D</span>6 m/s</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q08-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    C — v₂ = (A₁/A₂)·v₁ = (6/2)·1 = 3 m/s
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q08-answer-box">
+    <div class="answer-main" id="ap-q08-answer-main"></div>
+    <div class="answer-trap" id="ap-q08-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q08-trap-lbl">💡 Don't Fall For This</div>
+      The "inverted ratio" trap (option A): students who write v₂ = (A₂/A₁)·v₁ get 1·(2/6) = 0.33 m/s. That's backwards — it slows the water down at the narrow section, which is the opposite of what we observe (think of squeezing a hose).<br><br>
+      The "speed doesn't change" trap (option B): if you assumed the same flow speed regardless of pipe area, you'd pick 1 m/s. But the same volume of water has to pass through every cross-section per second, so it must speed up where the pipe narrows.<br><br>
+      The "wrong factor" trap (option D): some students multiply by total area sum or do another arithmetic slip, landing on 6 m/s. The clean ratio is 3:1, so the speed triples.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Same Volume Flow Rate, Faster Where Narrow</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q08-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q08-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q08-scene">
+          <svg class="scene-svg" id="ap-q08-svg" viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="ap-q08-pipe-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5a6e8a"/>
+                <stop offset="100%" stop-color="#3a4658"/>
+              </linearGradient>
+              <linearGradient id="ap-q08-water-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"  stop-color="#5dbeff" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#1e6dba" stop-opacity="0.85"/>
+              </linearGradient>
+              <radialGradient id="ap-q08-particle" cx="35%" cy="35%" r="65%">
+                <stop offset="0%"  stop-color="#cfe6f3"/>
+                <stop offset="100%" stop-color="#5dbeff"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Pipe walls (top and bottom bands) — paths regenerated by JS based on slider -->
+            <path id="ap-q08-wall-top" fill="url(#ap-q08-pipe-grad)" stroke="#0c1830" stroke-width="0.6"/>
+            <path id="ap-q08-wall-bot" fill="url(#ap-q08-pipe-grad)" stroke="#0c1830" stroke-width="0.6"/>
+
+            <!-- Water fill inside pipe — path regenerated by JS -->
+            <path id="ap-q08-water-fill" fill="url(#ap-q08-water-grad)" opacity="0.55"/>
+
+            <!-- Cross-section labels -->
+            <g>
+              <text x="130" y="40" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="900" font-size="13" letter-spacing="0.06em">WIDE SECTION</text>
+              <text id="ap-q08-a1-label" x="130" y="252" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="700" font-size="12">A₁ = 6 cm²</text>
+            </g>
+            <g>
+              <text x="470" y="92" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="900" font-size="13" letter-spacing="0.06em">NARROW SECTION</text>
+              <text x="470" y="200" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="700" font-size="12">A₂ = 2 cm²</text>
+            </g>
+
+            <!-- Cross-section indicator lines — y values updated by JS -->
+            <line id="ap-q08-cs-wide"   x1="130" y1="60"  x2="130" y2="220" stroke="#3ecbb8" stroke-width="1.5" stroke-dasharray="3,4" opacity="0.85"/>
+            <line id="ap-q08-cs-narrow" x1="470" y1="110" x2="470" y2="170" stroke="#f48a3c" stroke-width="1.5" stroke-dasharray="3,4" opacity="0.95"/>
+
+            <!-- Velocity arrows -->
+            <g id="ap-q08-vel-wide">
+              <line x1="105" y1="140" x2="155" y2="140" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ap-q08-arrow-teal)"/>
+              <text x="130" y="130" text-anchor="middle" fill="#0d9488" font-family="Nunito,sans-serif" font-weight="800" font-size="12">v₁ = 1 m/s</text>
+            </g>
+            <g id="ap-q08-vel-narrow">
+              <line x1="430" y1="140" x2="510" y2="140" stroke="#e07020" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ap-q08-arrow-orange)"/>
+              <text x="470" y="130" text-anchor="middle" fill="#e07020" font-family="Nunito,sans-serif" font-weight="800" font-size="12">v₂ = 3 m/s</text>
+            </g>
+
+            <defs>
+              <marker id="ap-q08-arrow-teal" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#0d9488"/>
+              </marker>
+              <marker id="ap-q08-arrow-orange" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                <polygon points="0 0, 5 2.5, 0 5" fill="#e07020"/>
+              </marker>
+            </defs>
+
+            <!-- Flowing water particles (dynamically positioned) -->
+            <g id="ap-q08-particles"></g>
+          </svg>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Wide section (A₁ = 6 cm²)</div>
+            <div class="sim-card-val wide" id="ap-q08-v1-display">v₁ = 1.0 m/s</div>
+            <div class="sim-card-note">Slower flow because there's more cross-section for the same volume rate.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Narrow section (A₂ = 2 cm²)</div>
+            <div class="sim-card-val narrow" id="ap-q08-v2-display">v₂ = 3.0 m/s</div>
+            <div class="sim-card-note">Same fluid, smaller pipe — speed must triple to keep flow rate constant.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <div class="pipe-slider-wrap">
+            <span>Wide section area (A₁):</span>
+            <input type="range" id="ap-q08-area-slider" min="2" max="10" step="0.5" value="6">
+            <span class="pipe-slider-val" id="ap-q08-area-slider-val">6.0 cm²</span>
+          </div>
+          <button class="sim-btn" onclick="apQ08Reset()">Reset</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            A₁·v₁ = A₂·v₂ &nbsp;⟹&nbsp; v₂ = (A₁/A₂)·v₁ = (6/2)(1) = 3 m/s
+          </div>
+          <div class="formula-note">Watch the particles: same number per second pass each cross-section, but they have to move faster through the narrow part to keep up. That's continuity — volume flow rate (A·v) is conserved.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q08 -->
+
+<script>
+(function(){
+  var CORRECT = 2; // index of correct option (C)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q08-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ08Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q08-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q08-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q08-answer-box');
+    var main  = document.getElementById('ap-q08-answer-main');
+    var trap  = document.getElementById('ap-q08-answer-trap');
+    var trapLbl = document.getElementById('ap-q08-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! By the continuity equation, A₁·v₁ = A₂·v₂. Solving for v₂: v₂ = (A₁/A₂)·v₁ = (6/2)(1) = 3 m/s. The same volume of water has to pass through every cross-section per second, so where the pipe narrows by a factor of 3, the speed must triple.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Apply continuity: A₁·v₁ = A₂·v₂ ⟹ v₂ = (A₁/A₂)·v₁ = (6/2)(1) = 3 m/s. The water speeds up by the same factor that the cross-sectional area decreases. The correct answer is C.';
+    }
+
+    var ov = document.getElementById('ap-q08-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q08-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q08-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q08-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q08').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: flowing water particles through wide→narrow pipe ──
+  // Pipe geometry (SVG viewBox 600x280):
+  //   Wide section:    x=20..240,  y=60..220  (height 160)
+  //   Transition:      x=240..360, y_top: 60→110, y_bot: 220→170
+  //   Narrow section:  x=360..580, y=110..170 (height 60)
+  // The fluid is incompressible: flow rate Q = A·v constant, so particle speed at any x is
+  //   v(x) = Q / (height at x). We use height-at-x as a proxy for cross-section "area" in 2D.
+
+  var WIDE_X1 = 20,  WIDE_X2 = 240;
+  var TRAN_X1 = 240, TRAN_X2 = 360;
+  var NARROW_X1 = 360, NARROW_X2 = 580;
+  var Y_CENTRE = 140;
+  // Narrow section is fixed at 60 px tall (corresponds to A₂ = 2 cm²).
+  var Y_NARROW_TOP = 110, Y_NARROW_BOT = 170;
+  // Wide section adjusts with A₁ via the slider. Scale: 25 px per cm² → A₁=2→50, A₁=6→150, A₁=10→250.
+  var Y_WIDE_TOP = 60, Y_WIDE_BOT = 220;
+
+  var areaSlider    = document.getElementById('ap-q08-area-slider');
+  var areaSliderVal = document.getElementById('ap-q08-area-slider-val');
+  var v1Disp = document.getElementById('ap-q08-v1-display');
+  var v2Disp = document.getElementById('ap-q08-v2-display');
+  var wallTop  = document.getElementById('ap-q08-wall-top');
+  var wallBot  = document.getElementById('ap-q08-wall-bot');
+  var waterFill= document.getElementById('ap-q08-water-fill');
+  var csWide   = document.getElementById('ap-q08-cs-wide');
+  var a1Label  = document.getElementById('ap-q08-a1-label');
+
+  var A1 = 6;          // cm² (wide section)
+  var A2 = 2;          // cm² (narrow section, fixed)
+  var v1 = 1;          // m/s, fixed reference
+  var PX_PER_CM2 = 25; // visual scale: 1 cm² maps to 25 px of pipe height
+
+  function pipeYRange(x){
+    if(x <= WIDE_X2){
+      return { top: Y_WIDE_TOP, bot: Y_WIDE_BOT };
+    } else if(x >= NARROW_X1){
+      return { top: Y_NARROW_TOP, bot: Y_NARROW_BOT };
+    } else {
+      var t = (x - TRAN_X1) / (TRAN_X2 - TRAN_X1); // 0..1
+      var top = Y_WIDE_TOP + t * (Y_NARROW_TOP - Y_WIDE_TOP);
+      var bot = Y_WIDE_BOT + t * (Y_NARROW_BOT - Y_WIDE_BOT);
+      return { top: top, bot: bot };
+    }
+  }
+
+  function pipeHeight(x){
+    var r = pipeYRange(x);
+    return r.bot - r.top;
+  }
+
+  // Particles
+  var particlesG = document.getElementById('ap-q08-particles');
+  var particles = [];
+
+  function spawnInitialParticles(){
+    particlesG.innerHTML = '';
+    particles = [];
+    // Spawn ~60 particles randomly along the pipe with vertical positions inside the pipe
+    for(var i = 0; i < 60; i++){
+      var x = WIDE_X1 + Math.random() * (NARROW_X2 - WIDE_X1);
+      var r = pipeYRange(x);
+      var margin = 8;
+      var y = r.top + margin + Math.random() * (r.bot - r.top - 2 * margin);
+      var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', x);
+      c.setAttribute('cy', y);
+      c.setAttribute('r', 2.4);
+      c.setAttribute('fill', 'url(#ap-q08-particle)');
+      c.setAttribute('opacity', 0.85);
+      particlesG.appendChild(c);
+      // Track each particle's vertical "lane fraction" (0=top of pipe, 1=bottom of pipe at that x)
+      var laneFrac = (y - r.top) / (r.bot - r.top);
+      particles.push({ el: c, x: x, laneFrac: laneFrac });
+    }
+  }
+  spawnInitialParticles();
+
+  // Compute base flow rate Q (in pixel-area units per second). Anchor v_wide = 60 px/s.
+  var V_WIDE_PX_PER_SEC = 60;            // visual base speed in wide section (px/s)
+  function getQ(){
+    return V_WIDE_PX_PER_SEC * (Y_WIDE_BOT - Y_WIDE_TOP);
+  }
+
+  function redrawPipe(){
+    // Compute new wide-section heights based on A₁
+    var halfH = (A1 * PX_PER_CM2) / 2;
+    Y_WIDE_TOP = Y_CENTRE - halfH;
+    Y_WIDE_BOT = Y_CENTRE + halfH;
+
+    // Wall thickness (constant 10 px) — top wall sits ABOVE the pipe interior, bot wall sits BELOW
+    var WT = 10;
+
+    // Top-wall band: spans from (Y_WIDE_TOP - WT) at the wide section to (Y_NARROW_TOP - WT) at the narrow section.
+    // Path: outer top edge L→R, then back along the inner top edge R→L, close.
+    var topBand =
+      'M ' + WIDE_X1   + ' ' + (Y_WIDE_TOP   - WT) +
+      ' L ' + WIDE_X2  + ' ' + (Y_WIDE_TOP   - WT) +
+      ' L ' + TRAN_X2  + ' ' + (Y_NARROW_TOP - WT) +
+      ' L ' + NARROW_X2+ ' ' + (Y_NARROW_TOP - WT) +
+      ' L ' + NARROW_X2+ ' ' + Y_NARROW_TOP +
+      ' L ' + TRAN_X2  + ' ' + Y_NARROW_TOP +
+      ' L ' + WIDE_X2  + ' ' + Y_WIDE_TOP +
+      ' L ' + WIDE_X1  + ' ' + Y_WIDE_TOP +
+      ' Z';
+    wallTop.setAttribute('d', topBand);
+
+    var botBand =
+      'M ' + WIDE_X1   + ' ' + Y_WIDE_BOT +
+      ' L ' + WIDE_X2  + ' ' + Y_WIDE_BOT +
+      ' L ' + TRAN_X2  + ' ' + Y_NARROW_BOT +
+      ' L ' + NARROW_X2+ ' ' + Y_NARROW_BOT +
+      ' L ' + NARROW_X2+ ' ' + (Y_NARROW_BOT + WT) +
+      ' L ' + TRAN_X2  + ' ' + (Y_NARROW_BOT + WT) +
+      ' L ' + WIDE_X2  + ' ' + (Y_WIDE_BOT   + WT) +
+      ' L ' + WIDE_X1  + ' ' + (Y_WIDE_BOT   + WT) +
+      ' Z';
+    wallBot.setAttribute('d', botBand);
+
+    // Water fill (interior of the pipe)
+    var water =
+      'M ' + WIDE_X1   + ' ' + Y_WIDE_TOP +
+      ' L ' + WIDE_X2  + ' ' + Y_WIDE_TOP +
+      ' L ' + TRAN_X2  + ' ' + Y_NARROW_TOP +
+      ' L ' + NARROW_X2+ ' ' + Y_NARROW_TOP +
+      ' L ' + NARROW_X2+ ' ' + Y_NARROW_BOT +
+      ' L ' + TRAN_X2  + ' ' + Y_NARROW_BOT +
+      ' L ' + WIDE_X2  + ' ' + Y_WIDE_BOT +
+      ' L ' + WIDE_X1  + ' ' + Y_WIDE_BOT +
+      ' Z';
+    waterFill.setAttribute('d', water);
+
+    // Update wide-section cross-section indicator line endpoints
+    csWide.setAttribute('y1', Y_WIDE_TOP);
+    csWide.setAttribute('y2', Y_WIDE_BOT);
+  }
+
+  function updateReadouts(){
+    A1 = parseFloat(areaSlider.value);
+    areaSliderVal.textContent = A1.toFixed(1) + ' cm²';
+    a1Label.textContent = 'A₁ = ' + A1.toFixed(1) + ' cm²';
+
+    redrawPipe();
+
+    // v₂ = (A₁/A₂) · v₁
+    var v2 = (A1 / A2) * v1;
+    v1Disp.textContent = 'v₁ = ' + v1.toFixed(1) + ' m/s';
+    v2Disp.textContent = 'v₂ = ' + v2.toFixed(1) + ' m/s';
+
+    // Update the "v₂ = X m/s" label inside the SVG narrow-section arrow
+    var narrowVelLabel = document.querySelector('#ap-q08-vel-narrow text');
+    if(narrowVelLabel){
+      narrowVelLabel.textContent = 'v₂ = ' + v2.toFixed(1) + ' m/s';
+    }
+
+    // Reposition wide-section velocity arrow vertically (track the centre)
+    var widePolyArrow = document.querySelector('#ap-q08-vel-wide line');
+    var widePolyLabel = document.querySelector('#ap-q08-vel-wide text');
+    if(widePolyArrow){
+      widePolyArrow.setAttribute('y1', Y_CENTRE);
+      widePolyArrow.setAttribute('y2', Y_CENTRE);
+    }
+    if(widePolyLabel){
+      widePolyLabel.setAttribute('y', Y_CENTRE - 10);
+    }
+  }
+  areaSlider.addEventListener('input', function(){
+    updateReadouts();
+    spawnInitialParticles();
+  });
+  updateReadouts();
+
+  window.apQ08Reset = function(){
+    areaSlider.value = '6';
+    updateReadouts();
+    spawnInitialParticles();
+  };
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+
+    var Q = getQ();
+    for(var i = 0; i < particles.length; i++){
+      var p = particles[i];
+      var h = pipeHeight(p.x);
+      var v = Q / h; // px/s — faster where h is small
+      p.x += v * dt;
+      if(p.x > NARROW_X2 + 4){
+        // recycle: respawn at left
+        p.x = WIDE_X1 - 4 + Math.random() * 6;
+        p.laneFrac = 0.1 + Math.random() * 0.8;
+      }
+      // Recompute y from current laneFrac (this naturally compresses lanes when pipe narrows → faster particles + closer together = same flow)
+      var r = pipeYRange(p.x);
+      var margin = 4;
+      var y = r.top + margin + p.laneFrac * (r.bot - r.top - 2 * margin);
+      p.el.setAttribute('cx', p.x.toFixed(2));
+      p.el.setAttribute('cy', y.toFixed(2));
+    }
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

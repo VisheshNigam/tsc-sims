@@ -1,0 +1,397 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q07 ── */
+#tsc-ap-q07{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q07 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q07 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q07 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q07 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q07 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q07 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q07 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q07 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q07 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q07 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q07 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q07 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q07 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q07 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q07 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q07 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q07 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q07 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q07 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q07 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q07 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q07 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q07 .sim-inner{position:relative}
+#tsc-ap-q07 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q07 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q07 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q07 .overlay-icon{font-size:28px}
+#tsc-ap-q07 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q07 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q07 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q07 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — twin pendulum scene */
+#tsc-ap-q07 .scene-wrap{background:#1b2a4a;border-radius:10px;height:340px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q07 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+#tsc-ap-q07 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q07 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q07 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q07 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q07 .sim-card-val.earth{color:#0d9488}
+#tsc-ap-q07 .sim-card-val.moon{color:#e07020}
+#tsc-ap-q07 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q07 .sim-controls{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q07 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q07 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q07 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q07 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q07 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q07 .opts{grid-template-columns:1fr}
+  #tsc-ap-q07 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q07 .qtxt{font-size:16px}
+  #tsc-ap-q07 .scene-wrap{height:280px}
+}
+</style>
+
+<div id="tsc-ap-q07">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q7</span>
+    <span class="topic-tag">Oscillations — Pendulum on the Moon</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A simple pendulum has period T on Earth. The same pendulum is taken to the Moon, where g_Moon ≈ g/6. What is its new period?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q07-opts">
+    <button class="opt" data-idx="0" onclick="apQ07Answer(this)"><span class="opt-lbl">A</span>T / 6</button>
+    <button class="opt" data-idx="1" onclick="apQ07Answer(this)"><span class="opt-lbl">B</span>T / √6</button>
+    <button class="opt" data-idx="2" onclick="apQ07Answer(this)"><span class="opt-lbl">C</span>6 T</button>
+    <button class="opt" data-idx="3" onclick="apQ07Answer(this)"><span class="opt-lbl">D</span>√6 · T &nbsp;(≈ 2.45 T)</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q07-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    D — T_Moon = √6 · T_Earth ≈ 2.45 T
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q07-answer-box">
+    <div class="answer-main" id="ap-q07-answer-main"></div>
+    <div class="answer-trap" id="ap-q07-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q07-trap-lbl">💡 Don't Fall For This</div>
+      The "linear-with-g" trap (option C): if you assumed T scales linearly with 1/g, you would get T → 6T. But the period equation has a square root: T = 2π√(L/g). Smaller g still makes T <em>longer</em>, but only by a factor of √6, not 6.<br><br>
+      The "wrong direction" traps (options A and B): a smaller g means a weaker restoring force, so the pendulum swings <em>more slowly</em> — the period must be <em>longer</em>, not shorter. Any answer less than T (A or B) gets the physics backwards.<br><br>
+      The clean ratio: T_Moon / T_Earth = √(g_Earth / g_Moon) = √6 ≈ 2.45. So if T = 2 s on Earth, the same pendulum takes about 4.9 s on the Moon.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Earth vs Moon, Same Pendulum</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q07-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q07-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q07-scene">
+          <svg class="scene-svg" id="ap-q07-svg" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="ap-q07-bob-earth" cx="35%" cy="35%" r="70%">
+                <stop offset="0%"  stop-color="#3ecbb8"/>
+                <stop offset="60%" stop-color="#0d9488"/>
+                <stop offset="100%" stop-color="#066b62"/>
+              </radialGradient>
+              <radialGradient id="ap-q07-bob-moon" cx="35%" cy="35%" r="70%">
+                <stop offset="0%"  stop-color="#f59455"/>
+                <stop offset="60%" stop-color="#e07020"/>
+                <stop offset="100%" stop-color="#a44a0d"/>
+              </radialGradient>
+              <linearGradient id="ap-q07-rod-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9aa3b2"/>
+                <stop offset="100%" stop-color="#5a6e8a"/>
+              </linearGradient>
+              <radialGradient id="ap-q07-earth" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="#5dbeff"/>
+                <stop offset="60%" stop-color="#1e6dba"/>
+                <stop offset="100%" stop-color="#0a3666"/>
+              </radialGradient>
+              <radialGradient id="ap-q07-moon" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="#f0e8d8"/>
+                <stop offset="60%" stop-color="#b8b0a0"/>
+                <stop offset="100%" stop-color="#65605a"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Vertical divider between the two scenes -->
+            <line x1="300" y1="20" x2="300" y2="320" stroke="#3a4658" stroke-width="1" stroke-dasharray="4,6" opacity="0.5"/>
+
+            <!-- Scene labels -->
+            <g>
+              <circle cx="60" cy="38" r="14" fill="url(#ap-q07-earth)" stroke="#0c1830" stroke-width="0.8"/>
+              <text x="84" y="43" fill="#5dbeff" font-family="Nunito,sans-serif" font-weight="900" font-size="14">EARTH</text>
+              <text x="84" y="58" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="600" font-size="11">g = 9.8 m/s²</text>
+            </g>
+            <g>
+              <circle cx="360" cy="38" r="14" fill="url(#ap-q07-moon)" stroke="#0c1830" stroke-width="0.8"/>
+              <text x="384" y="43" fill="#f0e8d8" font-family="Nunito,sans-serif" font-weight="900" font-size="14">MOON</text>
+              <text x="384" y="58" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="600" font-size="11">g ≈ 1.6 m/s²</text>
+            </g>
+
+            <!-- Pivot points -->
+            <circle cx="150" cy="90"  r="5" fill="#f7c948" stroke="#0c1830" stroke-width="1.2"/>
+            <circle cx="450" cy="90"  r="5" fill="#f7c948" stroke="#0c1830" stroke-width="1.2"/>
+            <!-- Pivot mounting bars -->
+            <rect x="100" y="80" width="100" height="6" rx="2" fill="#3a4658" stroke="#0c1830" stroke-width="1"/>
+            <rect x="400" y="80" width="100" height="6" rx="2" fill="#3a4658" stroke="#0c1830" stroke-width="1"/>
+
+            <!-- Earth pendulum (rotates around 150,90) — thin thread -->
+            <g id="ap-q07-pend-earth">
+              <line x1="150" y1="90" x2="150" y2="240" stroke="#e8edf2" stroke-width="1.2" stroke-linecap="round" opacity="0.95"/>
+              <circle cx="150" cy="240" r="16" fill="url(#ap-q07-bob-earth)" stroke="#0c1830" stroke-width="1.4"/>
+              <circle cx="146" cy="236" r="3" fill="#fff" opacity="0.55"/>
+            </g>
+
+            <!-- Moon pendulum (rotates around 450,90) — thin thread -->
+            <g id="ap-q07-pend-moon">
+              <line x1="450" y1="90" x2="450" y2="240" stroke="#e8edf2" stroke-width="1.2" stroke-linecap="round" opacity="0.95"/>
+              <circle cx="450" cy="240" r="16" fill="url(#ap-q07-bob-moon)" stroke="#0c1830" stroke-width="1.4"/>
+              <circle cx="446" cy="236" r="3" fill="#fff" opacity="0.55"/>
+            </g>
+
+            <!-- Cycle counters -->
+            <g>
+              <rect x="20" y="290" width="265" height="36" rx="6" fill="rgba(13,148,136,0.18)" stroke="#0d9488" stroke-width="1"/>
+              <text x="35" y="305" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="800" font-size="10" letter-spacing="0.06em">EARTH PENDULUM</text>
+              <text id="ap-q07-cycles-earth" x="35" y="321" fill="#fff" font-family="Courier New,monospace" font-weight="700" font-size="13">cycles: 0.0   |   T = 2.00 s</text>
+            </g>
+            <g>
+              <rect x="315" y="290" width="265" height="36" rx="6" fill="rgba(224,112,32,0.18)" stroke="#e07020" stroke-width="1"/>
+              <text x="330" y="305" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="800" font-size="10" letter-spacing="0.06em">MOON PENDULUM</text>
+              <text id="ap-q07-cycles-moon" x="330" y="321" fill="#fff" font-family="Courier New,monospace" font-weight="700" font-size="13">cycles: 0.0   |   T ≈ 4.90 s</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Earth period (T)</div>
+            <div class="sim-card-val earth" id="ap-q07-tearth-display">2.00 s</div>
+            <div class="sim-card-note">T = 2π·√(L/g). Same pendulum, same length L.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Moon period (T_Moon)</div>
+            <div class="sim-card-val moon" id="ap-q07-tmoon-display">4.90 s ≈ √6 · T</div>
+            <div class="sim-card-note">Smaller g ⟹ longer period, by factor √(g_E / g_M) = √6.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <button class="sim-btn" onclick="apQ07Restart()">Restart together</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            T = 2π·√(L/g) &nbsp;⟹&nbsp; T_Moon / T_Earth = √(g_E / g_M) = √6 ≈ 2.45
+          </div>
+          <div class="formula-note">Watch them released together: by the time the Earth pendulum has completed about 2½ swings, the Moon pendulum has barely finished one. Same L, smaller g, longer period.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q07 -->
+
+<script>
+(function(){
+  var CORRECT = 3; // index of correct option (D)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q07-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ07Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q07-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q07-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q07-answer-box');
+    var main  = document.getElementById('ap-q07-answer-main');
+    var trap  = document.getElementById('ap-q07-answer-trap');
+    var trapLbl = document.getElementById('ap-q07-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! T = 2π·√(L/g). Same pendulum (same L), but g_Moon = g_Earth/6. So T_Moon / T_Earth = √(g_Earth / g_Moon) = √6 ≈ 2.45. The Moon pendulum swings about 2.45× slower than the Earth pendulum.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. Use T = 2π·√(L/g). The square root means a 6× weaker g multiplies the period by √6, not 6. Smaller g ⟹ longer period. The correct answer is D: T_Moon = √6·T ≈ 2.45 T.';
+    }
+
+    var ov = document.getElementById('ap-q07-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q07-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q07-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q07-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q07').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: twin pendulums ──
+  // Use angular SHM with small-angle approx: θ(t) = θ₀ · cos(2π t / T)
+  // Earth: T_E = 2.0 s. Moon: T_M = √6 · T_E ≈ 4.899 s.
+  // Visualisation pacing: scale time so one full Earth period takes about 2 real-seconds.
+  var pendE = document.getElementById('ap-q07-pend-earth');
+  var pendM = document.getElementById('ap-q07-pend-moon');
+  var cyclesE = document.getElementById('ap-q07-cycles-earth');
+  var cyclesM = document.getElementById('ap-q07-cycles-moon');
+
+  var T_E = 2.0;                    // seconds (visual)
+  var T_M = Math.sqrt(6) * T_E;     // ≈ 4.899
+  var theta0 = 22;                  // degrees, swing amplitude
+  var t = 0;
+  var startTime = null;
+
+  function setPend(g, angleDeg, pivotX, pivotY){
+    g.setAttribute('transform', 'rotate(' + angleDeg.toFixed(2) + ' ' + pivotX + ' ' + pivotY + ')');
+  }
+
+  window.apQ07Restart = function(){
+    t = 0;
+    startTime = null;
+  };
+
+  var lastTs = null;
+  function loop(ts){
+    if(startTime === null) startTime = ts;
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+    t += dt;
+
+    var aE = theta0 * Math.cos(2 * Math.PI * t / T_E);
+    var aM = theta0 * Math.cos(2 * Math.PI * t / T_M);
+
+    setPend(pendE, aE, 150, 90);
+    setPend(pendM, aM, 450, 90);
+
+    var nE = t / T_E;
+    var nM = t / T_M;
+    cyclesE.textContent = 'cycles: ' + nE.toFixed(2) + '   |   T = 2.00 s';
+    cyclesM.textContent = 'cycles: ' + nM.toFixed(2) + '   |   T ≈ 4.90 s';
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>

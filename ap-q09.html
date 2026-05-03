@@ -1,0 +1,484 @@
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ── Scoped to #tsc-ap-q09 ── */
+#tsc-ap-q09{font-family:'Nunito',sans-serif;width:100%;box-sizing:border-box}
+#tsc-ap-q09 *{box-sizing:border-box;margin:0;padding:0}
+#tsc-ap-q09 .card{background:#fff;border:1px solid #c8ccd4;border-radius:12px;overflow:hidden;width:100%;box-shadow:0 4px 20px rgba(27,42,74,0.08)}
+
+/* Meta */
+#tsc-ap-q09 .meta{display:flex;align-items:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap}
+#tsc-ap-q09 .qlbl{font:700 12px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9090a8}
+#tsc-ap-q09 .topic-tag{font:700 12px 'Nunito',sans-serif;text-transform:uppercase;color:#1b4a8a;background:#e8f0ff;border:1px solid #b0c8f0;border-radius:20px;padding:3px 10px}
+
+/* Question */
+#tsc-ap-q09 .qwrap{margin:12px 20px 0;border-left:3px solid #f7c948;padding:12px 16px;background:#f6f7f9;border-radius:0 8px 8px 0}
+#tsc-ap-q09 .qtxt{font:500 18px/1.7 'Nunito',sans-serif;color:#1b2a4a}
+
+/* Options */
+#tsc-ap-q09 .opts{margin:12px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#tsc-ap-q09 .opt{background:#f6f7f9;border:2px solid #e0e3e8;border-radius:10px;padding:12px 14px;font:500 15px 'Nunito',sans-serif;color:#1b2a4a;cursor:pointer;text-align:left;width:100%;transition:all .18s;line-height:1.4}
+#tsc-ap-q09 .opt:hover:not(.locked){border-color:#1b2a4a;background:#eef0f5;transform:translateY(-1px)}
+#tsc-ap-q09 .opt.correct{border-color:#1b6b3a;background:#e8f5ee;color:#1b4a2a}
+#tsc-ap-q09 .opt.wrong{border-color:#c85a00;background:#fff8f4;color:#7a3000}
+#tsc-ap-q09 .opt.locked{cursor:default;transform:none!important}
+#tsc-ap-q09 .opt-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.4;display:block;margin-bottom:3px}
+
+/* Answer feedback box */
+#tsc-ap-q09 .answer-box{display:none;margin:12px 20px 0;border-radius:10px;overflow:hidden}
+#tsc-ap-q09 .answer-main{padding:12px 16px;font:500 15px/1.7 'Nunito',sans-serif}
+#tsc-ap-q09 .answer-trap{padding:11px 16px;font:500 14px/1.6 'Nunito',sans-serif}
+#tsc-ap-q09 .answer-trap-lbl{font:800 11px 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+#tsc-ap-q09 .correct-line{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:8px;background:#e8f5ee;border:1px solid #a8d8b8;font:600 13px/1.5 'Nunito',sans-serif;color:#1b4a2a}
+#tsc-ap-q09 .correct-line-lbl{font:800 11px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#1b6b3a;margin-bottom:3px}
+
+/* Simulation */
+#tsc-ap-q09 .sim-wrap{margin:14px 20px 0;border:1px solid #c8ccd4;border-radius:10px;overflow:hidden}
+#tsc-ap-q09 .sim-label{background:#f6f7f9;border-bottom:1px solid #c8ccd4;padding:8px 16px;font:700 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b6b6b}
+#tsc-ap-q09 .sim-inner{position:relative}
+#tsc-ap-q09 .sim-content{background:#fff;padding:16px}
+#tsc-ap-q09 .overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(240,242,245,0.5);transition:opacity .5s ease}
+#tsc-ap-q09 .overlay.hidden{opacity:0;pointer-events:none}
+#tsc-ap-q09 .overlay-icon{font-size:28px}
+#tsc-ap-q09 .overlay-txt{font:700 13px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1b2a4a;background:rgba(255,255,255,0.92);padding:6px 16px;border-radius:20px;border:1px solid rgba(200,204,212,0.8);box-shadow:0 2px 8px rgba(27,42,74,0.08)}
+
+/* Footer */
+#tsc-ap-q09 .ft{margin:14px 20px 16px;padding-top:12px;border-top:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#tsc-ap-q09 .ft-url{font:600 12px 'Nunito',sans-serif;color:#b0b8c8}
+#tsc-ap-q09 .cta{background:#f7c948;color:#1b2a4a;text-decoration:none;border-radius:8px;padding:9px 18px;font:800 13px 'Nunito',sans-serif;text-transform:uppercase;box-shadow:0 2px 8px rgba(247,201,72,0.3)}
+
+/* Sim — twin ramp scene */
+#tsc-ap-q09 .scene-wrap{background:#1b2a4a;border-radius:10px;height:300px;position:relative;overflow:hidden;margin-bottom:14px}
+#tsc-ap-q09 .scene-svg{position:absolute;inset:0;width:100%;height:100%}
+
+/* Energy split bars */
+#tsc-ap-q09 .energy-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q09 .energy-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q09 .energy-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:6px}
+#tsc-ap-q09 .energy-bar-stack{position:relative;height:18px;background:#e0e6ee;border-radius:4px;overflow:hidden;display:flex}
+#tsc-ap-q09 .energy-seg{height:100%}
+#tsc-ap-q09 .energy-seg.trans{background:linear-gradient(90deg,#0d9488,#22b8a6)}
+#tsc-ap-q09 .energy-seg.rot{background:linear-gradient(90deg,#e07020,#f48a3c)}
+#tsc-ap-q09 .energy-legend{display:flex;justify-content:space-between;font:700 11px 'Courier New',monospace;color:#1b2a4a;margin-top:6px}
+#tsc-ap-q09 .energy-legend .trans-val{color:#0d9488}
+#tsc-ap-q09 .energy-legend .rot-val{color:#e07020}
+
+#tsc-ap-q09 .sim-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#tsc-ap-q09 .sim-card{background:#f6f7f9;border-radius:8px;border:1px solid #d0dae8;padding:12px 14px}
+#tsc-ap-q09 .sim-card-lbl{font:700 10px 'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#5a6e8a;margin-bottom:3px}
+#tsc-ap-q09 .sim-card-val{font:700 22px 'Courier New',monospace;margin-bottom:6px}
+#tsc-ap-q09 .sim-card-val.disk{color:#0d9488}
+#tsc-ap-q09 .sim-card-val.hoop{color:#e07020}
+#tsc-ap-q09 .sim-card-note{font:600 12px 'Nunito',sans-serif;color:#5a6e8a;line-height:1.4}
+
+#tsc-ap-q09 .sim-controls{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+#tsc-ap-q09 .sim-btn{font:700 13px 'Nunito',sans-serif;padding:6px 18px;border-radius:8px;border:none;background:#1b2a4a;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+#tsc-ap-q09 .sim-btn:hover{background:#253d6a}
+#tsc-ap-q09 .sim-formula{background:#fff;border-radius:8px;border-left:3px solid #0d9488;border-top:1px solid #d0dae8;border-right:1px solid #d0dae8;border-bottom:1px solid #d0dae8;padding:10px 14px}
+#tsc-ap-q09 .formula-eq{font:400 16px 'Courier New',monospace;color:#1b2a4a;line-height:1.8}
+#tsc-ap-q09 .formula-note{font:600 14px 'Nunito',sans-serif;color:#5a6e8a;margin-top:4px}
+
+@media(max-width:480px){
+  #tsc-ap-q09 .opts{grid-template-columns:1fr}
+  #tsc-ap-q09 .sim-cards{grid-template-columns:1fr}
+  #tsc-ap-q09 .energy-panel{grid-template-columns:1fr}
+  #tsc-ap-q09 .qtxt{font-size:16px}
+}
+</style>
+
+<div id="tsc-ap-q09">
+<div class="card">
+
+  <!-- Meta -->
+  <div class="meta">
+    <span class="qlbl">Q9</span>
+    <span class="topic-tag">Rotation — Rolling Without Slipping</span>
+  </div>
+
+  <!-- Question -->
+  <div class="qwrap">
+    <div class="qtxt">A solid disk and a hoop, both of mass M and radius R, are released from rest at the top of two identical frictionless inclines. Both roll without slipping. Which reaches the bottom first?</div>
+  </div>
+
+  <!-- Options -->
+  <div class="opts" id="ap-q09-opts">
+    <button class="opt" data-idx="0" onclick="apQ09Answer(this)"><span class="opt-lbl">A</span>They tie — same mass, same radius, same height</button>
+    <button class="opt" data-idx="1" onclick="apQ09Answer(this)"><span class="opt-lbl">B</span>The hoop, because it has more rotational inertia</button>
+    <button class="opt" data-idx="2" onclick="apQ09Answer(this)"><span class="opt-lbl">C</span>The hoop, because it rolls more efficiently</button>
+    <button class="opt" data-idx="3" onclick="apQ09Answer(this)"><span class="opt-lbl">D</span>The disk, because less of its energy goes into rotation</button>
+  </div>
+
+  <!-- Correct answer reveal (wrong only) -->
+  <div class="correct-line" id="ap-q09-correct-line">
+    <div class="correct-line-lbl">✓ Correct Answer</div>
+    D — The disk wins. v_disk = √(4gh/3) > v_hoop = √(gh)
+  </div>
+
+  <!-- Answer feedback box -->
+  <div class="answer-box" id="ap-q09-answer-box">
+    <div class="answer-main" id="ap-q09-answer-main"></div>
+    <div class="answer-trap" id="ap-q09-answer-trap">
+      <div class="answer-trap-lbl" id="ap-q09-trap-lbl">💡 Don't Fall For This</div>
+      The "they tie" trap (option A): for objects sliding without rotation, mgh = ½mv² and mass cancels — same speed for everyone. But here both objects are rolling, so the energy splits between translation (½mv²) and rotation (½Iω²). How much goes to rotation depends on I, and that's where they differ.<br><br>
+      The "more inertia helps" traps (B and C): more rotational inertia means more energy is locked up in rotation — that's a <em>penalty</em>, not a bonus. The hoop has I = MR² (all its mass at the rim), the disk has I = ½MR² (mass distributed inside). The hoop pays a bigger rotational tax, leaving less energy for translation.<br><br>
+      The clean math: with energy conservation, v² = 2gh / (1 + I/(MR²)). For the disk, I/MR² = ½ → v² = (4/3)gh. For the hoop, I/MR² = 1 → v² = gh. v_disk / v_hoop = √(4/3) ≈ 1.15. The disk arrives first by a clear margin.
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div class="sim-wrap">
+    <div class="sim-label">▶ See the Physics — Disk vs Hoop, Same Mass, Same Radius</div>
+    <div class="sim-inner">
+      <div class="overlay" id="ap-q09-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-txt" id="ap-q09-overlay-txt">Answer to unlock</div>
+      </div>
+      <div class="sim-content">
+
+        <!-- Scene -->
+        <div class="scene-wrap" id="ap-q09-scene">
+          <svg class="scene-svg" id="ap-q09-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="ap-q09-ramp-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5a6e8a"/>
+                <stop offset="100%" stop-color="#3a4658"/>
+              </linearGradient>
+              <radialGradient id="ap-q09-disk-grad" cx="35%" cy="35%" r="65%">
+                <stop offset="0%"  stop-color="#3ecbb8"/>
+                <stop offset="55%" stop-color="#0d9488"/>
+                <stop offset="100%" stop-color="#066b62"/>
+              </radialGradient>
+              <radialGradient id="ap-q09-hoop-grad" cx="35%" cy="35%" r="65%">
+                <stop offset="0%"  stop-color="#f59455"/>
+                <stop offset="55%" stop-color="#e07020"/>
+                <stop offset="100%" stop-color="#a44a0d"/>
+              </radialGradient>
+              <radialGradient id="ap-q09-shadow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="rgba(0,0,0,0.4)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Vertical divider between the two ramps -->
+            <line x1="300" y1="20" x2="300" y2="290" stroke="#3a4658" stroke-width="1" stroke-dasharray="4,6" opacity="0.5"/>
+
+            <!-- Headers -->
+            <text x="150" y="32" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="900" font-size="14" letter-spacing="0.06em">SOLID DISK</text>
+            <text x="150" y="50" text-anchor="middle" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="600" font-size="11">I = ½ M R²</text>
+            <text x="450" y="32" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="900" font-size="14" letter-spacing="0.06em">HOOP</text>
+            <text x="450" y="50" text-anchor="middle" fill="#9aa3b2" font-family="Nunito,sans-serif" font-weight="600" font-size="11">I = M R²</text>
+
+            <!-- Ground baselines -->
+            <line x1="20"  y1="260" x2="290" y2="260" stroke="#0d9488" stroke-width="3" opacity="0.55"/>
+            <line x1="310" y1="260" x2="580" y2="260" stroke="#0d9488" stroke-width="3" opacity="0.55"/>
+
+            <!-- Left ramp (disk) -->
+            <polygon points="40,80 270,260 40,260" fill="url(#ap-q09-ramp-grad)" stroke="#1b2a4a" stroke-width="1.2"/>
+            <!-- Right ramp (hoop) -->
+            <polygon points="340,80 570,260 340,260" fill="url(#ap-q09-ramp-grad)" stroke="#1b2a4a" stroke-width="1.2"/>
+
+            <!-- Height markers -->
+            <line x1="30" y1="80"  x2="30" y2="260" stroke="#f7c948" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <text x="22" y="170" text-anchor="end" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="800" font-size="12" transform="rotate(-90 22 170)">h</text>
+
+            <line x1="330" y1="80"  x2="330" y2="260" stroke="#f7c948" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <text x="322" y="170" text-anchor="end" fill="#f7c948" font-family="Nunito,sans-serif" font-weight="800" font-size="12" transform="rotate(-90 322 170)">h</text>
+
+            <!-- Disk (solid filled) -->
+            <g id="ap-q09-disk-g">
+              <ellipse cx="0" cy="22" rx="22" ry="3" fill="url(#ap-q09-shadow)"/>
+              <circle cx="0" cy="0" r="20" fill="url(#ap-q09-disk-grad)" stroke="#0c1830" stroke-width="1.4"/>
+              <!-- Spokes / radial markers to make rotation visible -->
+              <line x1="-18" y1="0" x2="18" y2="0" stroke="#0c1830" stroke-width="1" opacity="0.55"/>
+              <line x1="0" y1="-18" x2="0" y2="18" stroke="#0c1830" stroke-width="1" opacity="0.55"/>
+              <circle cx="0" cy="0" r="3" fill="#0c1830"/>
+              <!-- Mass label dot (visual) -->
+              <text x="0" y="-26" text-anchor="middle" fill="#3ecbb8" font-family="Nunito,sans-serif" font-weight="800" font-size="11">M</text>
+            </g>
+
+            <!-- Hoop (mass concentrated at rim) -->
+            <g id="ap-q09-hoop-g">
+              <ellipse cx="0" cy="22" rx="22" ry="3" fill="url(#ap-q09-shadow)"/>
+              <circle cx="0" cy="0" r="20" fill="none" stroke="url(#ap-q09-hoop-grad)" stroke-width="6"/>
+              <circle cx="0" cy="0" r="20" fill="none" stroke="#0c1830" stroke-width="0.8"/>
+              <circle cx="0" cy="0" r="14" fill="none" stroke="#0c1830" stroke-width="0.6" opacity="0.5"/>
+              <!-- Two crossing markers to make rotation visible -->
+              <line x1="-18" y1="0" x2="18" y2="0" stroke="#0c1830" stroke-width="1" opacity="0.55"/>
+              <line x1="0" y1="-18" x2="0" y2="18" stroke="#0c1830" stroke-width="1" opacity="0.55"/>
+              <text x="0" y="-26" text-anchor="middle" fill="#f48a3c" font-family="Nunito,sans-serif" font-weight="800" font-size="11">M</text>
+            </g>
+
+            <!-- Finish line (at bottom of each ramp) -->
+            <line x1="270" y1="252" x2="270" y2="270" stroke="#f7c948" stroke-width="2"/>
+            <line x1="570" y1="252" x2="570" y2="270" stroke="#f7c948" stroke-width="2"/>
+
+            <!-- Race results banner (hidden until disk wins) -->
+            <g id="ap-q09-result" opacity="0">
+              <rect x="60" y="270" width="180" height="22" rx="11" fill="#0d9488" opacity="0.95"/>
+              <text x="150" y="286" text-anchor="middle" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" font-size="12" letter-spacing="0.06em">DISK WINS — v ∝ √(4gh/3)</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Energy split bars -->
+        <div class="energy-panel">
+          <div class="energy-card">
+            <div class="energy-card-lbl">Disk: KE split (translational + rotational)</div>
+            <div class="energy-bar-stack">
+              <div class="energy-seg trans" style="width:67%"></div>
+              <div class="energy-seg rot"   style="width:33%"></div>
+            </div>
+            <div class="energy-legend">
+              <span class="trans-val">Translational: 67%</span>
+              <span class="rot-val">Rotational: 33%</span>
+            </div>
+          </div>
+          <div class="energy-card">
+            <div class="energy-card-lbl">Hoop: KE split (translational + rotational)</div>
+            <div class="energy-bar-stack">
+              <div class="energy-seg trans" style="width:50%"></div>
+              <div class="energy-seg rot"   style="width:50%"></div>
+            </div>
+            <div class="energy-legend">
+              <span class="trans-val">Translational: 50%</span>
+              <span class="rot-val">Rotational: 50%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="sim-cards">
+          <div class="sim-card">
+            <div class="sim-card-lbl">Disk speed at bottom</div>
+            <div class="sim-card-val disk">v = √(4gh/3)</div>
+            <div class="sim-card-note">Only ⅓ of its KE goes to rotation. The rest is forward speed.</div>
+          </div>
+          <div class="sim-card">
+            <div class="sim-card-lbl">Hoop speed at bottom</div>
+            <div class="sim-card-val hoop">v = √(gh)</div>
+            <div class="sim-card-note">Half of its KE goes to rotation. Less left for forward motion.</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sim-controls">
+          <button class="sim-btn" onclick="apQ09Restart()">Race again</button>
+        </div>
+
+        <!-- Formula -->
+        <div class="sim-formula">
+          <div class="formula-eq">
+            mgh = ½mv² + ½Iω² &nbsp;|&nbsp; ω = v/R &nbsp;⟹&nbsp; v² = 2gh / (1 + I/MR²)
+          </div>
+          <div class="formula-note">Disk: I/MR² = ½ → v_disk² = (4/3)·gh. Hoop: I/MR² = 1 → v_hoop² = gh. The hoop puts more energy into spin, so it lags behind. Same mass, same radius, same height — different mass distributions win the race.</div>
+        </div>
+
+      </div><!-- /.sim-content -->
+    </div><!-- /.sim-inner -->
+  </div><!-- /.sim-wrap -->
+
+  <!-- Footer -->
+  <div class="ft">
+    <div class="ft-url">thesciencecube.com</div>
+    <a class="cta" href="https://www.thesciencecube.com/p/ap-physics-1" target="_blank">Explore Course →</a>
+  </div>
+
+</div><!-- /.card -->
+</div><!-- /#tsc-ap-q09 -->
+
+<script>
+(function(){
+  var CORRECT = 3; // index of correct option (D)
+
+  // ── Mode detection ──
+  var mode = 'study';
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('mode') === 'exam') mode = 'exam';
+    if(p.get('mode') === 'review') mode = 'review';
+  } catch(e){}
+
+  window.addEventListener('load', function(){
+    var txt = document.getElementById('ap-q09-overlay-txt');
+    if(txt) txt.textContent = mode === 'exam' ? 'Complete the quiz to unlock' : (mode === 'review' ? 'Complete the quiz to unlock' : 'Answer to unlock');
+  });
+
+  // ── Answer handler ──
+  window.apQ09Answer = function(el){
+    var idx = parseInt(el.dataset.idx);
+    var btns = document.querySelectorAll('#ap-q09-opts .opt');
+    btns.forEach(function(b){ b.classList.add('locked'); });
+
+    var ok = (idx === CORRECT);
+    el.classList.add(ok ? 'correct' : 'wrong');
+    btns[CORRECT].classList.add('correct');
+
+    if(mode === 'exam'){
+      window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+      setTimeout(function(){ reportHeight(); }, 80);
+      return;
+    }
+
+    if(!ok){
+      document.getElementById('ap-q09-correct-line').style.display = 'block';
+    }
+
+    var box   = document.getElementById('ap-q09-answer-box');
+    var main  = document.getElementById('ap-q09-answer-main');
+    var trap  = document.getElementById('ap-q09-answer-trap');
+    var trapLbl = document.getElementById('ap-q09-trap-lbl');
+    box.style.display = 'block';
+
+    if(ok){
+      box.style.background = '#e8f5ee';
+      box.style.border     = '1px solid #a8d8b8';
+      main.style.color     = '#1b4a2a';
+      main.style.background = '#e8f5ee';
+      trap.style.borderTop = '1px solid #a8d8b8';
+      trap.style.color     = '#1b4a2a';
+      trap.style.background = '#d8f0e4';
+      trapLbl.style.color  = '#1b6b3a';
+      main.innerHTML = '✓ Correct! With both rolling without slipping, energy conservation gives v² = 2gh/(1 + I/MR²). The hoop has I/MR² = 1, the disk has I/MR² = ½. So v_disk = √(4gh/3) ≈ 1.15·v_hoop. The disk wins because less of its KE is locked up in rotation — leaving more for forward motion.';
+    } else {
+      box.style.background = '#fff8f4';
+      box.style.border     = '1px solid #f0c8a8';
+      main.style.color     = '#7a3000';
+      main.style.background = '#fff8f4';
+      trap.style.borderTop = '1px solid #f0c8a8';
+      trap.style.color     = '#7a3000';
+      trap.style.background = '#fdeee4';
+      trapLbl.style.color  = '#c85a00';
+      main.innerHTML = '✗ Not quite. The energy splits between translation (½mv²) and rotation (½Iω²). The hoop has I = MR² (all mass at the rim), the disk has I = ½MR² (mass distributed inside). The hoop puts more energy into spin, leaving less for forward motion. The correct answer is D.';
+    }
+
+    var ov = document.getElementById('ap-q09-overlay');
+    ov.classList.add('hidden');
+    setTimeout(function(){ ov.style.display = 'none'; }, 520);
+    setTimeout(function(){ apQ09Restart(); }, 600);
+
+    window.parent.postMessage({ type: 'tsc-answer', correct: ok }, '*');
+    setTimeout(function(){ reportHeight(); }, 420);
+  };
+
+  // ── Review mode: auto-unlock on load ──
+  if(mode === 'review'){
+    window.addEventListener('load', function(){
+      var ov = document.getElementById('ap-q09-overlay');
+      if(ov) ov.classList.add('hidden');
+      var box = document.getElementById('ap-q09-answer-box');
+      if(box) box.style.display = 'block';
+      var opts = document.querySelectorAll('#ap-q09-opts .opt');
+      if(opts.length) opts[CORRECT].classList.add('correct');
+      opts.forEach(function(o){ o.disabled = true; });
+      setTimeout(reportHeight, 300);
+      setTimeout(apQ09Restart, 400);
+    });
+  }
+
+  // ── Height reporter ──
+  function reportHeight(){
+    var h = document.getElementById('tsc-ap-q09').scrollHeight;
+    window.parent.postMessage({ type: 'tsc-height', height: h }, '*');
+  }
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'tsc-get-height') reportHeight();
+  });
+  window.addEventListener('load', function(){ setTimeout(reportHeight, 80); });
+  if(window.MutationObserver){
+    var mo = new MutationObserver(function(){ setTimeout(reportHeight, 120); });
+    window.addEventListener('load', function(){
+      mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+    });
+  }
+
+  // ── Simulation: side-by-side rolling race ──
+  // Left ramp:  top (40,80) → bottom (270,260). Length ≈ √(230² + 180²) ≈ 292 px.
+  // Right ramp: top (340,80) → bottom (570,260). Same length.
+  // Object radius = 20 px; place along ramp surface.
+  // Physics ratio: a_disk / a_hoop = (4/3) / 1 = 4/3. So disk travels √(4/3) faster, finishing in 1/√(4/3) ≈ 0.866 of the time.
+
+  var diskG = document.getElementById('ap-q09-disk-g');
+  var hoopG = document.getElementById('ap-q09-hoop-g');
+  var resultBanner = document.getElementById('ap-q09-result');
+
+  var L1 = { x1: 40,  y1: 80,  x2: 270, y2: 260 };
+  var L2 = { x1: 340, y1: 80,  x2: 570, y2: 260 };
+
+  function rampLen(L){
+    var dx = L.x2 - L.x1, dy = L.y2 - L.y1;
+    return Math.sqrt(dx*dx + dy*dy);
+  }
+  var len = rampLen(L1);
+
+  // Time to finish (in seconds, visual). Pick disk_T ≈ 1.7s for a clean watchable race.
+  var T_DISK = 1.7;
+  var T_HOOP = T_DISK * Math.sqrt(4/3);   // ≈ 1.96 s
+  // accelerations along ramp such that s = ½ a t² gives full length at T
+  var A_DISK = 2 * len / (T_DISK * T_DISK);
+  var A_HOOP = 2 * len / (T_HOOP * T_HOOP);
+
+  var t = 0;
+  var phase = 'racing';   // 'racing' | 'pause'
+
+  function placeBall(g, L, distAlong){
+    var dx = L.x2 - L.x1, dy = L.y2 - L.y1;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var t01 = Math.min(1, distAlong / len);
+    // Ball centre sits 20 px above the ramp surface (so the bottom of the ball touches the slope)
+    var nx = -dy / len; // inward normal x
+    var ny =  dx / len; // inward normal y (this points "up-left" of the slope direction; we want the surface-up normal which is the perpendicular pointing away from the ramp interior)
+    // The ramp interior is below-and-left of the hypotenuse, so the surface-up normal points up-right. That's (-dy/len, dx/len) negated → (dy/len, -dx/len). Use that:
+    var sx =  dy / len;
+    var sy = -dx / len;
+    var R = 20;
+    var x = L.x1 + t01 * dx + sx * R;
+    var y = L.y1 + t01 * dy + sy * R;
+    var rotDeg = (distAlong / R) * 180 / Math.PI;
+    g.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + y.toFixed(2) + ') rotate(' + rotDeg.toFixed(2) + ')');
+    return t01;
+  }
+
+  function reset(){
+    t = 0; phase = 'racing';
+    placeBall(diskG, L1, 0);
+    placeBall(hoopG, L2, 0);
+    resultBanner.setAttribute('opacity', 0);
+  }
+
+  window.apQ09Restart = function(){
+    reset();
+  };
+
+  reset();
+
+  var lastTs = null;
+  function loop(ts){
+    var dt = lastTs ? Math.min((ts-lastTs)/1000, 0.05) : 0.016;
+    lastTs = ts;
+
+    if(phase === 'racing'){
+      t += dt;
+      var sDisk = Math.min(len, 0.5 * A_DISK * t * t);
+      var sHoop = Math.min(len, 0.5 * A_HOOP * t * t);
+      placeBall(diskG, L1, sDisk);
+      placeBall(hoopG, L2, sHoop);
+      if(sDisk >= len){
+        // disk has finished — reveal banner once
+        resultBanner.setAttribute('opacity', 1);
+      }
+      if(sHoop >= len){
+        phase = 'pause';
+        t = 0;
+      }
+    } else if(phase === 'pause'){
+      t += dt;
+      if(t > 1.4){ reset(); }
+    }
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>
