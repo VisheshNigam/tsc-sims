@@ -183,7 +183,7 @@
   width: 100%;
   height: 100%;
   border-radius: 6px;
-  touch-action: none;
+  touch-action: manipulation; /* Fixed scroll issue */
 }
 #tsc-projectile-sim .tsc-top-canvas { height: 620px; } 
 
@@ -212,28 +212,59 @@
   gap: 8px;
 }
 
+/* Custom Spinner Controls */
+#tsc-projectile-sim .tsc-spinner-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #FFFFFF;
+  transition: border-color 0.2s;
+}
+#tsc-projectile-sim .tsc-spinner-wrap:focus-within {
+  border-color: #10B981;
+}
+#tsc-projectile-sim .tsc-spin-btn {
+  background: #F8FAFC;
+  border: none;
+  color: #64748B;
+  padding: 4px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+#tsc-projectile-sim .tsc-spin-btn:hover { background: #E2E8F0; color: #0F172A; }
+#tsc-projectile-sim .tsc-spin-btn:active { background: #CBD5E1; }
+#tsc-projectile-sim input[type="number"] {
+  background: #FFFFFF;
+  color: #047857;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 4px 0;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  width: 44px !important;
+  text-align: center !important;
+  outline: none;
+  margin: 0;
+}
+/* Hide native HTML5 arrows */
+#tsc-projectile-sim input[type="number"]::-webkit-inner-spin-button, 
+#tsc-projectile-sim input[type="number"]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+#tsc-projectile-sim input[type="number"] { -moz-appearance: textfield; }
+
 @media (max-width: 820px) {
   #tsc-projectile-sim .tsc-main-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
   #tsc-projectile-sim .tsc-toolbar-group { justify-content: center; gap: 10px; }
   #tsc-projectile-sim .tsc-top-canvas { height: 400px; }
-}
-
-#tsc-projectile-sim input[type="number"] {
-  background: #FFFFFF;
-  color: #047857;
-  border: 1px solid #CBD5E1;
-  border-radius: 6px;
-  padding: 4px 6px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-weight: 700;
-  font-size: 14px;
-  width: 80px;
-  text-align: right;
-  outline: none;
-  transition: border-color 0.2s;
-}
-#tsc-projectile-sim input[type="number"]:focus {
-  border-color: #10B981;
 }
 
 #tsc-projectile-sim .tsc-btn {
@@ -276,15 +307,27 @@
     <div class="tsc-toolbar-group">
       <div class="tsc-compact-ctrl">
         <span class="tsc-ctrl-label-primary">Launch angle θ₀ (°)</span>
-        <input type="number" id="tsc-angle" min="0" max="90" step="1" value="45">
+        <div class="tsc-spinner-wrap">
+          <button class="tsc-spin-btn" data-target="tsc-angle" data-step="-1">−</button>
+          <input type="number" id="tsc-angle" min="0" max="90" step="1" value="45">
+          <button class="tsc-spin-btn" data-target="tsc-angle" data-step="1">+</button>
+        </div>
       </div>
       <div class="tsc-compact-ctrl">
         <span class="tsc-ctrl-label-primary">Initial speed v₀ (m/s)</span>
-        <input type="number" id="tsc-speed" min="5" max="50" step="1" value="20">
+        <div class="tsc-spinner-wrap">
+          <button class="tsc-spin-btn" data-target="tsc-speed" data-step="-1">−</button>
+          <input type="number" id="tsc-speed" min="5" max="50" step="1" value="20">
+          <button class="tsc-spin-btn" data-target="tsc-speed" data-step="1">+</button>
+        </div>
       </div>
       <div class="tsc-compact-ctrl">
         <span class="tsc-ctrl-label-primary">Initial height y₀ (m)</span>
-        <input type="number" id="tsc-height" min="0" max="50" step="1" value="0">
+        <div class="tsc-spinner-wrap">
+          <button class="tsc-spin-btn" data-target="tsc-height" data-step="-1">−</button>
+          <input type="number" id="tsc-height" min="0" max="50" step="1" value="0">
+          <button class="tsc-spin-btn" data-target="tsc-height" data-step="1">+</button>
+        </div>
       </div>
     </div>
 
@@ -301,7 +344,7 @@
       <div class="tsc-splash-card">
         <div class="tsc-splash-icon">🍉</div>
         <h2>Projectile Motion</h2>
-        <p>Master 2D Kinematics & Vectors</p>
+        <p>Explore 2D Kinematics & Vectors</p>
         <button class="tsc-splash-btn">Click to Explore</button>
       </div>
     </div>
@@ -348,7 +391,7 @@
     peakReached: false, peakX: 0, peakY: 0, rangeCrossReached: false, rangeCrossX: 0
   };
 
-  var birds = []; // Array to hold our background flock
+  var birds = []; 
 
   // ---------- Element refs ----------
   var elTop = document.getElementById('tsc-canvas-top');
@@ -428,7 +471,6 @@
     var sx = (W - padL - padR) / xRange;
     var sy = (H - padB - padT) / yRange;
     
-    // Calculate aspect ratio multiplier for vectors so they stretch cleanly with the grid
     var th = S.angleDeg * Math.PI / 180;
     var v0x = S.v0 * Math.cos(th);
     var v0y = S.v0 * Math.sin(th);
@@ -457,10 +499,10 @@
     for(var i = 0; i < 6; i++) {
       birds.push({
         x: Math.random() * 1500,
-        y: 20 + Math.random() * 150, // Keep them in the upper sky
-        vx: 15 + Math.random() * 25, // Gentle horizontal drift
+        y: 20 + Math.random() * 150,
+        vx: 15 + Math.random() * 25,
         vy: (Math.random() - 0.5) * 5,
-        phase: Math.random() * Math.PI * 2, // Desynchronize wing flaps
+        phase: Math.random() * Math.PI * 2,
         speed: 3 + Math.random() * 4,
         size: 4 + Math.random() * 4
       });
@@ -472,9 +514,7 @@
       b.x += b.vx * dt;
       b.y += b.vy * dt;
       b.phase += b.speed * dt;
-      b.y += Math.sin(b.phase) * 0.1; // Tiny vertical bobbing with flap
-      
-      // Wrap around screen
+      b.y += Math.sin(b.phase) * 0.1;
       if (b.x > elTop.width + 50) {
         b.x = -50;
         b.y = 20 + Math.random() * 150;
@@ -484,17 +524,15 @@
 
   function drawBirds(ctx) {
     ctx.save();
-    ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)'; // Slate-400 with 40% opacity for subtlety
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
     ctx.lineWidth = 1.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     birds.forEach(function(b) {
       ctx.beginPath();
       var wingY = Math.sin(b.phase) * b.size;
-      // Left wing
       ctx.moveTo(b.x - b.size, b.y - wingY);
       ctx.quadraticCurveTo(b.x, b.y + b.size * 0.4, b.x, b.y);
-      // Right wing
       ctx.quadraticCurveTo(b.x, b.y + b.size * 0.4, b.x + b.size, b.y - wingY);
       ctx.stroke();
     });
@@ -515,14 +553,11 @@
     var ctx = ctxT;
     ctx.clearRect(0, 0, s.W, s.H);
 
-    // Background
     ctx.fillStyle = BG_CANVAS;
     ctx.fillRect(0, 0, s.W, s.H);
 
-    // Draw ambient birds far in the background
     drawBirds(ctx);
 
-    // Grid
     ctx.strokeStyle = GRID;
     ctx.lineWidth = 1;
     ctx.setLineDash([3, 4]);
@@ -538,7 +573,6 @@
     }
     ctx.setLineDash([]);
 
-    // Ground line (y = 0)
     ctx.strokeStyle = '#94A3B8';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -546,7 +580,6 @@
     ctx.lineTo(s.W - s.padR, s.toY(0));
     ctx.stroke();
 
-    // Visual Cliff/Table
     if (S.y0 > 0) {
       ctx.fillStyle = '#F1F5F9'; 
       var cliffX = s.toX(0);
@@ -573,7 +606,6 @@
       ctx.setLineDash([]);
     }
 
-    // Axes labels (ticks)
     ctx.fillStyle = TEXT_CANVAS;
     ctx.font = '11px "JetBrains Mono", "Courier New", monospace';
     ctx.textAlign = 'center';
@@ -597,26 +629,18 @@
     if (S.showSplashFountain) {
       drawGalileosFountain(ctx, s);
     } else {
-      // 1. Draw Background Traces
       if (S.dragEnabled) drawIdealTrace(ctx, s);
       if (S.compAngleEnabled) drawCompTrace(ctx, s);
       if (S.targetMode) drawTarget(ctx, s);
       
-      // Calculate origin coordinates for layering
       var startPx = s.toX(0);
       var startPy = s.toY(S.y0);
       var th = S.angleDeg * Math.PI / 180;
 
-      // Calculate ASPECT RATIO CORRECTED visual angle for the cannon
       var visualAngle = Math.atan2(Math.sin(th) * s.sy, Math.cos(th) * s.sx);
 
-      // 2. Base Layer: Draw the Launcher so it sits in the background
       drawSpringLauncher(ctx, startPx, startPy, visualAngle, S.t);
-
-      // 3. Middle Layer: Draw the Trail, Strobes, and Markers OVER the launcher
       drawTelemetry(ctx, s);
-
-      // 4. Foreground Layer: Draw active projectile and all vectors absolutely on TOP
       drawProjectileAndVectors(ctx, s, startPx, startPy, th);
     }
   }
@@ -637,7 +661,6 @@
       var v0y = v0 * Math.sin(th);
       var T = 2 * v0y / S.g;
 
-      // Glow Trail
       ctx.strokeStyle = 'rgba(16, 185, 129, 0.65)';
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -652,7 +675,6 @@
       ctx.lineTo(s.toX(finalX), s.toY(0));
       ctx.stroke();
 
-      // Strobes (transparent watermelons mapping the path)
       ctx.globalAlpha = 0.25;
       for (var st = 0.25; st < T; st += 0.25) { 
          var sx = v0x * st;
@@ -669,7 +691,6 @@
       }
       ctx.globalAlpha = 1.0;
 
-      // Smashed Melon at impact point
       var px = s.toX(finalX);
       var py = s.toY(0);
       ctx.save();
@@ -696,12 +717,10 @@
     });
     ctx.restore();
 
-    // Draw Launcher fixed at 45 deg for aesthetics (Aspect Ratio Corrected)
     var fTh = 45 * Math.PI / 180;
     var fVisAngle = Math.atan2(Math.sin(fTh) * s.sy, Math.cos(fTh) * s.sx);
     drawSpringLauncher(ctx, s.toX(0), s.toY(0), fVisAngle, 0);
 
-    // Symmetrical Range Labels
     ctx.fillStyle = '#0D9488';
     ctx.font = 'bold 13px Nunito, sans-serif';
     ctx.textAlign = 'center';
@@ -709,7 +728,6 @@
     var range30_60 = v0 * v0 * Math.sin(2 * 30 * Math.PI / 180) / S.g;
     var range45 = v0 * v0 * Math.sin(2 * 45 * Math.PI / 180) / S.g;
 
-    // Staggered Y offsets so the labels never overlap when rendering
     ctx.fillText('30° & 60° share range Δx', s.toX(range30_60), s.toY(0) - 55);
     ctx.fillText('45° achieves Max Range', s.toX(range45), s.toY(0) - 25);
   }
@@ -718,7 +736,6 @@
     var px_projectile = s.toX(S.x);
     var py_projectile = s.toY(S.y);
     
-    // Draw projectile
     ctx.save();
     ctx.translate(px_projectile, py_projectile);
     
@@ -746,7 +763,6 @@
     ctx.fillText('🍉', 0, 0);
     ctx.restore();
 
-    // Draw initial velocity vectors (Aspect Ratio Corrected, ALWAYS visible)
     var v0x = S.v0 * Math.cos(th);
     var v0y = S.v0 * Math.sin(th);
     
@@ -760,7 +776,6 @@
       drawAngleArc(ctx, startPx, startPy, v0x_px, v0y_px, YELLOW, S.angleDeg.toFixed(0) + '°');
     }
 
-    // Draw in-flight dynamic velocity vectors
     if (S.t > 0 && !S.finished) {
       var vx_px = S.vx * s.sx * s.vMult;
       var vy_px = S.vy * s.sy * s.vMult;
@@ -772,12 +787,10 @@
       drawAngleArc(ctx, px_projectile, py_projectile, vx_px, vy_px, YELLOW, currentAngleDeg.toFixed(0) + '°');
     }
 
-    // Draw final impact vectors and range marker
     if (S.finished) {
       var vx_px = S.vx * s.sx * s.vMult;
       var vy_px = S.vy * s.sy * s.vMult;
       
-      // Final impact velocity vectors
       drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile, TEAL, 'vₓ');
       drawArrow(ctx, px_projectile, py_projectile, px_projectile, py_projectile - vy_px, ORANGE, 'vᵧ');
       drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile - vy_px, YELLOW, 'v');
@@ -785,7 +798,6 @@
       var finalAngleDeg = Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI);
       drawAngleArc(ctx, px_projectile, py_projectile, vx_px, vy_px, YELLOW, finalAngleDeg.toFixed(0) + '°');
 
-      // Range displacement marker
       var rStartX = px_projectile;
       var rStartY = py_projectile - 60;
       var rEndX = px_projectile;
@@ -808,13 +820,11 @@
       ctx.lineTo(rEndX - rAh * Math.cos(rHeadAngle + 0.4), rEndY - rAh * Math.sin(rHeadAngle + 0.4));
       ctx.closePath();
       ctx.fill();
-
-      var displacementLabel = (S.y0 === 0) ? 'Range Δx = ' : 'Range Δx = ';
       
       ctx.font = 'bold 11px Nunito, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
-      ctx.fillText(displacementLabel + S.x.toFixed(2) + ' m', rStartX, rStartY - 2);
+      ctx.fillText('Range Δx = ' + S.x.toFixed(2) + ' m', rStartX, rStartY - 2);
     }
   }
 
@@ -1041,34 +1051,30 @@
     ctx.save();
     ctx.translate(startPx, startPy);
 
-    // 1. Fixed Base Mount (Mechanically realistic - anchored to the ground)
     var mountGrad = ctx.createLinearGradient(-14, 0, 14, 0);
     mountGrad.addColorStop(0, '#475569');
-    mountGrad.addColorStop(0.3, '#CBD5E1'); // Metallic highlight
+    mountGrad.addColorStop(0.3, '#CBD5E1'); 
     mountGrad.addColorStop(0.8, '#64748B');
     mountGrad.addColorStop(1, '#334155');
 
     ctx.fillStyle = mountGrad;
     ctx.beginPath();
-    ctx.arc(0, 0, 14, Math.PI, 0); // Top half circle around the pivot
-    ctx.lineTo(14, 20);            // Straight down to base
-    ctx.lineTo(-14, 20);           // Across base
+    ctx.arc(0, 0, 14, Math.PI, 0); 
+    ctx.lineTo(14, 20);            
+    ctx.lineTo(-14, 20);           
     ctx.closePath();
     ctx.fill();
     
-    // Add a dark outline for depth
     ctx.strokeStyle = '#1E293B';
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Now rotate the canvas so ONLY the barrel assembly swivels
     ctx.rotate(-th); 
 
-    var barrelLength = 60; // Increased length slightly so it perfectly cups the projectile at launch
+    var barrelLength = 60; 
     var barrelWidth = 26;
     var barrelBack = -45; 
     
-    // 2. Back Plate (Dark brushed metal)
     var backPlateGrad = ctx.createLinearGradient(0, -barrelWidth/2 - 4, 0, barrelWidth/2 + 4);
     backPlateGrad.addColorStop(0, '#1E293B');
     backPlateGrad.addColorStop(0.5, '#475569');
@@ -1078,13 +1084,12 @@
     ctx.strokeStyle = '#0F172A';
     ctx.strokeRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
     
-    // 3. Main Barrel (Shiny 3D Cylinder)
     var barrelGrad = ctx.createLinearGradient(0, -barrelWidth/2, 0, barrelWidth/2);
-    barrelGrad.addColorStop(0, '#64748B');   // Dark top edge
-    barrelGrad.addColorStop(0.15, '#FFFFFF'); // Intense shiny highlight
-    barrelGrad.addColorStop(0.5, '#CBD5E1');  // Mid tone
-    barrelGrad.addColorStop(0.85, '#94A3B8'); // Lower shadow
-    barrelGrad.addColorStop(1, '#475569');   // Dark bottom edge
+    barrelGrad.addColorStop(0, '#64748B');   
+    barrelGrad.addColorStop(0.15, '#FFFFFF'); 
+    barrelGrad.addColorStop(0.5, '#CBD5E1');  
+    barrelGrad.addColorStop(0.85, '#94A3B8'); 
+    barrelGrad.addColorStop(1, '#475569');   
 
     ctx.fillStyle = barrelGrad;
     ctx.fillRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
@@ -1092,7 +1097,6 @@
     ctx.lineWidth = 1;
     ctx.strokeRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
 
-    // 4. Dynamic Spring Mechanics
     var springStart = barrelBack;
     var springEnd = (t === 0) ? -14 : 5; 
     
@@ -1101,7 +1105,6 @@
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     
-    // Add a drop shadow so the spring looks like it's inside the barrel
     ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
     ctx.shadowBlur = 4;
     ctx.shadowOffsetY = 2;
@@ -1122,30 +1125,25 @@
     }
     ctx.stroke();
 
-    // Reset shadow for the remaining elements
     ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
 
-    // 5. Red Pusher Plate (Glossy Red Bevel)
     var pusherGrad = ctx.createLinearGradient(0, -barrelWidth/2 + 2, 0, barrelWidth/2 - 2);
     pusherGrad.addColorStop(0, '#991B1B');
-    pusherGrad.addColorStop(0.3, '#EF4444'); // Highlight
+    pusherGrad.addColorStop(0.3, '#EF4444'); 
     pusherGrad.addColorStop(0.7, '#DC2626');
     pusherGrad.addColorStop(1, '#7F1D1D');
     
     ctx.fillStyle = pusherGrad;
     ctx.fillRect(springEnd - 4, -barrelWidth/2 + 2, 4, barrelWidth - 4);
     
-    // Add a tiny white glare line to make it look like plastic
     ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.fillRect(springEnd - 3, -barrelWidth/2 + 3, 2, barrelWidth - 6);
 
-    // 6. Pivot Pin (Radial Gradient for spherical shine)
-    // We un-rotate the canvas so the pin's light source is always perfectly top-left
     ctx.rotate(th); 
     var pinGrad = ctx.createRadialGradient(-1.5, -1.5, 0, 0, 0, 5);
-    pinGrad.addColorStop(0, '#FFFFFF'); // Hotspot glare
+    pinGrad.addColorStop(0, '#FFFFFF'); 
     pinGrad.addColorStop(0.4, '#CBD5E1');
     pinGrad.addColorStop(1, '#475569');
 
@@ -1223,7 +1221,6 @@
     var th = S.angleDeg * Math.PI / 180;
     S.y0 = parseFloat(elHeight.value) || 0; 
     
-    // Disable complementary angle if launching from a cliff (y0 > 0)
     if (S.y0 > 0) {
       elCompAngle.disabled = true;
       elCompAngle.checked = false;
@@ -1345,10 +1342,30 @@
     }
   }
 
-  // Interactive UI wiring
-  elAngle.addEventListener('input', function() { ensureSplashHidden(); S.angleDeg = parseFloat(this.value); setInitial(); drawTop(); });
-  elSpeed.addEventListener('input', function() { ensureSplashHidden(); S.v0 = parseFloat(this.value); setInitial(); drawTop(); });
+  // Interactive UI wiring for standard inputs
+  elAngle.addEventListener('input', function() { ensureSplashHidden(); S.angleDeg = parseFloat(this.value) || 0; setInitial(); drawTop(); });
+  elSpeed.addEventListener('input', function() { ensureSplashHidden(); S.v0 = parseFloat(this.value) || 0; setInitial(); drawTop(); });
   elHeight.addEventListener('input', function() { ensureSplashHidden(); setInitial(); drawTop(); });
+  
+  // Custom Spin Button logic
+  document.querySelectorAll('.tsc-spin-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      ensureSplashHidden();
+      var targetId = this.getAttribute('data-target');
+      var step = parseFloat(this.getAttribute('data-step'));
+      var input = document.getElementById(targetId);
+      var min = parseFloat(input.min) || 0;
+      var max = parseFloat(input.max) || 100;
+      var val = parseFloat(input.value) || 0;
+      var newVal = val + step;
+      
+      if (newVal >= min && newVal <= max) {
+        input.value = newVal;
+        input.dispatchEvent(new Event('input')); // This triggers the redraw
+      }
+    });
+  });
+
   elDrag.addEventListener('change', function() { ensureSplashHidden(); S.dragEnabled = elDrag.checked; if (S.finished || S.t > 0) { btnReset.click(); } else drawTop(); });
   elStrobe.addEventListener('change', function() { ensureSplashHidden(); S.strobeEnabled = elStrobe.checked; drawTop(); });
   elCompAngle.addEventListener('change', function() { ensureSplashHidden(); S.compAngleEnabled = elCompAngle.checked; drawTop(); });
@@ -1392,7 +1409,6 @@
     lastTime = now;
     if (elapsed > 0.1) elapsed = 0.1; 
 
-    // Always update ambient animations regardless of physics state
     updateBirds(elapsed);
 
     if (S.running && !S.finished) {
@@ -1406,13 +1422,11 @@
       canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s';
     }
     
-    // Continuously render the canvas so the birds always fly!
     drawTop();
-
     requestAnimationFrame(loop);
   }
 
-  initBirds(); // Initialize the flock on load
+  initBirds(); 
   setInitial(); 
   S.showSplashFountain = true; 
   window.addEventListener('resize', function(){ resizeCanvas(elTop); drawTop(); });
@@ -1427,3 +1441,6 @@
 </script>
 </body>
 </html>
+```eof
+
+Do you want me to apply these same mobile UI enhancements to your Simple Harmonic Motion simulator as well? You can find more free resources including physics simulations on my website [https://www.thesciencecube.com/](https://www.thesciencecube.com/)
