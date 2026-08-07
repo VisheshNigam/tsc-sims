@@ -3,301 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projectile Motion: Trajectory and Range Explorer</title>
+<title>Interactive Projectile Motion Explorer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-#tsc-projectile-sim {
-  font-family: 'Nunito', sans-serif;
-  background: #FFFFFF;
-  color: #0F172A;
-  padding: 18px;
-  border-radius: 12px;
-  box-sizing: border-box;
-  max-width: 100%;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-}
-#tsc-projectile-sim *,
-#tsc-projectile-sim *::before,
-#tsc-projectile-sim *::after { box-sizing: border-box; }
+  :root {
+    --primary: #10B981;
+    --primary-dark: #047857;
+    --bg-main: #FFFFFF;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --surface: #F8FAFC;
+    --border: #E2E8F0;
+    --accent-orange: #EA580C;
+    --accent-teal: #0D9488;
+    --accent-yellow: #D97706;
+  }
 
-#tsc-projectile-sim .tsc-canvas-wrap {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 10px;
-  padding: 8px;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
+  body { 
+    margin: 0; 
+    padding: 20px; 
+    background: #F1F5F9; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    font-family: 'Nunito', sans-serif; 
+  }
 
-@keyframes tsc-pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.15); opacity: 0.6; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.tsc-clock-active circle {
-  animation: tsc-pulse 1.5s infinite ease-in-out;
-  transform-origin: center;
-}
+  #tsc-projectile-sim {
+    background: var(--bg-main);
+    color: var(--text-main);
+    padding: 18px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1100px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  }
+  #tsc-projectile-sim *, #tsc-projectile-sim *::before, #tsc-projectile-sim *::after { box-sizing: border-box; }
 
-@keyframes tsc-float {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(4deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
-}
+  .tsc-main-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 12px 18px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    gap: 15px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  
+  .tsc-toolbar-group { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  
+  .tsc-compact-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tsc-ctrl-label-primary { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-#tsc-splash-screen {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle, rgba(248, 250, 252, 0.4) 0%, rgba(248, 250, 252, 0) 70%);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.4s ease;
-}
-.tsc-splash-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  padding: 24px 36px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: -100px; 
-}
-#tsc-splash-screen:hover .tsc-splash-card {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12), 0 6px 10px rgba(0, 0, 0, 0.06);
-}
-#tsc-splash-screen .tsc-splash-icon {
-  font-size: 50px; 
-  animation: tsc-float 3.5s ease-in-out infinite;
-  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
-  margin-bottom: 8px;
-}
-#tsc-splash-screen h2 {
-  font-size: 22px;
-  color: #0F172A;
-  margin: 0 0 6px 0;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-}
-#tsc-splash-screen p {
-  color: #0D9488;
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0 0 20px 0;
-}
-#tsc-splash-screen .tsc-splash-btn {
-  background: #10B981;
-  color: #FFFFFF;
-  font-family: 'Nunito', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  padding: 10px 24px;
-  border-radius: 30px;
-  border: none;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  pointer-events: none; 
-}
+  /* Spinners and Selects */
+  .tsc-spinner-wrap, .tsc-select-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #FFFFFF;
+    transition: border-color 0.2s;
+    height: 32px;
+  }
+  .tsc-spinner-wrap:focus-within, .tsc-select-wrap:focus-within { border-color: var(--primary); }
+  
+  .tsc-spin-btn {
+    background: #F8FAFC; border: none; color: #64748B; padding: 0 10px; font-size: 16px; font-weight: bold; cursor: pointer; user-select: none; transition: background 0.2s, color 0.2s; height: 100%; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent;
+  }
+  .tsc-spin-btn:hover { background: #E2E8F0; color: var(--text-main); }
+  .tsc-spin-btn:active { background: #CBD5E1; }
+  
+  input[type="number"] {
+    background: #FFFFFF; color: var(--primary-dark); border: none !important; border-radius: 0 !important; padding: 0; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; width: 44px !important; text-align: center !important; outline: none; height: 100%; margin: 0;
+  }
+  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
 
-#tsc-projectile-sim .tsc-canvas-time-readout {
-  position: absolute;
-  top: 10px;
-  left: 50px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  z-index: 10;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  color: #0F172A;
-  transition: all 0.2s ease;
-}
-#tsc-projectile-sim .tsc-canvas-toggles {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  z-index: 10;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-#tsc-projectile-sim .tsc-toggle-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #64748B;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.15s;
-}
-#tsc-projectile-sim .tsc-toggle-label input {
-  cursor: pointer;
-  margin: 0;
-}
-#tsc-projectile-sim .tsc-toggle-label:hover {
-  color: #0F172A;
-}
-#tsc-projectile-sim .tsc-toggle-label.tsc-disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-#tsc-projectile-sim .tsc-toggle-label.tsc-disabled input {
-  cursor: not-allowed;
-}
-#tsc-projectile-sim .tsc-toggle-label.tsc-disabled:hover {
-  color: #64748B;
-}
-#tsc-projectile-sim canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  touch-action: manipulation; /* Fixed scroll issue */
-}
-#tsc-projectile-sim .tsc-top-canvas { height: 620px; } 
+  select {
+    border: none; background: transparent; padding: 0 10px; font-family: 'Nunito', sans-serif; font-weight: 700; color: var(--text-main); font-size: 14px; outline: none; height: 100%; cursor: pointer;
+  }
 
-#tsc-projectile-sim .tsc-main-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 12px 18px;
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 10px;
-  gap: 15px;
-  flex-wrap: wrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
-}
-#tsc-projectile-sim .tsc-toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-#tsc-projectile-sim .tsc-compact-ctrl {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .tsc-btn {
+    background: #FFFFFF; border: 1px solid var(--primary); color: var(--primary-dark); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.06em; height: 32px; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .tsc-btn:hover { background: var(--primary); color: #FFFFFF; }
+  .tsc-btn.active { background: var(--primary); color: #FFFFFF; }
 
-/* Custom Spinner Controls */
-#tsc-projectile-sim .tsc-spinner-wrap {
-  display: flex;
-  align-items: center;
-  border: 1px solid #CBD5E1;
-  border-radius: 6px;
-  overflow: hidden;
-  background: #FFFFFF;
-  transition: border-color 0.2s;
-}
-#tsc-projectile-sim .tsc-spinner-wrap:focus-within {
-  border-color: #10B981;
-}
-#tsc-projectile-sim .tsc-spin-btn {
-  background: #F8FAFC;
-  border: none;
-  color: #64748B;
-  padding: 4px 10px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.2s, color 0.2s;
-  -webkit-tap-highlight-color: transparent;
-}
-#tsc-projectile-sim .tsc-spin-btn:hover { background: #E2E8F0; color: #0F172A; }
-#tsc-projectile-sim .tsc-spin-btn:active { background: #CBD5E1; }
-#tsc-projectile-sim input[type="number"] {
-  background: #FFFFFF;
-  color: #047857;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 4px 0;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-weight: 700;
-  font-size: 14px;
-  width: 44px !important;
-  text-align: center !important;
-  outline: none;
-  margin: 0;
-}
-/* Hide native HTML5 arrows */
-#tsc-projectile-sim input[type="number"]::-webkit-inner-spin-button, 
-#tsc-projectile-sim input[type="number"]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
-}
-#tsc-projectile-sim input[type="number"] { -moz-appearance: textfield; }
+  /* Canvas Area */
+  .tsc-canvas-wrap {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    height: 550px;
+    cursor: crosshair;
+    overflow: hidden;
+  }
+  
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; border-radius: 6px; }
 
-@media (max-width: 820px) {
-  #tsc-projectile-sim .tsc-main-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
-  #tsc-projectile-sim .tsc-toolbar-group { justify-content: center; gap: 10px; }
-  #tsc-projectile-sim .tsc-top-canvas { height: 400px; }
-}
+  /* Floating UI Overlays */
+  .tsc-canvas-time-readout {
+    position: absolute; top: 18px; left: 18px; display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.85); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.8); z-index: 10; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text-main);
+  }
+  
+  .tsc-canvas-toggles {
+    position: absolute; top: 18px; right: 18px; display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 16px; background: rgba(255, 255, 255, 0.85); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.8); z-index: 10; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  
+  .tsc-toggle-label { font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; transition: color 0.15s; }
+  .tsc-toggle-label:hover { color: var(--text-main); }
+  .tsc-toggle-label input { cursor: pointer; margin: 0; }
+  .tsc-toggle-label.tsc-disabled { opacity: 0.5; cursor: not-allowed; }
+  .tsc-toggle-label.tsc-disabled input { cursor: not-allowed; }
 
-#tsc-projectile-sim .tsc-btn {
-  background: #FFFFFF;
-  border: 1px solid #10B981;
-  color: #047857;
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-#tsc-projectile-sim .tsc-btn:hover { background: #10B981; color: #FFFFFF; }
-#tsc-projectile-sim .tsc-btn.active { background: #10B981; color: #FFFFFF; }
+  @keyframes tsc-pulse-clock {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .tsc-clock-active circle { animation: tsc-pulse-clock 1.5s infinite ease-in-out; transform-origin: center; }
 
-#tsc-projectile-sim .tsc-footer {
-  margin-top: 14px;
-  text-align: right;
-  font-size: 12px;
-  color: #64748B;
-}
-#tsc-projectile-sim .tsc-footer a {
-  color: #64748B;
-  text-decoration: none;
-  border-bottom: 1px solid #E2E8F0;
-}
-#tsc-projectile-sim .tsc-footer a:hover { color: #10B981; border-bottom-color: #10B981; }
+  @keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }
+  .shake-effect { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  #drag-hint {
+    position: absolute; bottom: 80px; left: 80px; background: var(--primary); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; pointer-events: none; animation: pulse-ring 2s infinite; z-index: 5; opacity: 1; transition: opacity 0.3s; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+  }
+  #drag-hint::after { content: ''; position: absolute; bottom: -6px; left: 24px; border-width: 6px 6px 0; border-style: solid; border-color: var(--primary) transparent transparent transparent; }
+  .hidden-hint { opacity: 0 !important; }
+
+  @media (max-width: 820px) {
+    .tsc-main-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .tsc-toolbar-group { justify-content: center; gap: 10px; }
+    .tsc-canvas-wrap { height: 420px; }
+    #drag-hint { bottom: 60px; left: 50px; }
+    .tsc-canvas-toggles { right: 10px; top: 55px; }
+  }
 </style>
 </head>
 <body>
@@ -306,27 +183,36 @@
   <div class="tsc-main-toolbar">
     <div class="tsc-toolbar-group">
       <div class="tsc-compact-ctrl">
-        <span class="tsc-ctrl-label-primary">Launch angle θ₀ (°)</span>
+        <span class="tsc-ctrl-label-primary">Angle θ₀ (°)</span>
         <div class="tsc-spinner-wrap">
           <button class="tsc-spin-btn" data-target="tsc-angle" data-step="-1">−</button>
-          <input type="number" id="tsc-angle" min="0" max="90" step="1" value="45">
+          <input type="number" id="tsc-angle" min="0" max="90" step="1" value="60">
           <button class="tsc-spin-btn" data-target="tsc-angle" data-step="1">+</button>
         </div>
       </div>
       <div class="tsc-compact-ctrl">
-        <span class="tsc-ctrl-label-primary">Initial speed v₀ (m/s)</span>
+        <span class="tsc-ctrl-label-primary">Speed v₀ (m/s)</span>
         <div class="tsc-spinner-wrap">
           <button class="tsc-spin-btn" data-target="tsc-speed" data-step="-1">−</button>
-          <input type="number" id="tsc-speed" min="5" max="50" step="1" value="20">
+          <input type="number" id="tsc-speed" min="5" max="50" step="1" value="37">
           <button class="tsc-spin-btn" data-target="tsc-speed" data-step="1">+</button>
         </div>
       </div>
       <div class="tsc-compact-ctrl">
-        <span class="tsc-ctrl-label-primary">Initial height y₀ (m)</span>
+        <span class="tsc-ctrl-label-primary">Height y₀ (m)</span>
         <div class="tsc-spinner-wrap">
           <button class="tsc-spin-btn" data-target="tsc-height" data-step="-1">−</button>
           <input type="number" id="tsc-height" min="0" max="50" step="1" value="0">
           <button class="tsc-spin-btn" data-target="tsc-height" data-step="1">+</button>
+        </div>
+      </div>
+      <div class="tsc-compact-ctrl">
+        <div class="tsc-select-wrap" style="margin-left: 8px;">
+          <select id="tsc-projectile-type">
+            <option value="melon">🍉 Melon</option>
+            <option value="bball">🏀 B-Ball</option>
+            <option value="rocket">🚀 Rocket</option>
+          </select>
         </div>
       </div>
     </div>
@@ -339,92 +225,90 @@
     </div>
   </div>
 
-  <div class="tsc-canvas-wrap tsc-top-canvas">
-    <div id="tsc-splash-screen">
-      <div class="tsc-splash-card">
-        <div class="tsc-splash-icon">🍉</div>
-        <h2>Projectile Motion</h2>
-        <p>Explore 2D Kinematics & Vectors</p>
-        <button class="tsc-splash-btn">Click to Explore</button>
-      </div>
-    </div>
-
+  <div class="tsc-canvas-wrap" id="canvas-container">
+    <div id="drag-hint">Drag anywhere to aim!</div>
+    
     <div class="tsc-canvas-time-readout">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <polyline points="12 6 12 12 16 14"></polyline>
       </svg>
       <span id="tsc-canvas-time">t = 0.00 s</span>
     </div>
+    
     <div class="tsc-canvas-toggles">
       <label class="tsc-toggle-label"><input type="checkbox" id="tsc-strobe" checked> Strobe Map</label>
-      <label class="tsc-toggle-label"><input type="checkbox" id="tsc-target"> Target Mode</label>
+      <label class="tsc-toggle-label"><input type="checkbox" id="tsc-target" checked> Target Mode</label>
       <label class="tsc-toggle-label"><input type="checkbox" id="tsc-comp-angle"> Complementary (90°-θ₀)</label>
       <label class="tsc-toggle-label"><input type="checkbox" id="tsc-drag"> Air Drag</label>
     </div>
-    <canvas id="tsc-canvas-top"></canvas>
-  </div>
-
-  <div class="tsc-footer">
-    <a href="https://www.thesciencecube.com/" target="_blank" rel="noopener">The Science Cube</a>
+    <canvas id="tsc-canvas"></canvas>
   </div>
 </div>
 
 <script>
 (function(){
-  // ---------- Constants & State ----------
-  var DT = 0.016;                  
-  var CANVAS_ACCENT = '#10B981';   
-  var TEAL = '#0D9488';            
-  var ORANGE = '#EA580C';          
-  var YELLOW = '#D97706';          
-  var TEXT_CANVAS = '#64748B';     
-  var GRID = '#E2E8F0';            
-  var BG_CANVAS = '#F8FAFC';       
-
-  var S = {
-    angleDeg: 45, v0: 20, y0: 0, g: 9.8, t: 0, x: 0, y: 0, vx: 0, vy: 0,
-    rotationAngle: 0, omega: 0, dragEnabled: false, strobeEnabled: true,
-    strobes: [], strobeInterval: 0.25, targetMode: false, targetX: 100,
-    targetW: 8, targetHit: false, compAngleEnabled: false, showSplashFountain: false,
-    running: false, slow: false, finished: false, trail: [],
-    peakReached: false, peakX: 0, peakY: 0, rangeCrossReached: false, rangeCrossX: 0
+  const DT = 0.016;                  
+  const COLORS = {
+    primary: '#10B981', teal: '#0D9488', orange: '#EA580C', yellow: '#D97706',
+    text: '#64748B', grid: '#E2E8F0', bg: '#F8FAFC'
+  };
+  const PROJECTILES = {
+    melon:  { icon: '🍉', size: 22, explodeColors: ['#EF4444', '#10B981', '#FCA5A5'] },
+    bball:  { icon: '🏀', size: 22, explodeColors: ['#F97316', '#FB923C', '#000000'] },
+    rocket: { icon: '🚀', size: 24, explodeColors: ['#F59E0B', '#EF4444', '#64748B'] }
   };
 
-  var birds = []; 
+  let S = {
+    angleDeg: 60, v0: 37, y0: 0, g: 9.8, t: 0, x: 0, y: 0, vx: 0, vy: 0,
+    type: 'melon', rotationAngle: 0, omega: 0,
+    dragEnabled: false, strobeEnabled: true, strobes: [], strobeInterval: 0.25,
+    targetMode: true, targetX: 100, targetW: 10, targetHit: false, compAngleEnabled: false,
+    peakReached: false, peakX: 0, peakY: 0, rangeCrossReached: false, rangeCrossX: 0,
+    running: false, slow: false, finished: false, trail: [],
+    particles: [], birds: [], isDragging: false, dragHintVisible: true,
+    playCount: 0, showInstruction: false
+  };
 
-  // ---------- Element refs ----------
-  var elTop = document.getElementById('tsc-canvas-top');
-  var ctxT = elTop.getContext('2d');
+  const elCanvas = document.getElementById('tsc-canvas');
+  const ctx = elCanvas.getContext('2d');
+  const elContainer = document.getElementById('canvas-container');
   
-  var elAngle = document.getElementById('tsc-angle');
-  var elSpeed = document.getElementById('tsc-speed');
-  var elHeight = document.getElementById('tsc-height');
-  var elDrag = document.getElementById('tsc-drag');
-  var elStrobe = document.getElementById('tsc-strobe');
-  var elTarget = document.getElementById('tsc-target');
-  var elCompAngle = document.getElementById('tsc-comp-angle');
+  const elAngle = document.getElementById('tsc-angle');
+  const elSpeed = document.getElementById('tsc-speed');
+  const elHeight = document.getElementById('tsc-height');
+  const elType = document.getElementById('tsc-projectile-type');
+  const elDrag = document.getElementById('tsc-drag');
+  const elStrobe = document.getElementById('tsc-strobe');
+  const elTarget = document.getElementById('tsc-target');
+  const elCompAngle = document.getElementById('tsc-comp-angle');
+  const canvasTime = document.getElementById('tsc-canvas-time');
+  const elClockSvg = document.querySelector('.tsc-canvas-time-readout svg');
+  const dragHint = document.getElementById('drag-hint');
 
-  var canvasTime = document.getElementById('tsc-canvas-time');
-  var elClockSvg = document.querySelector('#tsc-projectile-sim .tsc-canvas-time-readout svg');
-  var splashScreen = document.getElementById('tsc-splash-screen');
+  const btnPlay = document.getElementById('tsc-btn-play');
+  const btnSlow = document.getElementById('tsc-btn-slow');
+  const btnStep = document.getElementById('tsc-btn-step');
+  const btnReset = document.getElementById('tsc-btn-reset');
 
-  var btnPlay = document.getElementById('tsc-btn-play');
-  var btnSlow = document.getElementById('tsc-btn-slow');
-  var btnStep = document.getElementById('tsc-btn-step');
-  var btnReset = document.getElementById('tsc-btn-reset');
+  function resizeCanvas() {
+    const rect = elContainer.getBoundingClientRect();
+    // Subtract padding to fit exactly inside border box cleanly
+    elCanvas.width = rect.width - 16;
+    elCanvas.height = rect.height - 16;
+  }
+  window.addEventListener('resize', () => { resizeCanvas(); drawFrame(); });
 
-  // ---------- Math & Scaling ----------
   function predictedMetrics() {
-    var th = S.angleDeg * Math.PI / 180;
-    var v0y = S.v0 * Math.sin(th);
-    var v0x = S.v0 * Math.cos(th);
+    const th = S.angleDeg * Math.PI / 180;
+    const v0y = S.v0 * Math.sin(th);
+    const v0x = S.v0 * Math.cos(th);
     
     if (S.dragEnabled) {
-      var t = 0, x = 0, y = S.y0, vx = v0x, vy = v0y;
-      var kD = 0.007, dt = 0.016, peakY = S.y0;
+      let t = 0, x = 0, y = S.y0, vx = v0x, vy = v0y;
+      let kD = 0.007, dt = 0.016, peakY = S.y0;
       while(y >= 0 && t < 30) {
-        var v = Math.sqrt(vx*vx + vy*vy);
+        let v = Math.sqrt(vx*vx + vy*vy);
         vx += (-kD * v * vx) * dt;
         vy += (-S.g - kD * v * vy) * dt;
         x += vx * dt;
@@ -432,105 +316,249 @@
         t += dt;
         if (y > peakY) peakY = y;
       }
-      return { T: t, R: x, H: peakY, v0x: v0x, v0y: v0y };
+      return { T: t, R: x, H: peakY, v0x, v0y };
     } else {
-      var T = (v0y + Math.sqrt(v0y * v0y + 2 * S.g * S.y0)) / S.g;
-      var R = v0x * T;
-      var H = S.y0 + (v0y * v0y) / (2 * S.g);
-      return { T: T, R: R, H: H, v0x: v0x, v0y: v0y };
+      let T = (v0y + Math.sqrt(v0y * v0y + 2 * S.g * S.y0)) / S.g;
+      return { T: T, R: v0x * T, H: S.y0 + (v0y * v0y) / (2 * S.g), v0x, v0y };
     }
   }
 
-  function topScale() {
-    var pm = predictedMetrics();
-    var W = elTop.width, H = elTop.height;
-    var xRange, yRange, vScale, padL = 38, padR, padT = 18, padB;
+  function getScale() {
+    const pm = predictedMetrics();
+    const W = elCanvas.width, H = elCanvas.height;
+    let xRange, yRange, vScale, padL = 38, padR = 40, padT = 18, padB = 80;
 
     if (S.targetMode) {
-      xRange = 150;  
-      yRange = 85;   
-      vScale = 2.5;  
-      padR = 60;
-      padB = 130;
+      xRange = 150; yRange = 85; vScale = 2.5; padR = 60; padB = 130;
     } else {
       xRange = Math.max(pm.R * 1.1, 50);
-      var maxH = pm.H;
-      if (S.compAngleEnabled) {
-        var compTh = (90 - S.angleDeg) * Math.PI / 180;
-        var compV0y = S.v0 * Math.sin(compTh);
+      let maxH = pm.H;
+      if (S.compAngleEnabled && S.y0 === 0) {
+        let compTh = (90 - S.angleDeg) * Math.PI / 180;
+        let compV0y = S.v0 * Math.sin(compTh);
         maxH = Math.max(maxH, S.y0 + (compV0y * compV0y) / (2 * S.g));
       }
       yRange = Math.max(maxH * 1.25, xRange * 0.4);
       if (yRange < 20) yRange = 20;
-
       vScale = Math.min(6, 120 / Math.max(1, S.v0));
       padR = Math.max(30, (pm.v0x * vScale) + 40);
       padB = Math.max(80, (pm.v0y * vScale) + 50);
     }
 
-    var sx = (W - padL - padR) / xRange;
-    var sy = (H - padB - padT) / yRange;
-    
-    var th = S.angleDeg * Math.PI / 180;
-    var v0x = S.v0 * Math.cos(th);
-    var v0y = S.v0 * Math.sin(th);
-    var rawVisLen = Math.sqrt(Math.pow(v0x * sx, 2) + Math.pow(v0y * sy, 2));
-    var vMult = (vScale * S.v0) / (rawVisLen || 1);
+    const sx = (W - padL - padR) / xRange;
+    const sy = (H - padB - padT) / yRange;
+    const visLen = Math.sqrt(Math.pow(pm.v0x * sx, 2) + Math.pow(pm.v0y * sy, 2));
+    const vMult = (vScale * S.v0) / (visLen || 1);
 
     return {
-      W: W, H: H, padL: padL, padR: padR, padB: padB, padT: padT,
-      sx: sx, sy: sy, xRange: xRange, yRange: yRange,
-      toX: function(wx){ return padL + wx * sx; },
-      toY: function(wy){ return H - padB - wy * sy; },
-      vScale: vScale,
-      vMult: vMult
+      W, H, padL, padR, padB, padT, sx, sy, xRange, yRange, vScale, vMult,
+      toX: (wx) => padL + wx * sx,
+      toY: (wy) => H - padB - wy * sy
     };
   }
 
-  function resizeCanvas(canvas) {
-    var rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width - 16;
-    canvas.height = rect.height - 16;
+  function getMousePos(e) {
+    const rect = elCanvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX - rect.left, y: clientY - rect.top };
   }
 
-  // ---------- Ambient Background Animations ----------
+  function handleInputStart(e) {
+    if (S.running && !S.finished) return; 
+    S.isDragging = true;
+    if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
+    if(S.finished) setInitialPhysics();
+    updateAim(e);
+  }
+
+  function handleInputMove(e) {
+    if (!S.isDragging) return;
+    e.preventDefault(); 
+    updateAim(e);
+  }
+
+  function handleInputEnd() {
+    S.isDragging = false;
+    drawFrame(); // one last draw to relax spring if needed
+  }
+
+  function updateAim(e) {
+    const s = getScale();
+    const pos = getMousePos(e);
+    const startX = s.toX(0);
+    const startY = s.toY(S.y0);
+
+    const dxCanvas = pos.x - startX;
+    const dyCanvas = startY - pos.y; 
+
+    let angleRad = Math.atan2(dyCanvas, dxCanvas);
+    if(angleRad < 0) angleRad = 0; 
+    if(angleRad > Math.PI/2) angleRad = Math.PI/2; 
+
+    S.angleDeg = Math.round(angleRad * 180 / Math.PI);
+    elAngle.value = S.angleDeg;
+
+    const distCanvas = Math.sqrt(dxCanvas*dxCanvas + dyCanvas*dyCanvas);
+    let calcSpeed = Math.round((distCanvas / 250) * 50);
+    if(calcSpeed < 5) calcSpeed = 5;
+    if(calcSpeed > 50) calcSpeed = 50;
+    
+    S.v0 = calcSpeed;
+    elSpeed.value = S.v0;
+
+    setInitialPhysics();
+    drawFrame();
+  }
+
+  elCanvas.addEventListener('mousedown', handleInputStart);
+  elCanvas.addEventListener('mousemove', handleInputMove);
+  window.addEventListener('mouseup', handleInputEnd);
+  elCanvas.addEventListener('touchstart', handleInputStart, {passive: false});
+  elCanvas.addEventListener('touchmove', handleInputMove, {passive: false});
+  window.addEventListener('touchend', handleInputEnd);
+
   function initBirds() {
-    birds = [];
-    for(var i = 0; i < 6; i++) {
-      birds.push({
-        x: Math.random() * 1500,
-        y: 20 + Math.random() * 150,
-        vx: 15 + Math.random() * 25,
-        vy: (Math.random() - 0.5) * 5,
-        phase: Math.random() * Math.PI * 2,
-        speed: 3 + Math.random() * 4,
-        size: 4 + Math.random() * 4
+    S.birds = [];
+    for(let i = 0; i < 6; i++) {
+      S.birds.push({
+        x: Math.random() * 1500, y: 20 + Math.random() * 150,
+        vx: 15 + Math.random() * 25, vy: (Math.random() - 0.5) * 5,
+        phase: Math.random() * Math.PI * 2, speed: 3 + Math.random() * 4, size: 4 + Math.random() * 4
       });
     }
   }
 
   function updateBirds(dt) {
-    birds.forEach(function(b) {
-      b.x += b.vx * dt;
-      b.y += b.vy * dt;
-      b.phase += b.speed * dt;
-      b.y += Math.sin(b.phase) * 0.1;
-      if (b.x > elTop.width + 50) {
-        b.x = -50;
-        b.y = 20 + Math.random() * 150;
-      }
+    S.birds.forEach(b => {
+      b.x += b.vx * dt; b.y += b.vy * dt; b.phase += b.speed * dt; b.y += Math.sin(b.phase) * 0.1;
+      if (b.x > elCanvas.width + 50) { b.x = -50; b.y = 20 + Math.random() * 150; }
     });
   }
 
+  function spawnParticles(x, y, isHit) {
+    const s = getScale();
+    const px = s.toX(x), py = s.toY(y);
+    const colors = isHit ? ['#10B981', '#34D399', '#FCD34D', '#F87171'] : PROJECTILES[S.type].explodeColors;
+    const count = isHit ? 50 : 25;
+
+    for (let i = 0; i < count; i++) {
+      S.particles.push({
+        x: px, y: py,
+        vx: (Math.random() - 0.5) * (isHit ? 300 : 150),
+        vy: (Math.random() - 1.0) * (isHit ? 300 : 200),
+        life: 1.0, decay: Math.random() * 0.02 + 0.015,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 5 + 3,
+        shape: isHit ? (Math.random() > 0.5 ? 'square' : 'circle') : 'circle'
+      });
+    }
+    elContainer.classList.remove('shake-effect');
+    void elContainer.offsetWidth; 
+    elContainer.classList.add('shake-effect');
+  }
+
+  function updateAndDrawParticles(ctx, dt) {
+    for (let i = S.particles.length - 1; i >= 0; i--) {
+      let p = S.particles[i];
+      p.vy += 400 * dt; 
+      p.x += p.vx * dt; p.y += p.vy * dt; p.life -= p.decay;
+
+      if (p.life <= 0) { S.particles.splice(i, 1); continue; }
+
+      ctx.save(); ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+      if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); } 
+      else { ctx.translate(p.x, p.y); ctx.rotate(p.life * 10); ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size); }
+      ctx.restore();
+    }
+  }
+
+  function setInitialPhysics() {
+    const th = S.angleDeg * Math.PI / 180;
+    S.y0 = parseFloat(elHeight.value) || 0; 
+    
+    if (S.y0 > 0) {
+      elCompAngle.disabled = true; elCompAngle.checked = false; S.compAngleEnabled = false;
+      elCompAngle.parentElement.classList.add('tsc-disabled');
+    } else {
+      elCompAngle.disabled = false; elCompAngle.parentElement.classList.remove('tsc-disabled');
+    }
+
+    S.t = 0; S.x = 0; S.y = S.y0;
+    S.vx = S.v0 * Math.cos(th); S.vy = S.v0 * Math.sin(th);
+    S.rotationAngle = 0; S.omega = (Math.random() - 0.5) * 12;
+    S.trail = [{ x: 0, y: S.y0 }]; S.strobes = [];
+    S.finished = false; S.peakReached = false; S.rangeCrossReached = false;
+    canvasTime.textContent = 't = 0.00 s';
+  }
+
+  function stepPhysics() {
+    if (S.finished) return;
+    const th = S.angleDeg * Math.PI / 180;
+    const v0x = S.v0 * Math.cos(th); const v0y = S.v0 * Math.sin(th);
+    
+    if (S.dragEnabled) {
+      let v = Math.sqrt(S.vx * S.vx + S.vy * S.vy);
+      let kD = 0.007; 
+      S.vx += (-kD * v * S.vx) * DT;
+      S.vy += (-S.g - kD * v * S.vy) * DT;
+      S.x += S.vx * DT; S.y += S.vy * DT; S.t += DT;
+    } else {
+      S.t += DT;
+      S.x = v0x * S.t;
+      S.y = S.y0 + v0y * S.t - 0.5 * S.g * S.t * S.t;
+      S.vx = v0x; S.vy = v0y - S.g * S.t;
+    }
+    
+    S.rotationAngle += S.omega * DT;
+
+    if (S.strobeEnabled && S.t > 0 && Math.floor(S.t / S.strobeInterval) > Math.floor((S.t - DT) / S.strobeInterval)) {
+      S.strobes.push({x: S.x, y: S.y, rot: S.rotationAngle});
+    }
+
+    // Telemetry tracking
+    if (S.vy <= 0 && !S.peakReached){ S.peakReached = true; S.peakY = S.y < 0 ? 0 : S.y; S.peakX = S.x; }
+    if (S.y0 > 0 && S.vy < 0 && S.y <= S.y0 && !S.rangeCrossReached) {
+      S.rangeCrossReached = true;
+      let prevY = S.y - S.vy * DT; 
+      if (prevY > S.y0) {
+        let prevX = S.x - S.vx * DT;
+        S.rangeCrossX = prevX + ((prevY - S.y0) / (prevY - S.y)) * (S.x - prevX);
+      } else S.rangeCrossX = S.x;
+    }
+
+    // Ground Hit
+    if (S.y <= 0 && S.t > DT){
+      if (S.dragEnabled) {
+        let prevY = S.y - S.vy * DT; let prevX = S.x - S.vx * DT; let prevT = S.t - DT;
+        let fraction = prevY / (prevY - S.y);
+        S.t = prevT + fraction * DT; S.x = prevX + fraction * (S.x - prevX); S.y = 0;
+      } else {
+        let T = (v0y + Math.sqrt(v0y * v0y + 2 * S.g * S.y0)) / S.g;
+        if (S.t > T) { S.t = T; S.x = v0x * T; S.y = 0; S.vy = v0y - S.g * T; } else S.y = 0;
+      }
+      S.finished = true; S.running = false;
+      if (S.playCount === 0) {
+        S.playCount = 1;
+        S.showInstruction = true;
+      }
+      btnPlay.textContent = 'Play'; btnPlay.classList.remove('active');
+      if(elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
+      
+      if (S.targetMode) {
+        S.targetHit = Math.abs(S.x - S.targetX) <= (S.targetW / 2);
+        spawnParticles(S.x, S.y, S.targetHit);
+      } else { spawnParticles(S.x, S.y, false); }
+    }
+
+    S.trail.push({ x: S.x, y: S.y });
+    if (S.trail.length > 4000) S.trail.shift();
+  }
+
   function drawBirds(ctx) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    birds.forEach(function(b) {
-      ctx.beginPath();
-      var wingY = Math.sin(b.phase) * b.size;
+    ctx.save(); ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)'; ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    S.birds.forEach(b => {
+      ctx.beginPath(); let wingY = Math.sin(b.phase) * b.size;
       ctx.moveTo(b.x - b.size, b.y - wingY);
       ctx.quadraticCurveTo(b.x, b.y + b.size * 0.4, b.x, b.y);
       ctx.quadraticCurveTo(b.x, b.y + b.size * 0.4, b.x + b.size, b.y - wingY);
@@ -540,902 +568,420 @@
   }
 
   function niceStep(range, targetTicks) {
-    var rough = range / targetTicks;
-    var pow10 = Math.pow(10, Math.floor(Math.log10(rough)));
-    var n = rough / pow10;
-    var step = (n < 1.5) ? 1 : ((n < 3) ? 2 : ((n < 7) ? 5 : 10));
+    let rough = range / targetTicks;
+    let pow10 = Math.pow(10, Math.floor(Math.log10(rough)));
+    let n = rough / pow10;
+    let step = (n < 1.5) ? 1 : ((n < 3) ? 2 : ((n < 7) ? 5 : 10));
     return step * pow10;
   }
 
-  // ---------- Drawing Engine ----------
-  function drawTop() {
-    var s = topScale();
-    var ctx = ctxT;
-    ctx.clearRect(0, 0, s.W, s.H);
-
-    ctx.fillStyle = BG_CANVAS;
-    ctx.fillRect(0, 0, s.W, s.H);
-
+  function drawGrid(s) {
+    ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, s.W, s.H);
     drawBirds(ctx);
 
-    ctx.strokeStyle = GRID;
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3, 4]);
-    var xStep = niceStep(s.xRange, 6);
-    for (var gx = xStep; gx <= s.xRange; gx += xStep) {
-      var px = s.toX(gx);
-      ctx.beginPath(); ctx.moveTo(px, s.padT); ctx.lineTo(px, s.H - s.padB); ctx.stroke();
-    }
-    var yStep = niceStep(s.yRange, 5);
-    for (var gy = yStep; gy <= s.yRange; gy += yStep) {
-      var py = s.toY(gy);
-      ctx.beginPath(); ctx.moveTo(s.padL, py); ctx.lineTo(s.W - s.padR, py); ctx.stroke();
-    }
+    ctx.strokeStyle = COLORS.grid; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    let xStep = niceStep(s.xRange, 6), yStep = niceStep(s.yRange, 5);
+    for (let gx = xStep; gx <= s.xRange; gx += xStep) { ctx.beginPath(); ctx.moveTo(s.toX(gx), s.padT); ctx.lineTo(s.toX(gx), s.H - s.padB); ctx.stroke(); }
+    for (let gy = yStep; gy <= s.yRange; gy += yStep) { ctx.beginPath(); ctx.moveTo(s.padL, s.toY(gy)); ctx.lineTo(s.W - s.padR, s.toY(gy)); ctx.stroke(); }
     ctx.setLineDash([]);
 
-    ctx.strokeStyle = '#94A3B8';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(s.padL, s.toY(0));
-    ctx.lineTo(s.W - s.padR, s.toY(0));
-    ctx.stroke();
+    ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(s.padL, s.toY(0)); ctx.lineTo(s.W - s.padR, s.toY(0)); ctx.stroke();
 
     if (S.y0 > 0) {
       ctx.fillStyle = '#F1F5F9'; 
-      var cliffX = s.toX(0);
-      var cliffY = s.toY(S.y0);
-      var groundY = s.toY(0);
-      
+      let cliffX = s.toX(0), cliffY = s.toY(S.y0), groundY = s.toY(0);
       ctx.fillRect(0, cliffY, cliffX, groundY - cliffY);
-      
-      ctx.strokeStyle = '#CBD5E1';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, cliffY);
-      ctx.lineTo(cliffX, cliffY);
-      ctx.lineTo(cliffX, groundY);
-      ctx.stroke();
-
-      ctx.strokeStyle = '#E2E8F0';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([6, 4]);
-      ctx.beginPath();
-      ctx.moveTo(cliffX, cliffY);
-      ctx.lineTo(s.W - s.padR, cliffY);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, cliffY); ctx.lineTo(cliffX, cliffY); ctx.lineTo(cliffX, groundY); ctx.stroke();
+      ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(cliffX, cliffY); ctx.lineTo(s.W - s.padR, cliffY); ctx.stroke(); ctx.setLineDash([]);
     }
 
-    ctx.fillStyle = TEXT_CANVAS;
-    ctx.font = '11px "JetBrains Mono", "Courier New", monospace';
-    ctx.textAlign = 'center';
-    for (var tx = 0; tx <= s.xRange; tx += xStep) {
-      ctx.fillText(tx.toFixed(0), s.toX(tx), s.H - s.padB + 14);
-    }
+    ctx.fillStyle = COLORS.text; ctx.font = '11px "JetBrains Mono", monospace'; ctx.textAlign = 'center';
+    for (let tx = 0; tx <= s.xRange; tx += xStep) ctx.fillText(tx.toFixed(0), s.toX(tx), s.H - s.padB + 14);
     ctx.textAlign = 'right';
-    for (var ty = 0; ty <= s.yRange; ty += yStep) {
-      ctx.fillText(ty.toFixed(0), s.padL - 6, s.toY(ty) + 4);
-    }
-    ctx.fillStyle = TEXT_CANVAS;
-    ctx.font = 'bold 10px Nunito, sans-serif';
-    ctx.textAlign = 'left';
+    for (let ty = 0; ty <= s.yRange; ty += yStep) ctx.fillText(ty.toFixed(0), s.padL - 6, s.toY(ty) + 4);
+    
+    ctx.fillStyle = COLORS.text; ctx.font = 'bold 10px Nunito'; ctx.textAlign = 'left';
     ctx.fillText('x (m)', s.W - s.padR - 36, s.H - s.padB - 6);
-    ctx.save();
-    ctx.translate(12, s.padT + 30);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText('y (m)', 0, 0);
-    ctx.restore();
-
-    if (S.showSplashFountain) {
-      drawGalileosFountain(ctx, s);
-    } else {
-      if (S.dragEnabled) drawIdealTrace(ctx, s);
-      if (S.compAngleEnabled) drawCompTrace(ctx, s);
-      if (S.targetMode) drawTarget(ctx, s);
-      
-      var startPx = s.toX(0);
-      var startPy = s.toY(S.y0);
-      var th = S.angleDeg * Math.PI / 180;
-
-      var visualAngle = Math.atan2(Math.sin(th) * s.sy, Math.cos(th) * s.sx);
-
-      drawSpringLauncher(ctx, startPx, startPy, visualAngle, S.t);
-      drawTelemetry(ctx, s);
-      drawProjectileAndVectors(ctx, s, startPx, startPy, th);
-    }
+    ctx.save(); ctx.translate(12, s.padT + 30); ctx.rotate(-Math.PI / 2); ctx.fillText('y (m)', 0, 0); ctx.restore();
   }
 
-  function drawGalileosFountain(ctx, s) {
-    var angles = [30, 45, 60];
-    var v0 = 20;
-
-    ctx.save();
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.shadowBlur = 6;
-    ctx.shadowColor = CANVAS_ACCENT;
-
-    angles.forEach(function(angDeg) {
-      var th = angDeg * Math.PI / 180;
-      var v0x = v0 * Math.cos(th);
-      var v0y = v0 * Math.sin(th);
-      var T = 2 * v0y / S.g;
-
-      ctx.strokeStyle = 'rgba(16, 185, 129, 0.65)';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      for (var t = 0; t <= T; t += 0.05) {
-        var x = v0x * t;
-        var y = v0y * t - 0.5 * S.g * t * t;
-        if (y < 0) y = 0;
-        if (t === 0) ctx.moveTo(s.toX(x), s.toY(y));
-        else ctx.lineTo(s.toX(x), s.toY(y));
-      }
-      var finalX = v0x * T;
-      ctx.lineTo(s.toX(finalX), s.toY(0));
-      ctx.stroke();
-
-      ctx.globalAlpha = 0.25;
-      for (var st = 0.25; st < T; st += 0.25) { 
-         var sx = v0x * st;
-         var sy = v0y * st - 0.5 * S.g * st * st;
-         var rot = (st * 12) % (Math.PI * 2);
-         ctx.save();
-         ctx.translate(s.toX(sx), s.toY(sy));
-         ctx.rotate(rot);
-         ctx.font = '22px Arial';
-         ctx.textAlign = 'center';
-         ctx.textBaseline = 'middle';
-         ctx.fillText('🍉', 0, 0);
-         ctx.restore();
-      }
-      ctx.globalAlpha = 1.0;
-
-      var px = s.toX(finalX);
-      var py = s.toY(0);
-      ctx.save();
-      ctx.translate(px, py);
-      
-      ctx.fillStyle = '#FF4444';
-      ctx.beginPath(); ctx.arc(-18, -15, 3.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(20, -12, 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(6, -22, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(-26, -5, 2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(28, -4, 2.5, 0, Math.PI * 2); ctx.fill();
-
-      ctx.fillStyle = '#2ECC71';
-      ctx.beginPath(); ctx.arc(-10, -20, 2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(14, -18, 2, 0, Math.PI * 2); ctx.fill();
-
-      ctx.scale(1.3, 0.6);
-      ctx.translate(0, -6);
-      ctx.font = '22px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🍉', 0, 0);
-      ctx.restore();
-    });
-    ctx.restore();
-
-    var fTh = 45 * Math.PI / 180;
-    var fVisAngle = Math.atan2(Math.sin(fTh) * s.sy, Math.cos(fTh) * s.sx);
-    drawSpringLauncher(ctx, s.toX(0), s.toY(0), fVisAngle, 0);
-
-    ctx.fillStyle = '#0D9488';
-    ctx.font = 'bold 13px Nunito, sans-serif';
-    ctx.textAlign = 'center';
+  function drawIdealTrace(s) {
+    const idTh = S.angleDeg * Math.PI / 180;
+    const idV0x = S.v0 * Math.cos(idTh), idV0y = S.v0 * Math.sin(idTh);
+    const idT = (idV0y + Math.sqrt(idV0y * idV0y + 2 * S.g * S.y0)) / S.g;
     
-    var range30_60 = v0 * v0 * Math.sin(2 * 30 * Math.PI / 180) / S.g;
-    var range45 = v0 * v0 * Math.sin(2 * 45 * Math.PI / 180) / S.g;
-
-    ctx.fillText('30° & 60° share range Δx', s.toX(range30_60), s.toY(0) - 55);
-    ctx.fillText('45° achieves Max Range', s.toX(range45), s.toY(0) - 25);
-  }
-
-  function drawProjectileAndVectors(ctx, s, startPx, startPy, th) {
-    var px_projectile = s.toX(S.x);
-    var py_projectile = s.toY(S.y);
-    
-    ctx.save();
-    ctx.translate(px_projectile, py_projectile);
-    
-    if (S.finished) {
-      ctx.fillStyle = '#FF4444'; 
-      ctx.beginPath(); ctx.arc(-18, -15, 3.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(20, -12, 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(6, -22, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(-26, -5, 2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(28, -4, 2.5, 0, Math.PI * 2); ctx.fill();
-
-      ctx.fillStyle = '#2ECC71'; 
-      ctx.beginPath(); ctx.arc(-10, -20, 2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(14, -18, 2, 0, Math.PI * 2); ctx.fill();
-
-      ctx.scale(1.3, 0.6); 
-      ctx.translate(0, -6); 
-    } else {
-      ctx.rotate(S.rotationAngle);
-    }
-
-    ctx.font = '22px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('🍉', 0, 0);
-    ctx.restore();
-
-    var v0x = S.v0 * Math.cos(th);
-    var v0y = S.v0 * Math.sin(th);
-    
-    var v0x_px = v0x * s.sx * s.vMult;
-    var v0y_px = v0y * s.sy * s.vMult;
-    
-    if (S.t === 0) {
-      drawArrow(ctx, startPx, startPy, startPx + v0x_px, startPy, TEAL, 'v₀ₓ');
-      drawArrow(ctx, startPx, startPy, startPx, startPy - v0y_px, ORANGE, 'v₀ᵧ');
-      drawArrow(ctx, startPx, startPy, startPx + v0x_px, startPy - v0y_px, YELLOW, 'v₀');
-      drawAngleArc(ctx, startPx, startPy, v0x_px, v0y_px, YELLOW, S.angleDeg.toFixed(0) + '°');
-    }
-
-    if (S.t > 0 && !S.finished) {
-      var vx_px = S.vx * s.sx * s.vMult;
-      var vy_px = S.vy * s.sy * s.vMult;
-      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile, TEAL, 'vₓ');
-      drawArrow(ctx, px_projectile, py_projectile, px_projectile, py_projectile - vy_px, ORANGE, 'vᵧ');
-      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile - vy_px, YELLOW, 'v');
-      
-      var currentAngleDeg = Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI);
-      drawAngleArc(ctx, px_projectile, py_projectile, vx_px, vy_px, YELLOW, currentAngleDeg.toFixed(0) + '°');
-    }
-
-    if (S.finished) {
-      var vx_px = S.vx * s.sx * s.vMult;
-      var vy_px = S.vy * s.sy * s.vMult;
-      
-      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile, TEAL, 'vₓ');
-      drawArrow(ctx, px_projectile, py_projectile, px_projectile, py_projectile - vy_px, ORANGE, 'vᵧ');
-      drawArrow(ctx, px_projectile, py_projectile, px_projectile + vx_px, py_projectile - vy_px, YELLOW, 'v');
-      
-      var finalAngleDeg = Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI);
-      drawAngleArc(ctx, px_projectile, py_projectile, vx_px, vy_px, YELLOW, finalAngleDeg.toFixed(0) + '°');
-
-      var rStartX = px_projectile;
-      var rStartY = py_projectile - 60;
-      var rEndX = px_projectile;
-      var rEndY = py_projectile - 15;
-
-      ctx.strokeStyle = CANVAS_ACCENT;
-      ctx.fillStyle = CANVAS_ACCENT;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(rStartX, rStartY);
-      ctx.lineTo(rEndX, rEndY);
-      ctx.stroke();
-
-      var rHeadAngle = Math.PI / 2;
-      var rAh = 7; 
-
-      ctx.beginPath();
-      ctx.moveTo(rEndX, rEndY);
-      ctx.lineTo(rEndX - rAh * Math.cos(rHeadAngle - 0.4), rEndY - rAh * Math.sin(rHeadAngle - 0.4));
-      ctx.lineTo(rEndX - rAh * Math.cos(rHeadAngle + 0.4), rEndY - rAh * Math.sin(rHeadAngle + 0.4));
-      ctx.closePath();
-      ctx.fill();
-      
-      ctx.font = 'bold 11px Nunito, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText('Range Δx = ' + S.x.toFixed(2) + ' m', rStartX, rStartY - 2);
-    }
-  }
-
-  function drawIdealTrace(ctx, s) {
-    var idTh = S.angleDeg * Math.PI / 180;
-    var idV0x = S.v0 * Math.cos(idTh);
-    var idV0y = S.v0 * Math.sin(idTh);
-    var idT = (idV0y + Math.sqrt(idV0y * idV0y + 2 * S.g * S.y0)) / S.g;
-    
-    ctx.strokeStyle = '#CBD5E1'; 
-    ctx.lineWidth = 2;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    for (var tStep = 0; tStep <= idT; tStep += 0.05) {
-      var cx = idV0x * tStep;
-      var cy = S.y0 + idV0y * tStep - 0.5 * S.g * tStep * tStep;
+    ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]); ctx.beginPath();
+    for (let tStep = 0; tStep <= idT; tStep += 0.05) {
+      let cx = idV0x * tStep, cy = S.y0 + idV0y * tStep - 0.5 * S.g * tStep * tStep;
       if (cy < 0) cy = 0;
-      if (tStep === 0) ctx.moveTo(s.toX(cx), s.toY(cy));
-      else ctx.lineTo(s.toX(cx), s.toY(cy));
+      if (tStep === 0) ctx.moveTo(s.toX(cx), s.toY(cy)); else ctx.lineTo(s.toX(cx), s.toY(cy));
     }
-    ctx.stroke();
-    ctx.setLineDash([]);
-    
-    var idPeakT = idV0y / S.g; 
-    var idPeakX = idV0x * idPeakT;
-    var idPeakY = S.y0 + idV0y * idPeakT - 0.5 * S.g * idPeakT * idPeakT;
-    
-    var pPx = s.toX(idPeakX);
-    var pPy = s.toY(idPeakY);
-    var textPx = pPx + 50;
-    var textPy = pPy - 15;
-
-    ctx.strokeStyle = '#94A3B8';
-    ctx.fillStyle = '#94A3B8';
-    ctx.lineWidth = 1.2;
-    
-    var endX = pPx + 6;
-    var endY = pPy;
-    var cpX = pPx + 25;
-    var cpY = textPy;
-    
-    ctx.beginPath();
-    ctx.moveTo(textPx - 5, textPy);
-    ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-    ctx.stroke();
-    
-    var dx = endX - cpX;
-    var dy = endY - cpY;
-    var headAngle = Math.atan2(dy, dx);
-    var ah = 6;
-    
-    ctx.beginPath();
-    ctx.moveTo(endX, endY);
-    ctx.lineTo(endX - ah * Math.cos(headAngle - 0.4), endY - ah * Math.sin(headAngle - 0.4));
-    ctx.lineTo(endX - ah * Math.cos(headAngle + 0.4), endY - ah * Math.sin(headAngle + 0.4));
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.font = 'bold 11px Nunito, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Ideal (No Drag)', textPx, textPy);
+    ctx.stroke(); ctx.setLineDash([]);
   }
 
-  function drawCompTrace(ctx, s) {
-    var compTh = (90 - S.angleDeg) * Math.PI / 180;
-    var compV0x = S.v0 * Math.cos(compTh);
-    var compV0y = S.v0 * Math.sin(compTh);
-    var compT = (compV0y + Math.sqrt(compV0y * compV0y + 2 * S.g * S.y0)) / S.g;
+  function drawCompTrace(s) {
+    const compTh = (90 - S.angleDeg) * Math.PI / 180;
+    const compV0x = S.v0 * Math.cos(compTh), compV0y = S.v0 * Math.sin(compTh);
+    const compT = (compV0y + Math.sqrt(compV0y * compV0y + 2 * S.g * S.y0)) / S.g;
     
-    ctx.strokeStyle = '#94A3B8'; 
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    for (var tStep = 0; tStep <= compT; tStep += 0.05) {
-      var cx = compV0x * tStep;
-      var cy = S.y0 + compV0y * tStep - 0.5 * S.g * tStep * tStep;
+    ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.beginPath();
+    for (let tStep = 0; tStep <= compT; tStep += 0.05) {
+      let cx = compV0x * tStep, cy = S.y0 + compV0y * tStep - 0.5 * S.g * tStep * tStep;
       if (cy < 0) cy = 0;
-      if (tStep === 0) ctx.moveTo(s.toX(cx), s.toY(cy));
-      else ctx.lineTo(s.toX(cx), s.toY(cy));
+      if (tStep === 0) ctx.moveTo(s.toX(cx), s.toY(cy)); else ctx.lineTo(s.toX(cx), s.toY(cy));
     }
-    ctx.stroke();
-    ctx.setLineDash([]);
-    
-    var peakCompT = compV0y / S.g;
-    var peakCompX = compV0x * peakCompT;
-    var peakCompY = S.y0 + compV0y * peakCompT - 0.5 * S.g * peakCompT * peakCompT;
-    ctx.fillStyle = '#64748B';
-    ctx.font = 'bold 11px Nunito, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText((90 - S.angleDeg) + '° trajectory', s.toX(peakCompX), s.toY(peakCompY) - 5);
+    ctx.stroke(); ctx.setLineDash([]);
   }
 
-  function drawTarget(ctx, s) {
-    var tX = s.toX(S.targetX);
-    var tY = s.toY(0);
-    var tWPixels = Math.max(20, S.targetW * s.sx); 
+  function drawTarget(s) {
+    if (!S.targetMode) return;
+    const tX = s.toX(S.targetX), tY = s.toY(0), tWPixels = Math.max(20, S.targetW * s.sx); 
     
-    ctx.fillStyle = '#FF4444';
-    ctx.fillRect(tX - tWPixels/2, tY - 6, tWPixels, 6);
-    ctx.fillStyle = '#F8FAFC';
-    ctx.fillRect(tX - tWPixels/4, tY - 6, tWPixels/2, 6);
-    
-    ctx.font = 'bold 11px Nunito, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = TEXT_CANVAS;
+    ctx.fillStyle = '#FF4444'; ctx.fillRect(tX - tWPixels/2, tY - 6, tWPixels, 6);
+    ctx.fillStyle = '#F8FAFC'; ctx.fillRect(tX - tWPixels/4, tY - 6, tWPixels/2, 6);
+    ctx.font = 'bold 11px Nunito, sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = COLORS.text;
     ctx.fillText(S.targetX + 'm', tX, tY + 16);
 
     if (S.finished) {
-       ctx.font = '900 16px Nunito, sans-serif';
-       ctx.fillStyle = S.targetHit ? '#10B981' : '#EF4444';
+       ctx.font = '900 16px Nunito'; ctx.fillStyle = S.targetHit ? '#10B981' : '#EF4444';
        ctx.fillText(S.targetHit ? '🎯 HIT!' : '❌ MISS', tX, tY - 35);
+       
+       if (S.showInstruction) {
+         ctx.save();
+         ctx.translate(tX, tY - 75);
+         ctx.rotate(-0.08); // Slight tilt for a playful look
+         ctx.font = '700 24px "Caveat", cursive';
+         ctx.fillStyle = '#4F46E5'; 
+         
+         // Add a glowing shadow for crisp contrast against the background
+         ctx.shadowColor = 'rgba(255, 255, 255, 0.9)'; 
+         ctx.shadowBlur = 6;
+         ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+         
+         ctx.fillText('Adjust Angle & Speed to land it!', 0, 0);
+         ctx.restore();
+       }
     }
   }
 
-  function drawTelemetry(ctx, s) {
-    if (S.peakReached) {
-      var peakPx = s.toX(S.peakX);
-      var peakPy = s.toY(S.peakY);
-      ctx.strokeStyle = CANVAS_ACCENT;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(s.padL, peakPy);
-      ctx.lineTo(s.W - s.padR, peakPy);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      
-      var startX = peakPx;
-      var startY = Math.max(s.padT + 10, peakPy - 35);
-      var endX = peakPx;
-      var endY = peakPy - 5;
+  function drawSpringLauncher(s) {
+    const px = s.toX(0), py = s.toY(S.y0);
+    const th = S.angleDeg * Math.PI / 180;
+    const visAngle = Math.atan2(Math.sin(th) * s.sy, Math.cos(th) * s.sx);
 
-      ctx.strokeStyle = CANVAS_ACCENT;
-      ctx.fillStyle = CANVAS_ACCENT;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
-      ctx.stroke();
+    ctx.save(); ctx.translate(px, py);
 
-      var headAngle = Math.PI / 2;
-      var ah = 7; 
+    // Dynamic Compression Logic based on user drag / v0
+    // Spring stretches from backplate to pusher.
+    const maxV = 50, minV = 5;
+    const compressRatio = (S.v0 - minV) / (maxV - minV); // 0.0 to 1.0
+    // If we are actively simulating (S.t > 0), the spring snaps to relaxed state (5).
+    // If waiting/dragging, compress it proportional to v0 (down to -20).
+    const springEndTarget = S.t > 0 ? 5 : (-5 - 15 * compressRatio);
 
-      ctx.beginPath();
-      ctx.moveTo(endX, endY);
-      ctx.lineTo(endX - ah * Math.cos(headAngle - 0.4), endY - ah * Math.sin(headAngle - 0.4));
-      ctx.lineTo(endX - ah * Math.cos(headAngle + 0.4), endY - ah * Math.sin(headAngle + 0.4));
-      ctx.closePath();
-      ctx.fill();
+    const mountGrad = ctx.createLinearGradient(-14, 0, 14, 0);
+    mountGrad.addColorStop(0, '#475569'); mountGrad.addColorStop(0.3, '#CBD5E1'); mountGrad.addColorStop(0.8, '#64748B'); mountGrad.addColorStop(1, '#334155');
+    ctx.fillStyle = mountGrad; ctx.beginPath(); ctx.arc(0, 0, 14, Math.PI, 0); ctx.lineTo(14, 20); ctx.lineTo(-14, 20); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#1E293B'; ctx.lineWidth = 1; ctx.stroke();
 
-      ctx.font = 'bold 11px Nunito, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText('Peak ' + S.peakY.toFixed(2) + ' m', startX, startY - 2);
-      
-      var peakTh = S.angleDeg * Math.PI / 180;
-      var peakV0x = S.v0 * Math.cos(peakTh);
-      var peakVx_px = peakV0x * s.sx * s.vMult;
-      drawArrow(ctx, peakPx, peakPy, peakPx + peakVx_px, peakPy, TEAL, 'vₓ');
-      
-      ctx.fillStyle = ORANGE;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText('vᵧ = 0 m/s', peakPx, peakPy + 8);
+    ctx.rotate(-visAngle); 
+
+    const barrelLength = 60, barrelWidth = 26, barrelBack = -45; 
+    
+    // Barrel background
+    const backPlateGrad = ctx.createLinearGradient(0, -barrelWidth/2 - 4, 0, barrelWidth/2 + 4);
+    backPlateGrad.addColorStop(0, '#1E293B'); backPlateGrad.addColorStop(0.5, '#475569'); backPlateGrad.addColorStop(1, '#0F172A');
+    ctx.fillStyle = backPlateGrad; ctx.fillRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
+    ctx.strokeStyle = '#0F172A'; ctx.strokeRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
+    
+    const barrelGrad = ctx.createLinearGradient(0, -barrelWidth/2, 0, barrelWidth/2);
+    barrelGrad.addColorStop(0, '#64748B'); barrelGrad.addColorStop(0.15, '#FFFFFF'); barrelGrad.addColorStop(0.5, '#CBD5E1'); barrelGrad.addColorStop(0.85, '#94A3B8'); barrelGrad.addColorStop(1, '#475569');   
+    ctx.fillStyle = barrelGrad; ctx.fillRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
+    ctx.strokeStyle = '#475569'; ctx.lineWidth = 1; ctx.strokeRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
+
+    // Add Highlight if dragging
+    if (S.isDragging || S.dragHintVisible) {
+      ctx.shadowColor = COLORS.primary; ctx.shadowBlur = 10;
+      ctx.strokeStyle = '#10B981'; ctx.lineWidth = 2;
+      ctx.strokeRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
     }
 
-    if (S.y0 > 0 && S.rangeCrossReached) {
-      var rx = s.toX(S.rangeCrossX);
-      var ry = s.toY(S.y0);
-
-      ctx.fillStyle = TEAL; 
-      ctx.beginPath();
-      ctx.arc(rx, ry, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = TEAL;
-      ctx.font = 'bold 11px Nunito, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText('Range Δx = ' + S.rangeCrossX.toFixed(2) + ' m', rx + 8, ry - 6);
-    }
-
-    var n = S.trail.length;
-    if (n > 1) {
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.shadowBlur = 6;
-      ctx.shadowColor = CANVAS_ACCENT;
-      
-      for (var i = 1; i < n; i++) {
-        var p0 = S.trail[i-1], p1 = S.trail[i];
-        var alpha = Math.max(0.05, (i / n) * 0.9);
-        ctx.strokeStyle = 'rgba(16, 185, 129, ' + alpha + ')';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(s.toX(p0.x), s.toY(p0.y));
-        ctx.lineTo(s.toX(p1.x), s.toY(p1.y));
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    if (S.strobeEnabled && S.strobes.length > 0) {
-      ctx.save();
-      ctx.globalAlpha = 0.25;
-      for (var j = 0; j < S.strobes.length; j++) {
-        var st = S.strobes[j];
-        ctx.translate(s.toX(st.x), s.toY(st.y));
-        ctx.rotate(st.rot);
-        ctx.font = '22px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🍉', 0, 0);
-        ctx.setTransform(1, 0, 0, 1, 0, 0); 
-      }
-      ctx.restore();
-    }
-  }
-
-  function drawSpringLauncher(ctx, startPx, startPy, th, t) {
-    ctx.save();
-    ctx.translate(startPx, startPy);
-
-    var mountGrad = ctx.createLinearGradient(-14, 0, 14, 0);
-    mountGrad.addColorStop(0, '#475569');
-    mountGrad.addColorStop(0.3, '#CBD5E1'); 
-    mountGrad.addColorStop(0.8, '#64748B');
-    mountGrad.addColorStop(1, '#334155');
-
-    ctx.fillStyle = mountGrad;
-    ctx.beginPath();
-    ctx.arc(0, 0, 14, Math.PI, 0); 
-    ctx.lineTo(14, 20);            
-    ctx.lineTo(-14, 20);           
-    ctx.closePath();
-    ctx.fill();
-    
-    ctx.strokeStyle = '#1E293B';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    ctx.rotate(-th); 
-
-    var barrelLength = 60; 
-    var barrelWidth = 26;
-    var barrelBack = -45; 
-    
-    var backPlateGrad = ctx.createLinearGradient(0, -barrelWidth/2 - 4, 0, barrelWidth/2 + 4);
-    backPlateGrad.addColorStop(0, '#1E293B');
-    backPlateGrad.addColorStop(0.5, '#475569');
-    backPlateGrad.addColorStop(1, '#0F172A');
-    ctx.fillStyle = backPlateGrad;
-    ctx.fillRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
-    ctx.strokeStyle = '#0F172A';
-    ctx.strokeRect(barrelBack - 6, -barrelWidth/2 - 4, 6, barrelWidth + 8);
-    
-    var barrelGrad = ctx.createLinearGradient(0, -barrelWidth/2, 0, barrelWidth/2);
-    barrelGrad.addColorStop(0, '#64748B');   
-    barrelGrad.addColorStop(0.15, '#FFFFFF'); 
-    barrelGrad.addColorStop(0.5, '#CBD5E1');  
-    barrelGrad.addColorStop(0.85, '#94A3B8'); 
-    barrelGrad.addColorStop(1, '#475569');   
-
-    ctx.fillStyle = barrelGrad;
-    ctx.fillRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(barrelBack, -barrelWidth/2, barrelLength, barrelWidth);
-
-    var springStart = barrelBack;
-    var springEnd = (t === 0) ? -14 : 5; 
-    
-    ctx.strokeStyle = '#94A3B8';
-    ctx.lineWidth = 3.5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-    ctx.shadowBlur = 4;
-    ctx.shadowOffsetY = 2;
+    // Drawn Spring
+    const springStart = barrelBack;
+    ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)'; ctx.shadowBlur = 4; ctx.shadowOffsetY = 2;
 
     ctx.beginPath();
-    var coils = 7;
-    var springLength = springEnd - springStart;
-    var step = springLength / coils;
-    var amplitude = 7;
-    
+    const coils = 7, springLength = springEndTarget - springStart;
+    const step = springLength / coils, amplitude = 7;
     ctx.moveTo(springStart, 0);
-    for(var i = 1; i <= coils; i++) {
-      var xCoil = springStart + step * i;
-      var xMid = springStart + step * (i - 0.5);
-      var yCoil = (i % 2 === 0) ? amplitude : -amplitude;
-      ctx.lineTo(xMid, yCoil);
-      ctx.lineTo(xCoil, 0);
+    for(let i = 1; i <= coils; i++) {
+      let xCoil = springStart + step * i, xMid = springStart + step * (i - 0.5);
+      let yCoil = (i % 2 === 0) ? amplitude : -amplitude;
+      ctx.lineTo(xMid, yCoil); ctx.lineTo(xCoil, 0);
     }
     ctx.stroke();
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
 
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
+    // Pusher Plate
+    const pusherGrad = ctx.createLinearGradient(0, -barrelWidth/2 + 2, 0, barrelWidth/2 - 2);
+    pusherGrad.addColorStop(0, '#991B1B'); pusherGrad.addColorStop(0.3, '#EF4444'); pusherGrad.addColorStop(0.7, '#DC2626'); pusherGrad.addColorStop(1, '#7F1D1D');
+    ctx.fillStyle = pusherGrad; ctx.fillRect(springEndTarget - 4, -barrelWidth/2 + 2, 4, barrelWidth - 4);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'; ctx.fillRect(springEndTarget - 3, -barrelWidth/2 + 3, 2, barrelWidth - 6);
 
-    var pusherGrad = ctx.createLinearGradient(0, -barrelWidth/2 + 2, 0, barrelWidth/2 - 2);
-    pusherGrad.addColorStop(0, '#991B1B');
-    pusherGrad.addColorStop(0.3, '#EF4444'); 
-    pusherGrad.addColorStop(0.7, '#DC2626');
-    pusherGrad.addColorStop(1, '#7F1D1D');
-    
-    ctx.fillStyle = pusherGrad;
-    ctx.fillRect(springEnd - 4, -barrelWidth/2 + 2, 4, barrelWidth - 4);
-    
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.fillRect(springEnd - 3, -barrelWidth/2 + 3, 2, barrelWidth - 6);
+    // Draw Main Projectile inside barrel if waiting
+    if (S.t === 0) {
+      ctx.save();
+      ctx.translate(springEndTarget + 12, 0); // Position ahead of pusher
+      ctx.font = `${PROJECTILES[S.type].size}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(PROJECTILES[S.type].icon, 0, 0);
+      ctx.restore();
+    }
 
-    ctx.rotate(th); 
-    var pinGrad = ctx.createRadialGradient(-1.5, -1.5, 0, 0, 0, 5);
-    pinGrad.addColorStop(0, '#FFFFFF'); 
-    pinGrad.addColorStop(0.4, '#CBD5E1');
-    pinGrad.addColorStop(1, '#475569');
-
-    ctx.fillStyle = pinGrad;
-    ctx.beginPath();
-    ctx.arc(0, 0, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#1E293B';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
+    // Pivot Pin
+    ctx.rotate(visAngle); 
+    const pinGrad = ctx.createRadialGradient(-1.5, -1.5, 0, 0, 0, 5);
+    pinGrad.addColorStop(0, '#FFFFFF'); pinGrad.addColorStop(0.4, '#CBD5E1'); pinGrad.addColorStop(1, '#475569');
+    ctx.fillStyle = pinGrad; ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#1E293B'; ctx.lineWidth = 1; ctx.stroke();
     ctx.restore();
   }
 
   function drawArrow(ctx, x1, y1, x2, y2, color, label){
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = 2.5;
-    ctx.lineCap = 'round';
-    var dx = x2 - x1, dy = y2 - y1;
-    var len = Math.sqrt(dx*dx + dy*dy);
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    let dx = x2 - x1, dy = y2 - y1;
+    let len = Math.sqrt(dx*dx + dy*dy);
     if (len < 2) return;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    var ang = Math.atan2(dy, dx);
-    var ah = 8;
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    let ang = Math.atan2(dy, dx), ah = 8;
+    ctx.beginPath(); ctx.moveTo(x2, y2);
     ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
     ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
-    ctx.closePath();
-    ctx.fill();
-    if (label){
-      ctx.font = 'bold 12px Nunito, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(label, x2 + 6, y2 + 6);
-    }
+    ctx.closePath(); ctx.fill();
+    if (label){ ctx.font = 'bold 12px Nunito'; ctx.textAlign = 'left'; ctx.fillText(label, x2 + 6, y2 + 6); }
   }
 
   function drawAngleArc(ctx, x, y, vx, vy, color, angleDegStr){
-    var radius = 25;
-    var dyCanvas = -vy; 
-    var dxCanvas = vx;
-    var angle = Math.atan2(dyCanvas, dxCanvas);
-    
-    ctx.strokeStyle = '#888888';
-    ctx.lineWidth = 1.2;
-    ctx.setLineDash([3, 4]);
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + radius + 15, y);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, Math.min(0, angle), Math.max(0, angle), false);
-    ctx.stroke();
-    
-    var midAngle = angle / 2;
-    var lx = x + (radius + 12) * Math.cos(midAngle);
-    var ly = y + (radius + 12) * Math.sin(midAngle);
-    ctx.font = 'bold 12px Nunito, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(angleDegStr, lx, ly);
+    let radius = 25, dyCanvas = -vy, dxCanvas = vx;
+    let angle = Math.atan2(dyCanvas, dxCanvas);
+    ctx.strokeStyle = '#888888'; ctx.lineWidth = 1.2; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + radius + 15, y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.5; ctx.beginPath();
+    ctx.arc(x, y, radius, Math.min(0, angle), Math.max(0, angle), false); ctx.stroke();
+    let midAngle = angle / 2, lx = x + (radius + 12) * Math.cos(midAngle), ly = y + (radius + 12) * Math.sin(midAngle);
+    ctx.font = 'bold 12px Nunito'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(angleDegStr, lx, ly);
   }
 
-  // ---------- Physics Engine & Event Handlers ----------
-  function setInitial() {
-    var th = S.angleDeg * Math.PI / 180;
-    S.y0 = parseFloat(elHeight.value) || 0; 
-    
-    if (S.y0 > 0) {
-      elCompAngle.disabled = true;
-      elCompAngle.checked = false;
-      S.compAngleEnabled = false;
-      elCompAngle.parentElement.classList.add('tsc-disabled');
-    } else {
-      elCompAngle.disabled = false;
-      elCompAngle.parentElement.classList.remove('tsc-disabled');
-    }
-
-    S.t = 0;
-    S.x = 0;
-    S.y = S.y0;
-    S.vx = S.v0 * Math.cos(th);
-    S.vy = S.v0 * Math.sin(th);
-    
-    S.rotationAngle = 0;
-    S.omega = (Math.random() - 0.5) * 12;
-
-    S.trail = [{ x: 0, y: S.y0 }];
-    S.strobes = [];
-    S.finished = false;
-    S.peakReached = false;
-    S.rangeCrossReached = false;
-  }
-
-  function stepOnce() {
-    if (S.finished) return;
-    var th = S.angleDeg * Math.PI / 180;
-    var v0x = S.v0 * Math.cos(th);
-    var v0y = S.v0 * Math.sin(th);
-    
-    if (S.dragEnabled) {
-      var v = Math.sqrt(S.vx * S.vx + S.vy * S.vy);
-      var kD = 0.007; 
-      var ax = -kD * v * S.vx;
-      var ay = -S.g - kD * v * S.vy;
+  function drawTelemetry(s) {
+    if (S.peakReached) {
+      let peakPx = s.toX(S.peakX), peakPy = s.toY(S.peakY);
+      ctx.strokeStyle = COLORS.primary; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(s.padL, peakPy); ctx.lineTo(s.W - s.padR, peakPy); ctx.stroke(); ctx.setLineDash([]);
       
-      S.vx += ax * DT;
-      S.vy += ay * DT;
-      S.x += S.vx * DT;
-      S.y += S.vy * DT;
-      S.t += DT;
-    } else {
-      S.t += DT;
-      S.x = v0x * S.t;
-      S.y = S.y0 + v0y * S.t - 0.5 * S.g * S.t * S.t;
-      S.vx = v0x;
-      S.vy = v0y - S.g * S.t;
-    }
-    
-    S.rotationAngle += S.omega * DT;
+      let startX = peakPx, startY = Math.max(s.padT + 10, peakPy - 35), endX = peakPx, endY = peakPy - 5;
+      ctx.strokeStyle = COLORS.primary; ctx.fillStyle = COLORS.primary; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(startX, startY); ctx.lineTo(endX, endY); ctx.stroke();
+      let headAngle = Math.PI / 2, ah = 7; 
+      ctx.beginPath(); ctx.moveTo(endX, endY);
+      ctx.lineTo(endX - ah * Math.cos(headAngle - 0.4), endY - ah * Math.sin(headAngle - 0.4));
+      ctx.lineTo(endX - ah * Math.cos(headAngle + 0.4), endY - ah * Math.sin(headAngle + 0.4));
+      ctx.closePath(); ctx.fill();
 
-    if (S.strobeEnabled && S.t > 0 && Math.floor(S.t / S.strobeInterval) > Math.floor((S.t - DT) / S.strobeInterval)) {
-      S.strobes.push({x: S.x, y: S.y, rot: S.rotationAngle});
-    }
-
-    if (S.vy <= 0 && !S.peakReached){
-      S.peakReached = true;
-      S.peakY = S.y < 0 ? 0 : S.y;
-      S.peakX = S.x;
-    }
-
-    if (S.y0 > 0 && S.vy < 0 && S.y <= S.y0 && !S.rangeCrossReached) {
-      S.rangeCrossReached = true;
-      var prevY = S.y - S.vy * DT; 
-      if (prevY > S.y0) {
-        var prevX = S.x - S.vx * DT;
-        var fraction = (prevY - S.y0) / (prevY - S.y);
-        S.rangeCrossX = prevX + fraction * (S.x - prevX);
-      } else {
-        S.rangeCrossX = S.x;
-      }
-    }
-
-    if (S.y <= 0 && S.t > DT){
-      if (S.dragEnabled) {
-        var prevY = S.y - S.vy * DT;
-        var prevX = S.x - S.vx * DT;
-        var prevT = S.t - DT;
-        var fraction = prevY / (prevY - S.y);
-        S.t = prevT + fraction * DT;
-        S.x = prevX + fraction * (S.x - prevX);
-        S.y = 0;
-      } else {
-        var T = (v0y + Math.sqrt(v0y * v0y + 2 * S.g * S.y0)) / S.g;
-        if (S.t > T) {
-          S.t = T;
-          S.x = v0x * T;
-          S.y = 0;
-          S.vy = v0y - S.g * T;
-        } else {
-          S.y = 0;
-        }
-      }
-      S.finished = true;
-      S.running = false;
-      btnPlay.textContent = 'Play';
-      btnPlay.classList.remove('active');
-      if (elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
+      ctx.font = 'bold 11px Nunito'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText('Peak ' + S.peakY.toFixed(2) + ' m', startX, startY - 2);
       
-      if (S.targetMode) {
-        S.targetHit = Math.abs(S.x - S.targetX) <= (S.targetW / 2);
-      }
+      let peakTh = S.angleDeg * Math.PI / 180;
+      let peakVx_px = S.v0 * Math.cos(peakTh) * s.sx * s.vMult;
+      drawArrow(ctx, peakPx, peakPy, peakPx + peakVx_px, peakPy, COLORS.teal, 'vₓ');
+      ctx.fillStyle = COLORS.orange; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText('vᵧ = 0 m/s', peakPx, peakPy + 8);
     }
 
-    S.trail.push({ x: S.x, y: S.y });
-    if (S.trail.length > 4000) S.trail.shift();
-  }
+    if (S.y0 > 0 && S.rangeCrossReached) {
+      let rx = s.toX(S.rangeCrossX), ry = s.toY(S.y0);
+      ctx.fillStyle = COLORS.teal; ctx.beginPath(); ctx.arc(rx, ry, 4.5, 0, Math.PI * 2); ctx.fill();
+      ctx.font = 'bold 11px Nunito'; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+      ctx.fillText('Level Range = ' + S.rangeCrossX.toFixed(2) + ' m', rx + 8, ry - 6);
+    }
 
-  function ensureSplashHidden() {
-    if (S.showSplashFountain) {
-      S.showSplashFountain = false;
-      if (splashScreen) {
-        splashScreen.style.opacity = '0';
-        splashScreen.style.pointerEvents = 'none';
-        setTimeout(function() { splashScreen.style.display = 'none'; }, 400);
+    // Trail
+    if (S.trail.length > 1) {
+      ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowBlur = 6; ctx.shadowColor = COLORS.primary;
+      for (let i = 1; i < S.trail.length; i++) {
+        let p0 = S.trail[i-1], p1 = S.trail[i], alpha = Math.max(0.05, (i / S.trail.length) * 0.9);
+        ctx.strokeStyle = `rgba(16, 185, 129, ${alpha})`; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(s.toX(p0.x), s.toY(p0.y)); ctx.lineTo(s.toX(p1.x), s.toY(p1.y)); ctx.stroke();
       }
+      ctx.restore();
+    }
+
+    // Strobes
+    if (S.strobeEnabled && S.strobes.length > 0) {
+      ctx.save(); ctx.globalAlpha = 0.25;
+      for (let j = 0; j < S.strobes.length; j++) {
+        let st = S.strobes[j];
+        ctx.translate(s.toX(st.x), s.toY(st.y)); ctx.rotate(st.rot);
+        ctx.font = `${PROJECTILES[S.type].size}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(PROJECTILES[S.type].icon, 0, 0); ctx.setTransform(1, 0, 0, 1, 0, 0); 
+      }
+      ctx.restore();
     }
   }
 
-  // Interactive UI wiring for standard inputs
-  elAngle.addEventListener('input', function() { ensureSplashHidden(); S.angleDeg = parseFloat(this.value) || 0; setInitial(); drawTop(); });
-  elSpeed.addEventListener('input', function() { ensureSplashHidden(); S.v0 = parseFloat(this.value) || 0; setInitial(); drawTop(); });
-  elHeight.addEventListener('input', function() { ensureSplashHidden(); setInitial(); drawTop(); });
-  
-  // Custom Spin Button logic
-  document.querySelectorAll('.tsc-spin-btn').forEach(function(btn) {
+  function drawMainProjectile(s, startPx, startPy, th) {
+    let px_proj = s.toX(S.x), py_proj = s.toY(S.y);
+    
+    // Main Projectile body
+    if(S.t > 0 || (S.finished && !S.targetHit)) {
+      ctx.save(); ctx.translate(px_proj, py_proj);
+      if (S.finished) {
+        // Splat graphics
+        ctx.scale(1.4, 0.4); ctx.translate(0, -6);
+      } else { ctx.rotate(S.rotationAngle); }
+      ctx.font = `${PROJECTILES[S.type].size}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(PROJECTILES[S.type].icon, 0, 0); ctx.restore();
+    }
+
+    // Vectors
+    let v0x_px = S.v0 * Math.cos(th) * s.sx * s.vMult, v0y_px = S.v0 * Math.sin(th) * s.sy * s.vMult;
+    
+    if (S.t === 0) {
+      drawArrow(ctx, startPx, startPy, startPx + v0x_px, startPy, COLORS.teal, 'v₀ₓ');
+      drawArrow(ctx, startPx, startPy, startPx, startPy - v0y_px, COLORS.orange, 'v₀ᵧ');
+      drawArrow(ctx, startPx, startPy, startPx + v0x_px, startPy - v0y_px, COLORS.yellow, 'v₀');
+      drawAngleArc(ctx, startPx, startPy, v0x_px, v0y_px, COLORS.yellow, S.angleDeg.toFixed(0) + '°');
+    } else if (!S.finished) {
+      let vx_px = S.vx * s.sx * s.vMult, vy_px = S.vy * s.sy * s.vMult;
+      drawArrow(ctx, px_proj, py_proj, px_proj + vx_px, py_proj, COLORS.teal, 'vₓ');
+      drawArrow(ctx, px_proj, py_proj, px_proj, py_proj - vy_px, COLORS.orange, 'vᵧ');
+      drawArrow(ctx, px_proj, py_proj, px_proj + vx_px, py_proj - vy_px, COLORS.yellow, 'v');
+      drawAngleArc(ctx, px_proj, py_proj, vx_px, vy_px, COLORS.yellow, Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI).toFixed(0) + '°');
+    } else {
+      let vx_px = S.vx * s.sx * s.vMult, vy_px = S.vy * s.sy * s.vMult;
+      drawArrow(ctx, px_proj, py_proj, px_proj + vx_px, py_proj, COLORS.teal, 'vₓ');
+      drawArrow(ctx, px_proj, py_proj, px_proj, py_proj - vy_px, COLORS.orange, 'vᵧ');
+      drawArrow(ctx, px_proj, py_proj, px_proj + vx_px, py_proj - vy_px, COLORS.yellow, 'v');
+      drawAngleArc(ctx, px_proj, py_proj, vx_px, vy_px, COLORS.yellow, Math.abs(Math.atan2(S.vy, S.vx) * 180 / Math.PI).toFixed(0) + '°');
+
+      // Final Range annotation below impact
+      let rStartX = px_proj, rStartY = py_proj - 60, rEndX = px_proj, rEndY = py_proj - 15;
+      ctx.strokeStyle = COLORS.primary; ctx.fillStyle = COLORS.primary; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(rStartX, rStartY); ctx.lineTo(rEndX, rEndY); ctx.stroke();
+      let rAh = 7; ctx.beginPath(); ctx.moveTo(rEndX, rEndY);
+      ctx.lineTo(rEndX - rAh * Math.cos(Math.PI/2 - 0.4), rEndY - rAh * Math.sin(Math.PI/2 - 0.4));
+      ctx.lineTo(rEndX - rAh * Math.cos(Math.PI/2 + 0.4), rEndY - rAh * Math.sin(Math.PI/2 + 0.4));
+      ctx.closePath(); ctx.fill();
+      ctx.font = 'bold 11px Nunito'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText('Final Range = ' + S.x.toFixed(2) + ' m', rStartX, rStartY - 2);
+    }
+  }
+
+  function drawFrame() {
+    const s = getScale();
+    ctx.clearRect(0, 0, s.W, s.H);
+
+    drawGrid(s);
+    if (S.dragEnabled) drawIdealTrace(s);
+    if (S.compAngleEnabled) drawCompTrace(s);
+    if (S.targetMode) drawTarget(s);
+    
+    drawSpringLauncher(s);
+    drawTelemetry(s);
+    
+    if(!S.isDragging) {
+      drawMainProjectile(s, s.toX(0), s.toY(S.y0), S.angleDeg * Math.PI / 180);
+    } else {
+      // Just draw the aiming vectors while dragging
+      let v0x_px = S.v0 * Math.cos(S.angleDeg * Math.PI / 180) * s.sx * s.vMult;
+      let v0y_px = S.v0 * Math.sin(S.angleDeg * Math.PI / 180) * s.sy * s.vMult;
+      drawArrow(ctx, s.toX(0), s.toY(S.y0), s.toX(0) + v0x_px, s.toY(S.y0), COLORS.teal, 'v₀ₓ');
+      drawArrow(ctx, s.toX(0), s.toY(S.y0), s.toX(0), s.toY(S.y0) - v0y_px, COLORS.orange, 'v₀ᵧ');
+      drawArrow(ctx, s.toX(0), s.toY(S.y0), s.toX(0) + v0x_px, s.toY(S.y0) - v0y_px, COLORS.yellow, 'v₀');
+    }
+
+    updateAndDrawParticles(ctx, DT);
+  }
+
+  function updateFromUI() {
+    S.angleDeg = parseFloat(elAngle.value) || 0;
+    S.v0 = parseFloat(elSpeed.value) || 0;
+    S.y0 = parseFloat(elHeight.value) || 0;
+    S.type = elType.value;
+    S.showInstruction = false; // Hide instruction as soon as they try adjusting settings
+  }
+
+  function doReset() {
+    S.running = false; btnPlay.textContent = 'Play'; btnPlay.classList.remove('active');
+    if (elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
+    S.particles = [];
+    updateFromUI();
+    if(S.targetMode && S.finished) S.targetX = 40 + Math.floor(Math.random() * 80); 
+    setInitialPhysics(); drawFrame();
+  }
+
+  [elAngle, elSpeed, elHeight, elType].forEach(el => el.addEventListener('input', () => { if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; } doReset(); }));
+  elDrag.addEventListener('change', () => { S.dragEnabled = elDrag.checked; doReset(); });
+  elStrobe.addEventListener('change', () => { S.strobeEnabled = elStrobe.checked; drawFrame(); });
+  elCompAngle.addEventListener('change', () => { S.compAngleEnabled = elCompAngle.checked; drawFrame(); });
+  elTarget.addEventListener('change', () => { S.targetMode = elTarget.checked; doReset(); });
+
+  document.querySelectorAll('.tsc-spin-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-      ensureSplashHidden();
-      var targetId = this.getAttribute('data-target');
-      var step = parseFloat(this.getAttribute('data-step'));
-      var input = document.getElementById(targetId);
-      var min = parseFloat(input.min) || 0;
-      var max = parseFloat(input.max) || 100;
-      var val = parseFloat(input.value) || 0;
-      var newVal = val + step;
-      
-      if (newVal >= min && newVal <= max) {
-        input.value = newVal;
-        input.dispatchEvent(new Event('input')); // This triggers the redraw
-      }
+      if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
+      let input = document.getElementById(this.getAttribute('data-target'));
+      let step = parseFloat(this.getAttribute('data-step')), min = parseFloat(input.min), max = parseFloat(input.max);
+      let val = parseFloat(input.value) + step;
+      if (val >= min && val <= max) { input.value = val; doReset(); }
     });
   });
 
-  elDrag.addEventListener('change', function() { ensureSplashHidden(); S.dragEnabled = elDrag.checked; if (S.finished || S.t > 0) { btnReset.click(); } else drawTop(); });
-  elStrobe.addEventListener('change', function() { ensureSplashHidden(); S.strobeEnabled = elStrobe.checked; drawTop(); });
-  elCompAngle.addEventListener('change', function() { ensureSplashHidden(); S.compAngleEnabled = elCompAngle.checked; drawTop(); });
-  elTarget.addEventListener('change', function() { ensureSplashHidden(); S.targetMode = elTarget.checked; if(S.targetMode){ S.targetX = 30 + Math.floor(Math.random() * 100); if(S.finished) btnReset.click(); } drawTop(); });
-
-  btnPlay.addEventListener('click', function() {
-    ensureSplashHidden();
-    if (S.finished) setInitial();
+  btnPlay.addEventListener('click', () => {
+    if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
+    if (S.finished) setInitialPhysics();
     S.running = !S.running;
-    this.textContent = S.running ? 'Pause' : 'Play';
-    this.classList.toggle('active', S.running);
+    btnPlay.textContent = S.running ? 'Pause' : 'Play';
+    btnPlay.classList.toggle('active', S.running);
     if (elClockSvg) elClockSvg.classList.toggle('tsc-clock-active', S.running);
   });
 
-  btnSlow.addEventListener('click', function() { ensureSplashHidden(); S.slow = !S.slow; this.classList.toggle('active', S.slow); });
-  btnStep.addEventListener('click', function() { ensureSplashHidden(); if (!S.running && !S.finished) { stepOnce(); canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s'; drawTop(); } });
-  
-  btnReset.addEventListener('click', function() {
-    ensureSplashHidden();
-    S.running = false;
-    btnPlay.textContent = 'Play';
-    btnPlay.classList.remove('active');
-    if (elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
-    setInitial();
-    canvasTime.textContent = 't = 0.00 s';
-    drawTop();
+  btnSlow.addEventListener('click', function() { S.slow = !S.slow; this.classList.toggle('active', S.slow); });
+  btnStep.addEventListener('click', () => {
+    if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
+    if (!S.running && !S.finished) { stepPhysics(); canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s'; drawFrame(); }
   });
+  btnReset.addEventListener('click', doReset);
 
-  if (splashScreen) {
-    splashScreen.addEventListener('click', function() {
-      ensureSplashHidden();
-      btnPlay.click();
-    });
-  }
-
-  // ---------- Boot sequence ----------
-  var lastTime = 0, accumulator = 0;
+  let lastTime = 0, accumulator = 0;
   function loop(now) {
     if (!lastTime) lastTime = now;
-    var elapsed = (now - lastTime) / 1000;
+    let elapsed = (now - lastTime) / 1000;
     lastTime = now;
     if (elapsed > 0.1) elapsed = 0.1; 
 
     updateBirds(elapsed);
 
     if (S.running && !S.finished) {
-      var rate = S.slow ? 0.2 : 1.0;
+      let rate = S.slow ? 0.2 : 1.0;
       accumulator += elapsed * rate;
       while (accumulator >= DT) {
-        stepOnce();
-        accumulator -= DT;
+        stepPhysics(); accumulator -= DT;
         if (S.finished) break;
       }
       canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s';
     }
     
-    drawTop();
+    drawFrame();
     requestAnimationFrame(loop);
   }
 
-  initBirds(); 
-  setInitial(); 
-  S.showSplashFountain = true; 
-  window.addEventListener('resize', function(){ resizeCanvas(elTop); drawTop(); });
-  
-  setTimeout(function() {
-    resizeCanvas(elTop);
-    drawTop();
-    requestAnimationFrame(loop);
-  }, 100);
+  // Init
+  initBirds();
+  resizeCanvas();
+  setInitialPhysics();
+  requestAnimationFrame(loop);
 
 })();
 </script>
