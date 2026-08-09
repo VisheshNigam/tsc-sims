@@ -166,7 +166,37 @@
     position: absolute; bottom: 80px; left: 80px; background: var(--primary); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; pointer-events: none; animation: pulse-ring 2s infinite; z-index: 5; opacity: 1; transition: opacity 0.3s; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
   }
   #drag-hint::after { content: ''; position: absolute; bottom: -6px; left: 24px; border-width: 6px 6px 0; border-style: solid; border-color: var(--primary) transparent transparent transparent; }
-  .hidden-hint { opacity: 0 !important; }
+  .hidden-hint { opacity: 0 !important; transition: opacity 0.3s; }
+
+  #play-hint-container {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    z-index: 20;
+    pointer-events: none;
+    /* Swoop in from the center of the canvas area */
+    animation: swoop-in-hint 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  @keyframes swoop-in-hint {
+    0% { transform: translate(min(30vw, 300px), 250px) scale(4.5); opacity: 0; }
+    10% { transform: translate(min(30vw, 300px), 250px) scale(4.5); opacity: 1; }
+    35% { transform: translate(min(30vw, 300px), 250px) scale(4.5); opacity: 1; }
+    100% { transform: translate(0, 0) scale(1); opacity: 1; }
+  }
+
+  #play-hint {
+    font-size: 26px;
+    animation: tsc-bounce-down 1s infinite;
+    white-space: nowrap;
+    margin-bottom: 2px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  }
+  
+  @keyframes tsc-bounce-down {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
 
   @media (max-width: 820px) {
     .tsc-main-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -218,7 +248,12 @@
     </div>
 
     <div class="tsc-toolbar-group">
-      <button class="tsc-btn" id="tsc-btn-play">Play</button>
+      <div style="position: relative;">
+        <div id="play-hint-container">
+          <div id="play-hint">👇</div>
+        </div>
+        <button class="tsc-btn" id="tsc-btn-play">Play</button>
+      </div>
       <button class="tsc-btn" id="tsc-btn-slow">Slow Motion</button>
       <button class="tsc-btn" id="tsc-btn-step">Step</button>
       <button class="tsc-btn" id="tsc-btn-reset">Reset</button>
@@ -226,7 +261,7 @@
   </div>
 
   <div class="tsc-canvas-wrap" id="canvas-container">
-    <div id="drag-hint">Drag anywhere to aim!</div>
+    <div id="drag-hint" class="hidden-hint">Change angle to aim!</div>
     
     <div class="tsc-canvas-time-readout">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -266,7 +301,7 @@
     targetMode: true, targetX: 100, targetW: 10, targetHit: false, compAngleEnabled: false,
     peakReached: false, peakX: 0, peakY: 0, rangeCrossReached: false, rangeCrossX: 0,
     running: false, slow: false, finished: false, trail: [],
-    particles: [], birds: [], isDragging: false, dragHintVisible: true,
+    particles: [], birds: [], isDragging: false, dragHintVisible: false,
     playCount: 0, showInstruction: false
   };
 
@@ -285,6 +320,7 @@
   const canvasTime = document.getElementById('tsc-canvas-time');
   const elClockSvg = document.querySelector('.tsc-canvas-time-readout svg');
   const dragHint = document.getElementById('drag-hint');
+  const playHint = document.getElementById('play-hint-container');
 
   const btnPlay = document.getElementById('tsc-btn-play');
   const btnSlow = document.getElementById('tsc-btn-slow');
@@ -474,6 +510,10 @@
   }
 
   function setInitialPhysics() {
+    if (S.finished && S.targetMode && S.targetHit) {
+      S.targetX = 40 + Math.floor(Math.random() * 80);
+    }
+
     const th = S.angleDeg * Math.PI / 180;
     S.y0 = parseFloat(elHeight.value) || 0; 
     
@@ -488,7 +528,7 @@
     S.vx = S.v0 * Math.cos(th); S.vy = S.v0 * Math.sin(th);
     S.rotationAngle = 0; S.omega = (Math.random() - 0.5) * 12;
     S.trail = [{ x: 0, y: S.y0 }]; S.strobes = [];
-    S.finished = false; S.peakReached = false; S.rangeCrossReached = false;
+    S.finished = false; S.peakReached = false; S.rangeCrossReached = false; S.targetHit = false;
     canvasTime.textContent = 't = 0.00 s';
   }
 
@@ -541,6 +581,8 @@
       if (S.playCount === 0) {
         S.playCount = 1;
         S.showInstruction = true;
+        S.dragHintVisible = true;
+        dragHint.classList.remove('hidden-hint');
       }
       btnPlay.textContent = 'Play'; btnPlay.classList.remove('active');
       if(elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
@@ -636,34 +678,119 @@
     ctx.stroke(); ctx.setLineDash([]);
   }
 
-  function drawTarget(s) {
+  function drawTargetBack(s) {
     if (!S.targetMode) return;
-    const tX = s.toX(S.targetX), tY = s.toY(0), tWPixels = Math.max(20, S.targetW * s.sx); 
+    const tX = s.toX(S.targetX), tY = s.toY(0);
+    // Reduced size by ~25% for better proportions with the projectiles
+    const size = Math.max(38, S.targetW * s.sx * 1.15);
     
-    ctx.fillStyle = '#FF4444'; ctx.fillRect(tX - tWPixels/2, tY - 6, tWPixels, 6);
-    ctx.fillStyle = '#F8FAFC'; ctx.fillRect(tX - tWPixels/4, tY - 6, tWPixels/2, 6);
-    ctx.font = 'bold 11px Nunito, sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = COLORS.text;
-    ctx.fillText(S.targetX + 'm', tX, tY + 16);
+    // Shadow under dino
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.15)';
+    ctx.beginPath(); ctx.ellipse(tX + size*0.1, tY, size * 0.7, size * 0.15, 0, 0, Math.PI * 2); ctx.fill();
 
+    // Back neck/throat layer (Dark Green)
+    ctx.fillStyle = '#14532d'; 
+    ctx.beginPath();
+    ctx.moveTo(tX + size*0.4, tY);
+    ctx.lineTo(tX + size*0.6, tY);
+    ctx.lineTo(tX + size*0.4, tY - size*0.9);
+    ctx.lineTo(tX - size*0.2, tY - size*0.6);
+    ctx.fill();
+
+    // Throat cavity (Dark Red/Black)
+    ctx.fillStyle = '#450a0a'; 
+    ctx.beginPath();
+    ctx.ellipse(tX, tY - size*0.4, size*0.35, size*0.25, -Math.PI/6, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function drawTargetFront(s) {
+    if (!S.targetMode) return;
+    const tX = s.toX(S.targetX), tY = s.toY(0);
+    // Reduced size by ~25% for better proportions with the projectiles
+    const size = Math.max(38, S.targetW * s.sx * 1.15);
+    
+    // If it's a hit and the simulation finished, animate the jaw shutting!
+    let isHit = S.finished && S.targetHit;
+    let chompRot = isHit ? 0.35 : -0.25; 
+    
+    // Bottom Jaw
+    ctx.fillStyle = '#16a34a';
+    ctx.beginPath();
+    ctx.moveTo(tX + size*0.4, tY);
+    ctx.lineTo(tX - size*0.3, tY);
+    ctx.quadraticCurveTo(tX - size*0.5, tY - size*0.1, tX - size*0.4, tY - size*0.3);
+    ctx.lineTo(tX + size*0.3, tY - size*0.3);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Bottom Teeth
+    ctx.fillStyle = '#F8FAFC';
+    ctx.beginPath();
+    for(let i=0; i<3; i++) {
+      let tx1 = tX - size*0.3 + i*size*0.2;
+      ctx.moveTo(tx1, tY - size*0.3);
+      ctx.lineTo(tx1 + size*0.1, tY - size*0.45);
+      ctx.lineTo(tx1 + size*0.2, tY - size*0.3);
+    }
+    ctx.fill();
+
+    // Top Jaw (Hinged to rotate)
+    ctx.save();
+    ctx.translate(tX + size*0.3, tY - size*0.4); // Hinge location
+    ctx.rotate(chompRot);
+    
+    // Top Head
+    ctx.fillStyle = '#22c55e'; // Lighter green for main head
+    ctx.beginPath();
+    ctx.moveTo(0, 0); 
+    ctx.quadraticCurveTo(-size*0.1, -size*0.7, -size*0.6, -size*0.6); // Top dome
+    ctx.quadraticCurveTo(-size*0.9, -size*0.6, -size*0.8, -size*0.1); // Snout front
+    ctx.lineTo(-size*0.1, -size*0.1); // Roof of mouth
+    ctx.closePath();
+    ctx.fill();
+
+    // Top Teeth
+    ctx.fillStyle = '#F8FAFC';
+    ctx.beginPath();
+    for(let i=0; i<3; i++) {
+      let tx1 = -size*0.7 + i*size*0.2;
+      ctx.moveTo(tx1, -size*0.1);
+      ctx.lineTo(tx1 + size*0.1, size*0.05);
+      ctx.lineTo(tx1 + size*0.2, -size*0.1);
+    }
+    ctx.fill();
+
+    // Eye
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath(); ctx.arc(-size*0.45, -size*0.4, size*0.12, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#0F172A';
+    ctx.beginPath(); ctx.arc(-size*0.48, -size*0.4, size*0.05, 0, Math.PI*2); ctx.fill();
+    
+    // Nostril
+    ctx.fillStyle = '#14532d';
+    ctx.beginPath(); ctx.arc(-size*0.75, -size*0.2, size*0.03, 0, Math.PI*2); ctx.fill();
+    
+    ctx.restore();
+
+    // UI Text
     if (S.finished) {
-       ctx.font = '900 16px Nunito'; ctx.fillStyle = S.targetHit ? '#10B981' : '#EF4444';
-       ctx.fillText(S.targetHit ? '🎯 HIT!' : '❌ MISS', tX, tY - 35);
-       
-       if (S.showInstruction) {
-         ctx.save();
-         ctx.translate(tX, tY - 75);
-         ctx.rotate(-0.08); // Slight tilt for a playful look
-         ctx.font = '700 24px "Caveat", cursive';
-         ctx.fillStyle = '#4F46E5'; 
-         
-         // Add a glowing shadow for crisp contrast against the background
-         ctx.shadowColor = 'rgba(255, 255, 255, 0.9)'; 
-         ctx.shadowBlur = 6;
-         ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
-         
-         ctx.fillText('Adjust Angle & Speed to land it!', 0, 0);
-         ctx.restore();
-       }
+         ctx.font = '900 18px Nunito'; ctx.fillStyle = S.targetHit ? '#10B981' : '#EF4444';
+         ctx.textAlign = 'center';
+         ctx.fillText(S.targetHit ? 'YUM! 🦖' : 'MISS!', tX, tY - size * 1.3);
+
+         if (S.showInstruction) {
+           ctx.save();
+           ctx.translate(tX, tY - size * 1.3 - 35);
+           ctx.rotate(-0.08); 
+           ctx.font = '700 24px "Caveat", cursive';
+           ctx.fillStyle = '#4F46E5';
+           ctx.shadowColor = 'rgba(255, 255, 255, 0.9)'; 
+           ctx.shadowBlur = 6;
+           ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+           ctx.fillText('Adjust Angle & Speed to feed!', 0, 0);
+           ctx.restore();
+         }
     }
   }
 
@@ -886,7 +1013,7 @@
     drawGrid(s);
     if (S.dragEnabled) drawIdealTrace(s);
     if (S.compAngleEnabled) drawCompTrace(s);
-    if (S.targetMode) drawTarget(s);
+    if (S.targetMode) drawTargetBack(s);
     
     drawSpringLauncher(s);
     drawTelemetry(s);
@@ -901,6 +1028,8 @@
       drawArrow(ctx, s.toX(0), s.toY(S.y0), s.toX(0), s.toY(S.y0) - v0y_px, COLORS.orange, 'v₀ᵧ');
       drawArrow(ctx, s.toX(0), s.toY(S.y0), s.toX(0) + v0x_px, s.toY(S.y0) - v0y_px, COLORS.yellow, 'v₀');
     }
+
+    if (S.targetMode) drawTargetFront(s);
 
     updateAndDrawParticles(ctx, DT);
   }
@@ -918,7 +1047,6 @@
     if (elClockSvg) elClockSvg.classList.remove('tsc-clock-active');
     S.particles = [];
     updateFromUI();
-    if(S.targetMode && S.finished) S.targetX = 40 + Math.floor(Math.random() * 80); 
     setInitialPhysics(); drawFrame();
   }
 
@@ -939,7 +1067,7 @@
   });
 
   btnPlay.addEventListener('click', () => {
-    if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
+    if(playHint) playHint.classList.add('hidden-hint');
     if (S.finished) setInitialPhysics();
     S.running = !S.running;
     btnPlay.textContent = S.running ? 'Pause' : 'Play';
@@ -949,7 +1077,7 @@
 
   btnSlow.addEventListener('click', function() { S.slow = !S.slow; this.classList.toggle('active', S.slow); });
   btnStep.addEventListener('click', () => {
-    if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
+    if(playHint) playHint.classList.add('hidden-hint');
     if (!S.running && !S.finished) { stepPhysics(); canvasTime.textContent = 't = ' + S.t.toFixed(2) + ' s'; drawFrame(); }
   });
   btnReset.addEventListener('click', doReset);
