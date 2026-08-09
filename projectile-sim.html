@@ -402,6 +402,17 @@
 
   function handleInputStart(e) {
     if (S.running && !S.finished) return; 
+    
+    // Get touch position and calculate distance to the cannon origin
+    const pos = getMousePos(e);
+    const s = getScale();
+    const startX = s.toX(0);
+    const startY = s.toY(S.y0);
+    const distToCannon = Math.sqrt(Math.pow(pos.x - startX, 2) + Math.pow(pos.y - startY, 2));
+    
+    // Only engage drag if touching near the cannon (80px radius hitbox)
+    if (distToCannon > 80) return;
+    
     S.isDragging = true;
     if(S.dragHintVisible) { dragHint.classList.add('hidden-hint'); S.dragHintVisible = false; }
     if(S.finished) setInitialPhysics();
